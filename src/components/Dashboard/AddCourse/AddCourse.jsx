@@ -5,7 +5,7 @@ import CourseInfo from './CourseInfo'
 import CourseBuilder from './CourseBuilder'
 import CoursePublish from './CoursePublish'
 import { FaCheck } from 'react-icons/fa'
-import { resetCourseState } from '../../reducers/slices/courseSlice'
+import { resetCourseState } from '../../../reducers/slices/courseSlice'
 
 const stepData = [
     {
@@ -25,7 +25,7 @@ const stepData = [
 const AddCourse = () => {
 
     const {step} = useSelector((state) => state.course);
-
+    
   return (
     <div className='p-6 w-full relative flex flex-col sm:justify-center sm:gap-6'>
 
@@ -46,25 +46,35 @@ const AddCourse = () => {
         </ul>
 
         <div className='flex justify-center items-center lg:w-[60%] sm:w-[100%] p-6 mt-10'>
-            <div className='flex justify-between w-[80%]'>
-                {
+            <div className='flex justify-between w-full flex-col gap-5'>
+                <div className='flex w-full justify-between'>
+                    {
                     stepData.map((item) => (
-                        <div className={`flex flex-col gap-4 items-center w-1/3 lg:w-36 relative justify-center`} key={item.id}>
+                        <div className={`flex flex-col gap-4 items-center w-1/4 relative justify-center`} key={item.id}>
                             <div className='flex items-center'>
                                 <div className={`rounded-full flex justify-center items-center p-2 w-8 h-8 font-inter z-10 text-lg ${item.id <= step ? "bg-yellow-900 border-2 border-yellow-50 text-yellow-50" : "bg-richblack-800 border-2 border-richblack-700 text-richblack-300"}`}>
                                     <div className=''>{step > item.id ? <FaCheck/> : item.id}</div>
                                 </div>
-                                {
-                                    item.id < 3 && (
-                                        <div className={`border-dashed border-[1px] w-[150%] absolute left-0 translate-x-20 text-richblack-500 h-0 ${step > item.id ? "border-yellow-50" : "border-richblack-600"}`}></div>
-                                    )
-                                }
+
                             </div>
+                            {
+                                item.id < 3 && (
+                                    <div className={`border-dashed border-[1px] w-full absolute translate-x-[75%] top-[50%]  text-richblack-500 h-0 ${step > item.id ? "border-yellow-50" : "border-richblack-600"}`}></div>
+                                )
+                            }
+                        </div>        
+                    ))
+                }
+                </div>
+                <div className='flex w-full justify-between'>
+                    {
+                    stepData.map((item) => (
+                        <div className={`flex flex-col gap-4 items-center w-1/4 relative justify-center`} key={item.id}>
                             <p className={`text-sm font-inter ${step >= item.id ? "text-richblack-5" : "text-richblack-500"}`}>{item.title}</p>
                         </div>        
                     ))
                 }
-                
+                </div>
             </div>
         </div>
 

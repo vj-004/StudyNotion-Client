@@ -4,10 +4,10 @@ import AboutUs1 from '../assets/Images/aboutus1.webp'
 import AboutUs2 from '../assets/Images/aboutus2.webp'
 import AboutUs3 from '../assets/Images/aboutus3.webp'
 import FoundingImage from '../assets/Images/FoundingStory.png'
-import CustomButton from '../components/HomePage/CustomButton'
 import Card from '../components/AboutUs/Card'
 import ContactForm from '../components/AboutUs/ContactForm'
 import Footer from '../components/Footer/Footer'
+import CustomButton from '../components/Common/CustomButton'
 
 const Stats = [
     {

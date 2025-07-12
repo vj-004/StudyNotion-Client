@@ -18,14 +18,14 @@ import EnrolledCourses from "./components/Dashboard/EnrolledCourses";
 import Settings from "./components/Dashboard/Settings";
 import Cart from "./pages/Cart";
 import { useSelector } from "react-redux";
-import AddCourse from "./components/Dashboard/AddCourse";
+import AddCourse from "./components/Dashboard/AddCourse/AddCourse";
 
 
 function App() {
 
   const {user} = useSelector((state) => state.profile);
 
-  console.log('user: ', user);
+  // console.log('user: ', user);
 
   return (
     

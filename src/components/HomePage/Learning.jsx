@@ -3,7 +3,7 @@ import HighlightText from './HighlightText'
 import PlanLesson from '../../assets/Images/Plan_your_lessons.png';
 import KnowProgress from '../../assets/Images/Know_your_progress.png';
 import CompareProgress from '../../assets/Images/Compare_with_others.png';
-import CustomButton from './CustomButton';
+import CustomButton from '../Common/CustomButton';
 
 const Learning = () => {
   return (

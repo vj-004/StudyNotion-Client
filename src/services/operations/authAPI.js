@@ -4,6 +4,7 @@ import { apiConnecter } from "../apiConnector";
 import { endpoints } from "../apis";
 import { setUser } from "../../reducers/slices/profileSlice";
 import { resetCart } from "../../reducers/slices/cartSlice";
+import { setCourse, setEditCourse } from "../../reducers/slices/courseSlice";
 
 export const login = (email,password,navigate) => {
     return async(dispatch) => {
@@ -25,7 +26,6 @@ export const login = (email,password,navigate) => {
             toast.success("Login Successful");
             dispatch(setToken(response.data.token));
 
-            console.log('user: ', response.data.user);
 
             const userImage = response.data?.user?.image
             ? response.data.user.image
@@ -186,6 +186,8 @@ export const logout = (navigate) => {
         dispatch(setToken(null))
         dispatch(setUser(null))
         dispatch(resetCart())
+        dispatch(setCourse(null));
+        dispatch(setEditCourse(false));
         localStorage.removeItem("token")
         localStorage.removeItem("user")
         toast.success("Logged Out")

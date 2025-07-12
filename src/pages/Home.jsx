@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaArrowRight } from "react-icons/fa";
 import HighlightText from '../components/HomePage/HighlightText';
-import CustomButton from '../components/HomePage/CustomButton';
 import Banner from '../assets/Images/banner.mp4';
 import CodeBlocks from '../components/HomePage/CodeBlocks';
 import Timeline from '../components/HomePage/Timeline';
@@ -10,6 +9,7 @@ import Learning from '../components/HomePage/Learning';
 import Footer from '../components/Footer/Footer';
 import Instructor from '../assets/Images/Instructor.png';
 import ExploreMore from '../components/HomePage/ExploreMore';
+import CustomButton from '../components/Common/CustomButton';
 
 const Home = () => {
   return (

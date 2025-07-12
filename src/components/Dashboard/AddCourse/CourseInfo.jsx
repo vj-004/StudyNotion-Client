@@ -4,7 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TbCoinRupeeFilled } from "react-icons/tb";
 import { RxCross1 } from "react-icons/rx";
 import { FiUploadCloud } from "react-icons/fi";
-import { fetchAllCategories } from '../../services/operations/courseDetailsAPI';
+import { addCourseDetails, editCourseDetails, fetchAllCategories, getDraftCourse } from '../../../services/operations/courseDetailsAPI';
+import { setCourse, setEditCourse, setStep } from '../../../reducers/slices/courseSlice';
+import { FaChevronRight } from 'react-icons/fa';
+import toast from 'react-hot-toast';
+
+// image not rendering when we are editing course
 
 const CourseInfo = () => {
 
@@ -18,6 +23,7 @@ const CourseInfo = () => {
     } = useForm();
     const {course,editCourse} = useSelector((state) => state.course);
     const dispatch = useDispatch();
+    const {token} = useSelector((state) => state.auth);
     const [loading, setLoading] = useState(false);
     const [courseCategories, setCourseCategories] = useState([]);
     const [courseTags, setCourseTags] = useState([]);
@@ -27,11 +33,8 @@ const CourseInfo = () => {
     const [requirement, setRequirement] = useState("");
     const [requirementList, setRequirementList] = useState([]);
 
-
-
     useEffect(() => {
         
-
         const getAllCategories = async () => {
             setLoading(true);
             const categories = await fetchAllCategories();
@@ -41,17 +44,21 @@ const CourseInfo = () => {
             setLoading(false);
         }
 
-
-        if(editCourse){
-            setValue("courseTitle", course.courseName);
-            setValue("courseDescription", course.description);
-            setValue("coursePrice", course.price);
-            setValue("courseTags", course.tag);
-            setValue("courseBenefits", course.whatYouWillLearn);
-            setValue("courseCategory", course.category);
-            setValue("courseRequirements", course.instructions);
-            setValue("courseImage", course.thumbnail);
+        const fetchDraftCourse = async () => {
+            setLoading(true);
+            const draftCourse = await getDraftCourse();
+            if(draftCourse){
+                dispatch(setEditCourse(true));
+                dispatch(setCourse(draftCourse));
+            }
+            else{
+                dispatch(setEditCourse(false));
+                dispatch(setCourse(null));
+            }
+            setLoading(false);
         }
+        fetchDraftCourse();
+
         register("courseTags",{
             required: true
         });
@@ -62,15 +69,27 @@ const CourseInfo = () => {
     }, []);
 
     useEffect(() => {
+        if(editCourse && course){
+            setValue("courseTitle", course.courseName);
+            setValue("courseDescription", course.courseDescription);
+            setValue("coursePrice", course.price);
+            setValue("courseTags", course.tag);
+            setValue("courseBenefits", course.whatYouWillLearn);
+            setValue("courseCategory", course.category);
+            setValue("courseRequirements", course.instructions);
+            setValue("courseImage", course.thumbnail);
+            setRequirementList(course.instructions);
+            setCourseTags(course.tag);
+            setPreviewUrl(course.thumbnail);
+        }
+    }, [course]);
 
-        if (file && file.length > 0) {
-        const objectUrl = URL.createObjectURL(file[0]);
-        setPreviewUrl(objectUrl);
-
-        // Cleanup: revoke the object URL when component unmounts or file changes
-        return () => URL.revokeObjectURL(objectUrl);
+    useEffect(() => {
+        if (file && file.length > 0 && file[0] instanceof Blob) {
+            const objectUrl = URL.createObjectURL(file[0]);
+            setPreviewUrl(objectUrl);
         } else {
-        setPreviewUrl(null);
+            setPreviewUrl(null);
         }
 
 
@@ -103,12 +122,113 @@ const CourseInfo = () => {
         }
     }
 
-    const onSubmit = async (data) => {
+    const isFormUpdated = () => {
+        const currvalues = getValues();
+        if(currvalues.courseTitle !== course.courseName || currvalues.courseDescription !== course.courseDescription || currvalues.coursePrice !== course.price
+            || currvalues.courseTags.toString() !== course.tag.toString() ||
+            currvalues.courseBenefits !== course.whatYouWillLearn ||
+            currvalues.courseCategory !== course.category ||
+            currvalues.courseRequirements.toString() !== course.instructions.toString() ||
+            currvalues.courseImage !== course.thumbnail
+        ) return true;
 
+
+        return false;
+    }
+
+    const onSubmit = async (data) => {
+        if(editCourse && isFormUpdated()){
+            const currentValues = getValues();
+            const formData = new FormData();
+
+            formData.append("courseId", course._id);
+            if(currentValues.courseTitle !== course.courseName){
+                formData.append("courseName", data.courseTitle);
+            }
+            if(currentValues.courseDescription !== course.courseDescription){
+                formData.append("courseDescription", data.courseDescription);
+            }
+            if(currentValues.coursePrice !== course.price){
+                formData.append("price", data.coursePrice);
+            }
+            if(currentValues.courseTags.toString() !== course.tag.toString()){
+                formData.append("tag", data.courseTags);
+            }
+            if(currentValues.courseBenefits !== course.whatYouWillLearn){
+                formData.append("whatYouWillLearn", data.courseBenefits);
+            }
+            if(currentValues.courseCategory !== course.category){
+                formData.append("category", data.courseCategory);
+            }
+            if(currentValues.courseRequirements.toString() !== course.instructions.toString()){
+                formData.append("instructions",data.courseRequirements);
+            }
+            if(currentValues.courseImage !== course.thumbnail){
+                formData.append("thumbnail", data.courseImage);
+            }
+            setLoading(true);
+            try{
+
+                const result = await editCourseDetails(formData);
+                if(result){
+                    dispatch(setStep(2));
+                    dispatch(setCourse(result));
+                    dispatch(setEditCourse(false));
+                }
+                else{
+                    dispatch(setStep(2));
+                    toast.error("No changes made to the form");
+                }
+                dispatch(setStep(2));
+                
+            }catch(error){
+                console.log('Error in editing course...', error);
+            }
+            setLoading(false);
+            dispatch(setEditCourse(false));
+            return;
+        }
+
+        if(!editCourse){
+            const formData = new FormData();
+            formData.append("courseName", data.courseTitle);
+            formData.append("courseDescription", data.courseDescription);
+            formData.append("price", data.coursePrice);
+            formData.append("tag", data.courseTags);
+            formData.append("whatYouWillLearn", data.courseBenefits);
+            formData.append("category", data.courseCategory);
+            formData.append("instructions", data.courseRequirements);
+            formData.append("thumbnail", data.courseImage[0]);
+            formData.append("status", "Draft");
+
+            setLoading(true);
+            
+            try{
+                const result = await addCourseDetails(formData, token);
+                if(result){
+                    dispatch(setStep(2));
+                    dispatch(setCourse(result));
+                }
+                console.log('Course added successfully');
+            }catch(error){
+                console.log('Error in creating new course..', error);
+            }
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        dispatch(setStep(2));
+        setLoading(false);
+
+
+        
     }
 
   return (
-    <form className='rounded-md bg-richblack-800 border-1 border-richblack-700 p-3 w-[60%]' onSubmit={handleSubmit(onSubmit)}>
+    <form className='rounded-md bg-richblack-800 border-1 border-richblack-700 p-3 w-full  lg:w-[60%]' onSubmit={handleSubmit(onSubmit, (err) => {
+        console.log("❌ Validation Errors:", err);
+        })}>
 
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='courseTitle' className='text-sm font-inter text-richblack-5 mb-2'>Course Title<sup className='text-red-500'>*</sup></label>
@@ -203,7 +323,9 @@ const CourseInfo = () => {
 
         <div className='flex flex-col gap-1 p-2'>
 
-            <p className='text-sm font-inter text-richblack-5 mb-2'>Course Thumbnail<sup className='text-red-500'>*</sup></p>
+            <p className='text-sm font-inter text-richblack-5 mb-2'  onClick={() => {
+                    console.log('preview url', previewUrl);
+                }}>Course Thumbnail<sup className='text-red-500'>*</sup></p>
             <label htmlFor='courseImage' className='h-48 bg-richblack-700 rounded-md border-1 border-richblack-600 cursor-pointer'>
                 <div className='flex flex-col justify-center items-center h-full'>
                     {
@@ -223,6 +345,7 @@ const CourseInfo = () => {
                         )
                         :
                         (
+                            
                             <img src={previewUrl} alt='preview' loading='lazy' className= 'overflow-hidden object-cover' />
                         )
                     }
@@ -232,7 +355,7 @@ const CourseInfo = () => {
                 type="file"
                 id="courseImage"
                 accept="image/*"
-                {...register("courseImage", { required: "File is required" })}
+                {...register("courseImage", { required: !editCourse})}
                 className='hidden'
             />
         </div>
@@ -249,22 +372,24 @@ const CourseInfo = () => {
             }
         </div>
 
+        {/* If same requirements are trying to be added, handle a check for that */}
+
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='requirement' className='text-sm font-inter text-richblack-5 mb-2'>Course Requirements<sup className='text-red-500'>*</sup></label>
             <div className='flex flex-wrap gap-2 mb-2'>
                 <ul className='gap-2 flex flex-wrap'>
                     {
                         requirementList.length > 0 && requirementList.map((task,index) => (
-                            <li className="flex items-center gap-4 bg-richblack-800 px-4 py-2 rounded-md shadow-sm border border-richblack-600">
+                            <li key={index} className="flex items-center gap-4 bg-richblack-800 px-4 py-2 rounded-md shadow-sm border border-richblack-600">
                                 <span className="text-sm font-medium text-richblack-100 break-words">
                                     {task}
                                 </span>
-                                <button
+                                <p
                                     onClick={() => handleRemoveRequirement(task)}
-                                    className="text-sm font-semibold text-richblack-900 bg-yellow-50 hover:bg-yellow-100 transition-colors px-3 py-1 rounded-md shadow"
+                                    className=" cursor-pointertext-sm font-semibold text-richblack-900 bg-yellow-50 hover:bg-yellow-100 transition-colors px-3 py-1 rounded-md shadow"
                                 >
                                     Clear
-                                </button>
+                                </p>
                             </li>
                         ))
                     }
@@ -273,21 +398,27 @@ const CourseInfo = () => {
             <input type='text' id='requirement' className='bg-richblack-700 rounded-md py-2 px-4 text-richblack-5' placeholder='Enter Course Requirement' 
                 value={requirement} onChange={(e) => setRequirement(e.target.value)}
             />
-            <button className='rounded-md cursor-pointer w-fit p-2 bg-yellow-50 text-richblack-900 mt-2 px-6 hover:scale-95 transition-all duration-200 font-inter font-medium' 
+            {
+                errors.courseRequirements && (
+                    <span className='text-red-500 text-xs font-medium font-inter'>* Course Requirements is Required</span>
+                )
+            }
+            <p className='rounded-md cursor-pointer w-fit p-2 bg-yellow-50 text-richblack-900 mt-2 px-6 hover:scale-95 transition-all duration-200 font-inter font-medium' 
                 onClick={() => handleAddRequirement(requirement)}
             >
                 Add
-            </button>
+            </p>
             
         </div>
 
-        <div>
-
+        <div className='w-full flex justify-end p-2'>
+            <div className=''>
+                <button className='py-1 px-3  bg-yellow-50 text-richblack-900 rounded-md font-inter font-medium text-base flex gap-1 justify-center items-center'>
+                    <p>{editCourse ? "Save Changes" : "Next"}</p>
+                    <FaChevronRight className='text-sm'/>
+                </button>
+            </div>
         </div>
-
-
-
-
     </form>
   )
 }

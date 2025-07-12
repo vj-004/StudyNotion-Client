@@ -1,6 +1,6 @@
 import React from 'react'
-import CustomButton from './CustomButton'
 import { TypeAnimation } from 'react-type-animation'
+import CustomButton from '../Common/CustomButton'
 
 const CodeBlocks = ({
     position, heading,subheading,btn1,btn2,codeblock,backgroundGradient,codeColor
