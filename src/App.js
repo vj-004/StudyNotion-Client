@@ -49,9 +49,8 @@ function App() {
           <Route path="/about" element={<AboutUs/>} />
           <Route path="/contact" element={<ContactUs/>}/>
           <Route element={<PrivateRoute>
-            <Dashboard/>
-          </PrivateRoute>}
-          
+              <Dashboard/>
+            </PrivateRoute>}
           >
             <Route path="/dashboard/my-profile" element={<MyProfile/>}/>
             <Route path="/dashboard/settings" element={<Settings/>} />
@@ -74,11 +73,6 @@ function App() {
               )
             }
           </Route>
-
-          
-
-
-
           <Route path="*" element={<Error/>}/>
         </Routes>
         

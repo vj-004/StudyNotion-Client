@@ -44,21 +44,6 @@ const CourseInfo = () => {
             setLoading(false);
         }
 
-        const fetchDraftCourse = async () => {
-            setLoading(true);
-            const draftCourse = await getDraftCourse();
-            if(draftCourse){
-                dispatch(setEditCourse(true));
-                dispatch(setCourse(draftCourse));
-            }
-            else{
-                dispatch(setEditCourse(false));
-                dispatch(setCourse(null));
-            }
-            setLoading(false);
-        }
-        fetchDraftCourse();
-
         register("courseTags",{
             required: true
         });
@@ -230,6 +215,7 @@ const CourseInfo = () => {
         console.log("❌ Validation Errors:", err);
         })}>
 
+        {/* Course title */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='courseTitle' className='text-sm font-inter text-richblack-5 mb-2'>Course Title<sup className='text-red-500'>*</sup></label>
             <input type='text' id='courseTitle' className='bg-richblack-700 rounded-md py-2 px-4 text-richblack-5' placeholder='Enter Course Title' 
@@ -241,7 +227,7 @@ const CourseInfo = () => {
                 )
             }
         </div>
-
+            {/* Course description */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='courseDescription' className='text-sm font-inter text-richblack-5 mb-2'>Course Short Description<sup className='text-red-500'>*</sup></label>
             <textarea type='text' id='courseDescription' className='bg-richblack-700 rounded-md py-2 px-4 text-richblack-5 h-36' placeholder='Enter Course Title' 
@@ -253,7 +239,7 @@ const CourseInfo = () => {
                 )
             }
         </div>
-
+            {/* Course price */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='coursePrice' className='text-sm font-inter text-richblack-5 mb-2'>Course Price<sup className='text-red-500'>*</sup></label>
             <div className='flex flex-col gap-2'>
@@ -272,7 +258,7 @@ const CourseInfo = () => {
 
             </div>
         </div>
-
+                {/* Course Category */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='courseCategory' className='text-sm font-inter text-richblack-5 mb-2'>Course Category<sup className='text-red-500'>*</sup></label>
             <select id='courseCategory' className='bg-richblack-700 rounded-md px-4 py-2 text-richblack-5' defaultValue=''
@@ -293,7 +279,7 @@ const CourseInfo = () => {
             }
         </div>
         
-
+            {/* Course tags */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='courseTags' className='text-sm font-inter text-richblack-5 mb-2'>Tags<sup className='text-red-500'>*</sup></label>
             <div className='w-full flex flex-wrap gap-2'>
@@ -320,12 +306,11 @@ const CourseInfo = () => {
             }}>Add</p>
 
         </div>
-
+        
+        {/* Adding thumbnail */}
         <div className='flex flex-col gap-1 p-2'>
 
-            <p className='text-sm font-inter text-richblack-5 mb-2'  onClick={() => {
-                    console.log('preview url', previewUrl);
-                }}>Course Thumbnail<sup className='text-red-500'>*</sup></p>
+            <p className='text-sm font-inter text-richblack-5 mb-2'>Course Thumbnail<sup className='text-red-500'>*</sup></p>
             <label htmlFor='courseImage' className='h-48 bg-richblack-700 rounded-md border-1 border-richblack-600 cursor-pointer'>
                 <div className='flex flex-col justify-center items-center h-full'>
                     {
@@ -359,7 +344,8 @@ const CourseInfo = () => {
                 className='hidden'
             />
         </div>
-
+        
+        {/* Course Benefits */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='courseBenefits' className='text-sm font-inter text-richblack-5 mb-2'>Course Benefits<sup className='text-red-500'>*</sup></label>
             <textarea type='text' id='courseBenefits' className='bg-richblack-700 rounded-md py-2 px-4 text-richblack-5 h-36' placeholder='Enter Course Benefits' 
@@ -373,7 +359,7 @@ const CourseInfo = () => {
         </div>
 
         {/* If same requirements are trying to be added, handle a check for that */}
-
+        {/* Requirements of course */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='requirement' className='text-sm font-inter text-richblack-5 mb-2'>Course Requirements<sup className='text-red-500'>*</sup></label>
             <div className='flex flex-wrap gap-2 mb-2'>
@@ -410,7 +396,8 @@ const CourseInfo = () => {
             </p>
             
         </div>
-
+        
+        {/* final buttons for course info page */}
         <div className='w-full flex justify-end p-2'>
             <div className=''>
                 <button className='py-1 px-3  bg-yellow-50 text-richblack-900 rounded-md font-inter font-medium text-base flex gap-1 justify-center items-center'>

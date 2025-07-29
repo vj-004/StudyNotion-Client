@@ -91,3 +91,94 @@ export const addCourseDetails = async (data,token) => {
     toast.dismiss(toastId);
     return result;
 }
+
+export const createSection = async (data,token) => {
+    try{
+
+        const response = await apiConnecter("POST", courseEndpoints.CREATE_SECTION_API,data,{
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+        });
+
+        console.log('Response for creating section is called');
+        if(!response){
+            throw new Error("Couldn't get output from API");
+        }
+
+        toast.success("Section created successfully");
+
+        return response.data.data;
+
+    }catch(error){
+        console.log('Error in creating a section', error);
+        toast.error(error.message);
+    }
+}
+
+export const deleteSection = async (data,token) => {
+    try{
+
+        const response = await apiConnecter("POST", courseEndpoints.DELETE_SECTION_API,data,{
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+        });
+
+        console.log('Response for deleting section is called');
+        if(!response){
+            throw new Error("Couldn't get output from API");
+        }
+
+        toast.success("Section deleted successfully");
+
+        return response.data.data;
+
+    }catch(error){
+        console.log('Error in deleting a section', error);
+        toast.error(error.message);
+    }
+}
+
+export const updateSection = async (data,token) => {
+    try{
+
+        const response = await apiConnecter("POST", courseEndpoints.UPDATE_SECTION_API,data,{
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+        });
+
+        console.log('Response for updating section is called');
+        if(!response){
+            throw new Error("Couldn't get output from API");
+        }
+
+        toast.success("Section updated successfully");
+
+        return response.data.data;
+
+    }catch(error){
+        console.log('Error in updating a section', error);
+        toast.error(error.message);
+    }
+}
+
+export const createSubSection = async (data, token) => {
+  let result = null
+  const toastId = toast.loading("Loading...")
+  try {
+    const response = await apiConnecter("POST", courseEndpoints.CREATE_SUBSECTION_API, data, {
+      Authorization: `Bearer ${token}`,
+    })
+    console.log("CREATE SUB-SECTION API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Could Not Add Lecture")
+    }
+    toast.success("Lecture Added")
+    result = response?.data?.data
+  } catch (error) {
+    console.log("CREATE SUB-SECTION API ERROR............", error)
+    toast.error(error.message)
+  }
+  toast.dismiss(toastId)
+  return result
+}
+

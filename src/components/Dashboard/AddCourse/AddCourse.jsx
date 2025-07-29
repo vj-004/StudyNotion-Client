@@ -5,7 +5,8 @@ import CourseInfo from './CourseInfo'
 import CourseBuilder from './CourseBuilder'
 import CoursePublish from './CoursePublish'
 import { FaCheck } from 'react-icons/fa'
-import { resetCourseState } from '../../../reducers/slices/courseSlice'
+import { resetCourseState, setCourse, setEditCourse } from '../../../reducers/slices/courseSlice'
+import { getDraftCourse } from '../../../services/operations/courseDetailsAPI'
 
 const stepData = [
     {
@@ -20,11 +21,32 @@ const stepData = [
         id: 3,
         title: "Publish"
     },
-]
+];
+
 
 const AddCourse = () => {
 
     const {step} = useSelector((state) => state.course);
+    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        
+        const fetchDraftCourse = async () => {
+            setLoading(true);
+            const draftCourse = await getDraftCourse();
+            if(draftCourse){
+                dispatch(setEditCourse(true));
+                dispatch(setCourse(draftCourse));
+            }
+            else{
+                dispatch(setEditCourse(false));
+                dispatch(setCourse(null));
+            }
+            setLoading(false);
+        }
+        fetchDraftCourse();
+    }, []);
     
   return (
     <div className='p-6 w-full relative flex flex-col sm:justify-center sm:gap-6'>
@@ -95,6 +117,7 @@ const AddCourse = () => {
                 )
             }
         </div>
+
 
     </div>
   )
