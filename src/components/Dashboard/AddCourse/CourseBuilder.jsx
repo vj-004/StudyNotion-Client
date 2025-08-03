@@ -57,7 +57,7 @@ const CourseBuilder = () => {
       setValue("sectionName", "");
       const updatedCourse = {
         ...course,
-        courseContent: [...course.courseContent, result]
+        courseContent: [...course.courseContent, response]
       };
       result = updatedCourse;
 
@@ -118,7 +118,7 @@ const CourseBuilder = () => {
           <input id="sectionName" className='bg-richblack-700 rounded-md py-2 px-4 text-richblack-5 w-full' placeholder={editSectionName ? 'Edit Section Name' : 'Add a section'} {...register("sectionName",{required: true})}
           />
           {
-            errors.sectionName && (<span>Section name is required</span>)
+            errors.sectionName && (<span className='text-sm font-semibold font-inter text-red-500'><sup>*</sup>Section name is required</span>)
           }
         </div>
         <div className='flex'>

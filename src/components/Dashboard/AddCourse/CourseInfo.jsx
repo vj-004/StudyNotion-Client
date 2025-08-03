@@ -29,7 +29,6 @@ const CourseInfo = () => {
     const [courseTags, setCourseTags] = useState([]);
     const [tag, setTag] = useState("");
     const [previewUrl, setPreviewUrl] = useState(null);
-    const file = watch("courseImage");
     const [requirement, setRequirement] = useState("");
     const [requirementList, setRequirementList] = useState([]);
 
@@ -68,17 +67,6 @@ const CourseInfo = () => {
             setPreviewUrl(course.thumbnail);
         }
     }, [course]);
-
-    useEffect(() => {
-        if (file && file.length > 0 && file[0] instanceof Blob) {
-            const objectUrl = URL.createObjectURL(file[0]);
-            setPreviewUrl(objectUrl);
-        } else {
-            setPreviewUrl(null);
-        }
-
-
-    }, [file]);
 
     useEffect(() => {
         setValue("courseTags", courseTags);
@@ -191,8 +179,9 @@ const CourseInfo = () => {
             try{
                 const result = await addCourseDetails(formData, token);
                 if(result){
-                    dispatch(setStep(2));
+                    setPreviewUrl(result.thumbnail);
                     dispatch(setCourse(result));
+                    dispatch(setStep(2));
                 }
                 console.log('Course added successfully');
             }catch(error){
@@ -204,10 +193,7 @@ const CourseInfo = () => {
 
         setLoading(true);
         dispatch(setStep(2));
-        setLoading(false);
-
-
-        
+        setLoading(false);  
     }
 
   return (
@@ -330,7 +316,6 @@ const CourseInfo = () => {
                         )
                         :
                         (
-                            
                             <img src={previewUrl} alt='preview' loading='lazy' className= 'overflow-hidden object-cover' />
                         )
                     }

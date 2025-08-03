@@ -5,7 +5,7 @@ import CourseInfo from './CourseInfo'
 import CourseBuilder from './CourseBuilder'
 import CoursePublish from './CoursePublish'
 import { FaCheck } from 'react-icons/fa'
-import { resetCourseState, setCourse, setEditCourse } from '../../../reducers/slices/courseSlice'
+import { resetCourseState, setCourse, setEditCourse, setStep } from '../../../reducers/slices/courseSlice'
 import { getDraftCourse } from '../../../services/operations/courseDetailsAPI'
 
 const stepData = [
@@ -31,19 +31,21 @@ const AddCourse = () => {
     const dispatch = useDispatch();
     
     useEffect(() => {
-        
         const fetchDraftCourse = async () => {
             setLoading(true);
             const draftCourse = await getDraftCourse();
             if(draftCourse){
                 dispatch(setEditCourse(true));
                 dispatch(setCourse(draftCourse));
+                dispatch(setStep(2));
             }
             else{
                 dispatch(setEditCourse(false));
                 dispatch(setCourse(null));
+                dispatch(setStep(1));
             }
             setLoading(false);
+            
         }
         fetchDraftCourse();
     }, []);

@@ -37,7 +37,7 @@ export const login = (email,password,navigate) => {
 
         }catch(error){
             console.log('Error in Login API', error);
-            toast.error("Login Failed")
+            toast.error("incorrect username or password");
         }
 
         dispatch(setLoading(false));
