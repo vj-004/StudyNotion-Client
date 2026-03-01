@@ -53,35 +53,41 @@ const Navbar = () => {
               NavbarLinks.map((link,index) => (
                 <li key={index} className='hover:text-richblack-5'>
                   {
-                    link.title === 'Catalog' ? (<div className='text-richblack-25 group cursor-pointer relative flex items-center gap-2 justify-center'>
-                      
-                      <p className='font-semibold'>{link.title}</p>
-                      <CiCircleChevDown />
-                      <div className='absolute top-[125%] z-10 invisible opacity-0 -left-[200%] flex flex-col rounded-md bg-richblack-5 p-4 text-richblack-900
-                       transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:w-[300px] '>
-                        {
-                          subLinks.length > 0 ? subLinks.map((obj,index) => (
-                            <Link to={`/${obj.name.replace(/\s+/g, '-').toLowerCase()}`} className='flex justify-center items-center' key={index}>
-                              {
-                                obj.name
-                              }
-                            </Link>
-                          ))
-                          :
-                          (
-                            <div>
-
-                            </div>
-                          )
-                        }
-                        <div className='absolute h-6 w-6 rotate-45 rounded bg-richblack-5 -top-[2%] left-[73%]'>
-
+                    link.title === 'Catalog' ? (
+                      <div className='text-richblack-25 group cursor-pointer relative flex items-center gap-2 justify-center'>
+                        <p className='font-semibold'>{link.title}</p>
+                        <CiCircleChevDown />
+                        <div className='absolute top-[125%] z-10 invisible opacity-0 -left-[200%] flex flex-col rounded-md bg-richblack-900 p-4 text-richblack-25
+                         transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:w-[300px] shadow-lg border border-richblack-700'>
+                          {
+                            subLinks.length > 0 ? subLinks.map((obj,index) => (
+                              <React.Fragment key={index}>
+                                <Link
+                                  to={`/catalog/${obj.name.split(" ").join("-")}`}
+                                  className='flex justify-center items-center px-3 py-2 rounded transition-all duration-150 hover:underline hover:scale-105'
+                                >
+                                  {obj.name}
+                                </Link>
+                                {index !== subLinks.length - 1 && (
+                                  <div className='border-b border-richblack-600 mx-2'></div>
+                                )}
+                              </React.Fragment>
+                            ))
+                            :
+                            (
+                              <div className='text-richblack-400'>
+                                Categories need to be added
+                              </div>
+                            )
+                          }
+                          <div className='absolute h-6 w-6 rotate-45 rounded bg-richblack-900 -top-[2%] left-[73%] border-l border-t border-richblack-700'></div>
                         </div>
                       </div>
-
-                    </div>) : (<Link to={link?.path} >
-                      <p className={`${matchPath({path:link?.path}, location.pathname) ? "text-yellow-25" : "text-richblack-25 hover:scale-95"} transition-all duration-200 font-semibold`}>{link.title}</p>
-                    </Link>)
+                    ) : (
+                      <Link to={link?.path} >
+                        <p className={`${matchPath({path:link?.path}, location.pathname) ? "text-yellow-25" : "text-richblack-25 hover:scale-95"} transition-all duration-200 font-semibold`}>{link.title}</p>
+                      </Link>
+                    )
                   }
                 </li>
               ))

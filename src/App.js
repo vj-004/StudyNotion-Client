@@ -19,6 +19,10 @@ import Settings from "./components/Dashboard/Settings";
 import Cart from "./pages/Cart";
 import { useSelector } from "react-redux";
 import AddCourse from "./components/Dashboard/AddCourse/AddCourse";
+import MyCourses from "./components/Dashboard/MyCourses/MyCourses";
+import EditCourse from "./components/Dashboard/EditCourse/EditCourse";
+import Catalog from "./components/Catalog/Catalog";
+import CourseDetails from "./pages/CourseDetails";
 
 
 function App() {
@@ -48,6 +52,8 @@ function App() {
           <Route path="verify-email" element={<VerifyEmail/>}/>
           <Route path="/about" element={<AboutUs/>} />
           <Route path="/contact" element={<ContactUs/>}/>
+          <Route path="/catalog/:catalogName" element={<Catalog/>} />
+          <Route path="/courses/:courseId" element={<CourseDetails/>} />
           <Route element={<PrivateRoute>
               <Dashboard/>
             </PrivateRoute>}
@@ -69,6 +75,8 @@ function App() {
               user?.accountType === 'instructor' && (
                 <>
                   <Route path="/dashboard/add-course" element={<AddCourse/>}/>
+                  <Route path="/dashboard/my-courses" element={<MyCourses/>} />
+                  <Route path="/dashboard/edit-course/:courseId" element={<EditCourse/>}/>
                 </>
               )
             }

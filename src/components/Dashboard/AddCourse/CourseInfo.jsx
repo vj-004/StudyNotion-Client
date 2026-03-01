@@ -8,6 +8,7 @@ import { addCourseDetails, editCourseDetails, fetchAllCategories, getDraftCourse
 import { setCourse, setEditCourse, setStep } from '../../../reducers/slices/courseSlice';
 import { FaChevronRight } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import Upload from './Upload';
 
 // image not rendering when we are editing course
 
@@ -28,9 +29,9 @@ const CourseInfo = () => {
     const [courseCategories, setCourseCategories] = useState([]);
     const [courseTags, setCourseTags] = useState([]);
     const [tag, setTag] = useState("");
-    const [previewUrl, setPreviewUrl] = useState(null);
     const [requirement, setRequirement] = useState("");
     const [requirementList, setRequirementList] = useState([]);
+
 
     useEffect(() => {
         
@@ -59,14 +60,15 @@ const CourseInfo = () => {
             setValue("coursePrice", course.price);
             setValue("courseTags", course.tag);
             setValue("courseBenefits", course.whatYouWillLearn);
-            setValue("courseCategory", course.category);
+            setValue("courseCategory", course.category._id);
             setValue("courseRequirements", course.instructions);
             setValue("courseImage", course.thumbnail);
             setRequirementList(course.instructions);
             setCourseTags(course.tag);
-            setPreviewUrl(course.thumbnail);
         }
     }, [course]);
+
+    
 
     useEffect(() => {
         setValue("courseTags", courseTags);
@@ -77,9 +79,7 @@ const CourseInfo = () => {
     }, [requirementList]);
 
     const handleRemoveTag = (tag) => {
-        console.log('Removing tag: ', tag);
         setCourseTags(courseTags.filter(element => element!==tag));
-
     }
 
     const handleAddRequirement = () => {
@@ -111,9 +111,9 @@ const CourseInfo = () => {
 
     const onSubmit = async (data) => {
         if(editCourse && isFormUpdated()){
+            console.log('something to edit');
             const currentValues = getValues();
             const formData = new FormData();
-
             formData.append("courseId", course._id);
             if(currentValues.courseTitle !== course.courseName){
                 formData.append("courseName", data.courseTitle);
@@ -125,7 +125,7 @@ const CourseInfo = () => {
                 formData.append("price", data.coursePrice);
             }
             if(currentValues.courseTags.toString() !== course.tag.toString()){
-                formData.append("tag", data.courseTags);
+                formData.append("tag", JSON.stringify(data.courseTags));
             }
             if(currentValues.courseBenefits !== course.whatYouWillLearn){
                 formData.append("whatYouWillLearn", data.courseBenefits);
@@ -134,7 +134,7 @@ const CourseInfo = () => {
                 formData.append("category", data.courseCategory);
             }
             if(currentValues.courseRequirements.toString() !== course.instructions.toString()){
-                formData.append("instructions",data.courseRequirements);
+                formData.append("instructions",JSON.stringify(data.courseRequirements));
             }
             if(currentValues.courseImage !== course.thumbnail){
                 formData.append("thumbnail", data.courseImage);
@@ -167,10 +167,10 @@ const CourseInfo = () => {
             formData.append("courseName", data.courseTitle);
             formData.append("courseDescription", data.courseDescription);
             formData.append("price", data.coursePrice);
-            formData.append("tag", data.courseTags);
+            formData.append("tag", JSON.stringify(data.courseTags));
             formData.append("whatYouWillLearn", data.courseBenefits);
             formData.append("category", data.courseCategory);
-            formData.append("instructions", data.courseRequirements);
+            formData.append("instructions", JSON.stringify(data.courseRequirements));
             formData.append("thumbnail", data.courseImage[0]);
             formData.append("status", "Draft");
 
@@ -179,7 +179,6 @@ const CourseInfo = () => {
             try{
                 const result = await addCourseDetails(formData, token);
                 if(result){
-                    setPreviewUrl(result.thumbnail);
                     dispatch(setCourse(result));
                     dispatch(setStep(2));
                 }
@@ -294,41 +293,14 @@ const CourseInfo = () => {
         </div>
         
         {/* Adding thumbnail */}
-        <div className='flex flex-col gap-1 p-2'>
-
-            <p className='text-sm font-inter text-richblack-5 mb-2'>Course Thumbnail<sup className='text-red-500'>*</sup></p>
-            <label htmlFor='courseImage' className='h-48 bg-richblack-700 rounded-md border-1 border-richblack-600 cursor-pointer'>
-                <div className='flex flex-col justify-center items-center h-full'>
-                    {
-                        !previewUrl ? (
-                            <>
-                                <div className='w-fit h-fit p-2 rounded-full bg-pure-greys-800 '>
-                                    <FiUploadCloud className='text-yellow-50' />
-                                </div>
-                                <p className='text-xs font-inter text-richblack-200 mt-5'>Drag and drop an image, or <span className='text-yellow-50'>Browse</span><br/>
-                                    Max 6MB each (12MB for videos)</p>
-
-                                <div className='text-xs text-richblack-200 font-inter flex gap-10 mt-5'>
-                                    <p>Aspect ratio 16:9</p>
-                                    <p>Recommended size 1024x576</p>
-                                </div>
-                            </>
-                        )
-                        :
-                        (
-                            <img src={previewUrl} alt='preview' loading='lazy' className= 'overflow-hidden object-cover' />
-                        )
-                    }
-                </div>
-            </label>
-            <input
-                type="file"
-                id="courseImage"
-                accept="image/*"
-                {...register("courseImage", { required: !editCourse})}
-                className='hidden'
-            />
-        </div>
+        <Upload
+            name="courseImage"
+            label="Course Thumbnail"
+            register={register}
+            setValue={setValue}
+            errors={errors}
+            editData={editCourse ? course?.thumbnail : null}
+        />
         
         {/* Course Benefits */}
         <div className='flex flex-col gap-1 p-2'>

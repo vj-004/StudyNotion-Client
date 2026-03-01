@@ -82,11 +82,11 @@ const MyProfile = () => {
                     <div className='flex w-full mt-4'>
                         <div className='w-[50%] flex flex-col gap-2'>
                             <p className='text-sm font-inter text-richblack-600'>Gender</p>
-                            <p className='text-sm font-inter text-richblack-5'>{user.additionalDetails.gender ? user.additionalDetails.gender : "Add Gender"}</p>
+                            <p className='text-sm font-inter text-richblack-5'>{user.additionalDetails.gender ? user.additionalDetails.gender : <span className='text-red-500'>Please update gender</span>}</p>
                         </div>
                         <div className='w-[50%] flex flex-col gap-2'>
                             <p className='text-sm font-inter text-richblack-600'>Date Of Birth</p>
-                            <p className='text-sm font-inter text-richblack-5'>{user.additionalDetails.dateOfBirth ? user.additionalDetails.dateOfBirth : <span className='text-red-500'>Please update contact number</span>}</p>
+                            <p className='text-sm font-inter text-richblack-5'>{user.additionalDetails.dateOfBirth ? user.additionalDetails.dateOfBirth : <span className='text-red-500'>Please update date of birth</span>}</p>
                         </div>
                     </div>
                 </div>

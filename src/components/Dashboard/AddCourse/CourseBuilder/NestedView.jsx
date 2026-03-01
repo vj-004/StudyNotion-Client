@@ -8,6 +8,7 @@ import { deleteSection, deleteSubSection } from '../../../../services/operations
 import { setCourse } from '../../../../reducers/slices/courseSlice';
 import { FaPlus } from "react-icons/fa";
 import LectureModal from './LectureModal';
+import { MdOndemandVideo } from "react-icons/md";
 
 const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
 
@@ -103,7 +104,7 @@ const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
                         setViewLecture(subSection);
                         setAddLecture(null);
                       }}>
-                        <RxDropdownMenu/>
+                        <MdOndemandVideo />
                         <p>{subSection.title}</p>
                       </div>
 

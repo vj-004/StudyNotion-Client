@@ -1,15 +1,16 @@
 import toast from "react-hot-toast";
 import { apiConnecter } from "../apiConnector";
 import { categories, courseEndpoints } from "../apis";
+import { setToken } from "../../reducers/slices/authSlice";
 
 
 export const fetchAllCategories = async () => {
     let result = [];
     try{
 
-        const response = await apiConnecter("GET", categories.CATEGORIES_API,);
+        const response = await apiConnecter("GET", categories.CATEGORIES_API);
         console.log('All categories repsonse...', response.status);
-        if(!response.data.success){
+        if(!response.   data.success){
             throw new Error("Error in response of fecthing all categories");
         }
 
@@ -23,7 +24,7 @@ export const fetchAllCategories = async () => {
     return result;
 }
 
-export const getDraftCourse = async () => {
+export const getDraftCourse = async (navigate, dispatch) => {
     try{
 
         const response = await apiConnecter("GET", courseEndpoints.GET_DRAFT_COURSE);
@@ -31,17 +32,27 @@ export const getDraftCourse = async () => {
         return response.data.data;
 
     }catch(error){
-        console.log('Error in getting draft course', error);
-        // toast.error(error.message)
+        if(error.response.data.success === false){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+        }
+        else{
+            toast.error(error.response.data.message);
+        }
+        console.log('Error in getting draft course', error.response.data.message);
+        
     }
 }
 
 export const editCourseDetails = async (data) => {
-
+    console.log('trying to editcourse');
     try{
 
-        const formData = {};
-        const response = await apiConnecter("POST", courseEndpoints.EDIT_COURSE_API,formData);         
+        for (let [key, value] of data.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+        const response = await apiConnecter("POST", courseEndpoints.EDIT_COURSE_API,data);         
         
         // console.log('This is the response of edit course API is');
 
@@ -212,4 +223,84 @@ export const editSubSection = async (data, token) => {
         toast.error(err.data.message);
     }
 
+}
+
+
+export const instructorCourses = async () => {
+
+    try{
+
+        const response = await apiConnecter("GET", courseEndpoints.GET_ALL_INSTRUCTOR_COURSES_API);
+
+        if(!response.data.success){
+            throw new Error("Pleae login again");
+        }
+        console.log('response of getting all lectures works');
+        return response?.data?.data;
+
+    }catch(err){
+        toast.error("Please login again");
+        console.log('Error in getting instructor courses');
+    }
+
+}
+
+export const deleteCourse = async (courseId, token) => {
+
+    try{
+
+        const response = await apiConnecter("DELETE", courseEndpoints.DELETE_COURSE_API,{courseId},{
+           Authorization: `Bearer ${token}`, 
+        });
+
+        console.log('The response for deleting the course is ', response);
+        toast.success("Course deleted successfully");
+
+    }catch(error){
+        throw new Error("Please login later");
+        console.log('Error in deleting the course');
+    }
+
+    return;
+
+} 
+
+export const getAllCourseDetails = async (courseId) => {
+    try{
+
+        const response = await apiConnecter("POST", courseEndpoints.GET_FULL_COURSE_DETAILS_AUTHENTICATED,{courseId});
+
+        console.log('course details repsonse...', response);
+        return response.data.data;
+
+    }catch(error){
+        if(error.response.data.success === false){
+            toast.error("Please login again");
+        }
+        else{
+            toast.error(error.response.data.message);
+        }
+        console.log('Error in getting draft course', error.response.data.message);
+        
+    }
+}
+
+export const getCategoryCourses = async (categoryId) => {
+    try{
+
+        const response = await apiConnecter("POST", courseEndpoints.GET_COURSES_BY_CATEGORY,{categoryId});
+
+        console.log('all courses by category repsonse...', response);
+        return response.data.data;
+
+    }catch(error){
+        if(error.response.data.success === false){
+            toast.error("Please login again");
+        }
+        else{
+            toast.error(error.response.data.message);
+        }
+        console.log('Error in getting courses based on category', error.response.data.message);
+        
+    }
 }

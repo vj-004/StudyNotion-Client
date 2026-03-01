@@ -35,7 +35,6 @@ const CourseBuilder = () => {
       return;
     }
     dispatch(setStep(3));
-
   }
 
   const goBack  = () => {
@@ -81,7 +80,7 @@ const CourseBuilder = () => {
             : content
         )
       };
-
+      
       result = updatedCourse;
 
     }
@@ -90,7 +89,7 @@ const CourseBuilder = () => {
       dispatch(setCourse(result));
       setEditSectionName(null);
     }
-
+    setValue("sectionName", "");
     setLoading(false); 
 
   }
@@ -145,7 +144,9 @@ const CourseBuilder = () => {
         <button className='bg-richblack-700 p-2 px-8 rounded-md font-inter font-medium text-base shadow-md shadow-richblack-200' onClick={() => goBack()}>
           Back
         </button>
-        <CustomButton active={true} arrow={true} text={"Next"} dest={"#"} onClick={() => goNext()} />
+        <button type='submit' onClick={() => goNext()} className='px-8  bg-yellow-50 text-richblack-900 rounded-md font-inter font-medium text-base flex gap-1 justify-center items-center shadow-md shadow-richblack-200'>
+          Next
+        </button>
       </div>
 
     </div>
