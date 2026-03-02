@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 import AddCourse from "./components/Dashboard/AddCourse/AddCourse";
 import MyCourses from "./components/Dashboard/MyCourses/MyCourses";
 import EditCourse from "./components/Dashboard/EditCourse/EditCourse";
-import Catalog from "./components/Catalog/Catalog";
+import Catalog from "./components/Explore/Catalog";
 import CourseDetails from "./pages/CourseDetails";
 
 
@@ -52,7 +52,6 @@ function App() {
           <Route path="verify-email" element={<VerifyEmail/>}/>
           <Route path="/about" element={<AboutUs/>} />
           <Route path="/contact" element={<ContactUs/>}/>
-          <Route path="/catalog/:catalogName" element={<Catalog/>} />
           <Route path="/courses/:courseId" element={<CourseDetails/>} />
           <Route element={<PrivateRoute>
               <Dashboard/>
@@ -67,6 +66,8 @@ function App() {
                 <>
                   <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
                   <Route path="/dashboard/cart" element={<Cart/>}/>
+                  <Route path="/explore/:catalogName" element={<Catalog/>} />
+                  <Route path="/explore" element={<Catalog/>} />
                 </>
               )
             }

@@ -21,62 +21,76 @@ const loadScript = (src) => {
     })
 }
 
-// export const buyCourse = async (courses, token, userDetails, navigate, dispatch) => {
+export const buyCourse = async (courses, token, userDetails, navigate, dispatch) => {
 
-//     const toastId = toast.loading("Loading...");
-//     try{
+    const toastId = toast.loading("Loading...");
+    try{
 
-//         const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
 
-//         if(!res){
-//             toast.error("Razorpay SDK failed to load");
-//             return;
-//         }
+        if(!res){
+            toast.error("Razorpay SDK failed to load");
+            return;
+        }
 
-//         // initiate the order
-//         const orderResponse = await apiConnecter("POST", COURSE_PAYMENT_API, {courses}, 
-//         {
-//             Authorization: `Bearer ${token}`,
-//         });
+        // initiate the order
+        const orderResponse = await apiConnecter("POST", COURSE_PAYMENT_API, {courses}, 
+        {
+            Authorization: `Bearer ${token}`,
+        });
 
-//         if(!orderResponse.data.success){
-//             throw new Error(orderResponse.data.message);
-//         }
+        if(!orderResponse.data.success){
+            throw new Error(orderResponse.data.message);
+        }
 
-//         console.log('Razorpay key is: ', process.env.REACT_APP_RAZORPAY_KEY);
-//         // options creater
-//         const options = {
-//             key: process.env.REACT_APP_RAZORPAY_KEY, // Replace with your Razorpay key_id
-//             amount: `${orderResponse.data.data.amount}`, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-//             currency: orderResponse.data.data.currency,
-//             name: 'StudyNotion',
-//             description: 'Thank you for purchasing the course',
-//             image: RazorPayLogo,
-//             order_id: orderResponse.data.data.id, // This is the order_id created in the backend
-//             "handler": function (response){
-//                 sendPaymentSuccessEmail(response, orderResponse.data.data.amount, token);
-//                 //verify payment
-//                 verifyPayment({...response, courses}, token, navigate, dispatch);
-//                 alert(response.razorpay_payment_id);
-//                 alert(response.razorpay_order_id);
-//                 alert(response.razorpay_signature)
-//             },
-//             "prefill": {
-//                 // here we need the name of the user who is making the payment either as an input parameter or something else
-//                 "name": `${userDetails.firstName}`,
-//                 "email": `${userDetails.email}`,
-//                 "contact": userDetails.phoneNumber
-//             },
-//             "notes": {
-//                 "address": "Razorpay Corporate Office"
-//             },
-//             "theme": {
-//                 "color": "#3399cc"
-//             }
-//         };
+        console.log('Razorpay key is: ', process.env.REACT_APP_RAZORPAY_KEY);
+        // options creater
+        const options = {
+            key: process.env.REACT_APP_RAZORPAY_KEY, // Replace with your Razorpay key_id
+            amount: `${orderResponse.data.data.amount}`, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: orderResponse.data.data.currency,
+            name: 'CourseX',
+            description: 'Thank you for purchasing the course',
+            image: RazorPayLogo,
+            order_id: orderResponse.data.data.id, // This is the order_id created in the backend
+            "handler": function (response){
+                sendPaymentSuccessEmail(response, orderResponse.data.data.amount, token);
+                //verify payment
+                verifyPayment({...response, courses}, token, navigate, dispatch);
+                alert(response.razorpay_payment_id);
+                alert(response.razorpay_order_id);
+                alert(response.razorpay_signature)
+            },
+            "prefill": {
+                // here we need the name of the user who is making the payment either as an input parameter or something else
+                "name": `${userDetails.firstName}`,
+                "email": `${userDetails.email}`,
+                "contact": userDetails.phoneNumber
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
 
-//     }catch(error){
+    }catch(error){
+        console.log("Payment api error: ", error);
+        toast.error("Could not make payment");
+    }
 
-//     }
+    toast.dismiss(toastId);
 
-// }
+}
+
+async function sendPaymentSuccessEmail(response, amount, token) {
+    try{
+
+        
+
+    }
+    catch(error){
+
+    }
+}

@@ -15,7 +15,7 @@ const Signup = () => {
         <div className='flex gap-32'>
             <div className='flex flex-col gap-4'>
                 <div className='flex flex-col gap-4'>
-                    <h1 className='text-3xl font-inter text-richblack-5'>Join the millions learning to<br/> code with StudyNotion for<br/> free</h1>
+                    <h1 className='text-3xl font-inter text-richblack-5'>Join the millions learning to<br/> code with CourseX for<br/> free</h1>
                     <p className='text-richblack-100 text-lg font-inter '>Build skills for today, tomorrow, and beyond. <span className='text-base font-bold font-edu-sa text-blue-100'>Education <br/> to future-proof your career.</span></p>
                 </div>
 

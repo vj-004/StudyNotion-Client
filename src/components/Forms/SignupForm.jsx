@@ -22,6 +22,11 @@ const SignupForm = ({accType}) => {
 
     const handleSignup = (e) => {
         e.preventDefault();
+
+        if(!signupData.firstName || !signupData.lastName || !signupData.password || !signupData.confirmPassword || !signupData.email){
+            toast.error("Please enter all the field");
+            return
+        }
         
         if (signupData.password !== signupData.confirmPassword) {
             toast.error("Passwords Do Not Match")

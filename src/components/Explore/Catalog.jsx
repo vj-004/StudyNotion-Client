@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom'
-import { getCategoryCourses } from '../../services/operations/courseDetailsAPI';
+import { getAllYtCourses, getCategoryCourses } from '../../services/operations/courseDetailsAPI';
 import { categories } from '../../services/apis';
 import { apiConnecter } from '../../services/apiConnector';
 import CourseCard from './CourseCard';
@@ -14,7 +14,8 @@ const Catalog = () => {
   const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
   const [category, setCategory] = useState({});
-  // console.log('catalog name is ', catalogName);
+  const [ytCourses, setYtCourses] = useState([]);
+
   useEffect(() => {
 
     const getCoursesByCategory = async () => {
@@ -33,16 +34,72 @@ const Catalog = () => {
       setLoading(false);
     }
 
-    getCoursesByCategory();
+    const getYtCourses = async () => {
+      setLoading(true);
+
+      try{
+
+        const result = await getAllYtCourses();
+        console.log('result: ',result);
+        setYtCourses(result);
+
+      }catch(error){
+        console.log('Error in getting all youtube courses', error);
+      }
+      
+
+      setLoading(false);
+    }
+
+    if(catalogName !== undefined){
+      getCoursesByCategory();
+    }
+
+    if(catalogName === undefined){
+      getYtCourses();
+    }
 
   }, [catalogName]);
+
+
+
+  if(catalogName === undefined){
+
+    
+
+
+    return (
+      <div className='w-full flex flex-col items-center'>
+        <div className='bg-richblack-800 w-full  items-center flex justify-center'>
+          <div className='w-[80%] mt-6 p-6 mb-6'>
+            <p className='text-richblack-300 font-inter text-sm'>Home / Explore / <span className='text-yellow-25'>{catalogName}</span></p>
+            <p className='text-richblack-5 font-inter font-medium text-3xl mt-4'>{category.name}</p>
+            <p className='text-sm text-richblack-200 font-inter mt-2'>{category.description}</p>
+          </div>
+          
+        </div>
+        <div className='w-full  items-center flex justify-center gap-5 flex-col'>
+
+          {
+            ytCourses.map((course, index) => (
+              <div key={index}>
+                <p className='text-white text-3xl'>Title: {course.title}</p>
+              </div>
+            ))
+          }
+
+        </div>
+      </div>
+    )
+
+  }
     
 
   return (
     <div className='flex flex-col w-full items-center'>
       <div className='bg-richblack-800 w-full  items-center flex justify-center'>
         <div className='w-[80%] mt-6 p-6 mb-6'>
-          <p className='text-richblack-300 font-inter text-sm'>Home / Catalog / <span className='text-yellow-50'>{catalogName.split("-").join(" ")}</span></p>
+          <p className='text-richblack-300 font-inter text-sm'>Home / Explore / <span className='text-yellow-25'>{catalogName}</span></p>
           <p className='text-richblack-5 font-inter font-medium text-3xl mt-4'>{category.name}</p>
           <p className='text-sm text-richblack-200 font-inter mt-2'>{category.description}</p>
         </div>

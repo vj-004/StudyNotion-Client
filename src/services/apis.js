@@ -42,7 +42,9 @@ export const courseEndpoints = {
   CREATE_RATING_API: BASE_URL + "/course/createRating",
   GET_DRAFT_COURSE : BASE_URL + "/course/getDraftCourse",
   EDIT_COURSE_API : BASE_URL + '/course/edit-course',
-  GET_COURSES_BY_CATEGORY : BASE_URL + '/course/category-courses'
+  GET_COURSES_BY_CATEGORY : BASE_URL + '/course/category-courses',
+  GET_YT_COURSES: BASE_URL + '/course/getAllYtCourses',
+  CREATE_YT_COURSE: BASE_URL + '/course/createYtCourse'
 }
 
 // RATINGS AND REVIEWS

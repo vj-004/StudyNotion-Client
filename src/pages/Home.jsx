@@ -148,7 +148,7 @@ const Home = () => {
                 <div className='flex justify-between w-full'>
                     <p className='w-[45%] font-semibold font-inter text-4xl text-richblack-900'>Get the skills you need for a <HighlightText text={" job that is in demand."} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/> </p>
                     <div className='flex flex-col gap-3  w-[40%] text-base font-inter text-richblack-700'>
-                        The modern StudyNotion is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
+                        The modern CourseX is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
                         <div className='w-[28%] mt-8'>
                             <CustomButton text={"Learn More"} active={true} arrow={false} dest={"/login"}  />
                         </div>    
@@ -168,7 +168,7 @@ const Home = () => {
                 <img src={Instructor} alt='image1' loading='lazy' className='shadow-[-18px_-18px_0px_-1px_rgba(255,255,255,1)]'/>
                 <div className='flex flex-col gap-8 justify-center w-[50%]'>
                     <p className='text-4xl font-semibold font-inter text-richblack-5'>Become an <br /><HighlightText text={" instructor"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/></p>
-                    <p className='text-base font-inter text-richblack-300 w-[70%] mb-10'>Instructors from around the world teach millions of students on StudyNotion. We provide the tools and skills to teach what you love.</p>
+                    <p className='text-base font-inter text-richblack-300 w-[70%] mb-10'>Instructors from around the world teach millions of students on CourseX. We provide the tools and skills to teach what you love.</p>
                     <div className='w-fit'>
                         <CustomButton text={"Start Teaching Today"} arrow={true} active={true} dest={'/login'}/>
                     </div>

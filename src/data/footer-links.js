@@ -48,7 +48,7 @@ export const FooterLinks = [
         {title: "Interview prep", link: "/interview-prep"},
         {title: "Professional certification", link: "/professional-certification"},
         {title: "-", link: "/hi"},
-        {title: "Full Catalog", link: "/full-catalog"},
+        {title: "Explore", link: "/explore"},
         {title: "Beta Content", link: "/beta-content"}
     ]
   }

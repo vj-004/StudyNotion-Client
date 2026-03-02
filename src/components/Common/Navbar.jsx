@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import Logo from '../../assets/Logo/Logo-Full-Light.png'
-import {NavbarLinks} from '../../data/navbar-links';
+import Logo from '../../assets/Logo/courseX_logo.png'
+import {InstructorNavbarLinks, StudentNavbarLinks} from '../../data/navbar-links';
 import { matchPath } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import ProfileDropDown from '../Auth/ProfileDropDown';
 import { apiConnecter } from '../../services/apiConnector';
 import { categories } from '../../services/apis';
-import { CiCircleChevDown } from "react-icons/ci";
 
 
 const Navbar = () => {
@@ -43,54 +42,34 @@ const Navbar = () => {
   return (
     <div className='flex h-14 items-center justify-center border-b-[1px] border-b-richblack-700 bg-richblack-800'>
       <div className='w-11/12 flex max-w-maxContent items-center justify-between'>
+        
         <Link to={'/'}>
-          <img src={Logo} width={160} height={32} alt='logo' loading='lazy'/>
+          <img src={Logo} width={150} height={40} alt='logo' loading='lazy' className='mt-3'/>
         </Link>
 
         <nav>
           <ul className='flex gap-x-6 text-richblack-25'>
             {
-              NavbarLinks.map((link,index) => (
-                <li key={index} className='hover:text-richblack-5'>
-                  {
-                    link.title === 'Catalog' ? (
-                      <div className='text-richblack-25 group cursor-pointer relative flex items-center gap-2 justify-center'>
-                        <p className='font-semibold'>{link.title}</p>
-                        <CiCircleChevDown />
-                        <div className='absolute top-[125%] z-10 invisible opacity-0 -left-[200%] flex flex-col rounded-md bg-richblack-900 p-4 text-richblack-25
-                         transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:w-[300px] shadow-lg border border-richblack-700'>
-                          {
-                            subLinks.length > 0 ? subLinks.map((obj,index) => (
-                              <React.Fragment key={index}>
-                                <Link
-                                  to={`/catalog/${obj.name.split(" ").join("-")}`}
-                                  className='flex justify-center items-center px-3 py-2 rounded transition-all duration-150 hover:underline hover:scale-105'
-                                >
-                                  {obj.name}
-                                </Link>
-                                {index !== subLinks.length - 1 && (
-                                  <div className='border-b border-richblack-600 mx-2'></div>
-                                )}
-                              </React.Fragment>
-                            ))
-                            :
-                            (
-                              <div className='text-richblack-400'>
-                                Categories need to be added
-                              </div>
-                            )
-                          }
-                          <div className='absolute h-6 w-6 rotate-45 rounded bg-richblack-900 -top-[2%] left-[73%] border-l border-t border-richblack-700'></div>
-                        </div>
-                      </div>
-                    ) : (
-                      <Link to={link?.path} >
-                        <p className={`${matchPath({path:link?.path}, location.pathname) ? "text-yellow-25" : "text-richblack-25 hover:scale-95"} transition-all duration-200 font-semibold`}>{link.title}</p>
-                      </Link>
-                    )
-                  }
-                </li>
-              ))
+              user && user?.accountType === 'student' && (
+                StudentNavbarLinks.map((link,index) => (
+                  <li key={index} className='hover:text-richblack-5'>
+                    <Link to={link?.path} >
+                      <p className={`${matchPath({path:link?.path}, location.pathname) ? "text-yellow-25" : "text-richblack-25 hover:scale-95"} transition-all duration-200 font-semibold`}>{link.title}</p>
+                    </Link>
+                  </li>
+                ))
+              )
+            }
+            {
+              user && user?.accountType === 'instructor' && (
+                InstructorNavbarLinks.map((link,index) => (
+                  <li key={index} className='hover:text-richblack-5'>
+                    <Link to={link?.path} >
+                      <p className={`${matchPath({path:link?.path}, location.pathname) ? "text-yellow-25" : "text-richblack-25 hover:scale-95"} transition-all duration-200 font-semibold`}>{link.title}</p>
+                    </Link>
+                  </li>
+                ))
+              )
             }
           </ul>
         </nav>

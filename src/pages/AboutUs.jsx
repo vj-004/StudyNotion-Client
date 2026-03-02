@@ -32,7 +32,7 @@ const AboutUs = () => {
                 <p className='text-base font-inter text-richblack-200'>About Us</p>
                 <p className='text-4xl font-inter font-semibold text-richblack-5 text-center'>Driving Innovation in Online Education for a<br/><HighlightText text={"Brighter Future"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/></p>
                 <p className='text-base font-medium font-inter text-richblack-300 text-center'>
-                    Studynotion is at the forefront of driving innovation in online education. We're passionate about creating a<br/> brighter future by offering cutting-edge courses, leveraging emerging technologies, and nurturing a<br/>vibrant learning community.
+                    CourseX is at the forefront of driving innovation in online education. We're passionate about creating a<br/> brighter future by offering cutting-edge courses, leveraging emerging technologies, and nurturing a<br/>vibrant learning community.
                 </p>
             </div>
             <div className='w-full bg-richblack-800 mx-auto flex justify-center items-center flex-col relative h-[300px]'>
@@ -101,7 +101,7 @@ const AboutUs = () => {
                     <div className='flex flex-col gap-3 mb-7 w-[600px] mr-7'>
                         <h1 className='text-4xl font-inter font-semibold text-richblack-5'>World-Class Learning for <HighlightText text={"Anyone, Anywhere"} gradient={"bg-gradient-to-r from-[#5433FF] via-[#20BDFF] to-[#A5FECB]"}/></h1>
                         <div className='flex flex-col gap-10'>
-                            <p className='font-medium font-inter text-richblack-300 text-base'>Studynotion partners with more than 275+ leading universities and companies to bring flexible, affordable, job-relevant online learning to individuals and organizations worldwide.</p>
+                            <p className='font-medium font-inter text-richblack-300 text-base'>CourseX partners with more than 275+ leading universities and companies to bring flexible, affordable, job-relevant online learning to individuals and organizations worldwide.</p>
                             <div className='w-fit'>
                                 <CustomButton text={"Learn More"} active={true} arrow={false} dest={'/login'}/>
                             </div>

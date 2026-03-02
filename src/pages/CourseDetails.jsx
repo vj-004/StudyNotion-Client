@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { buyCourse } from '../services/operations/studentFeaturesAPI';
+// import { buyCourse } from '../services/operations/studentFeaturesAPI';
 
 const CourseDetails = () => {
 

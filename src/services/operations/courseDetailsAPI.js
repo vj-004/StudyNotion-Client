@@ -296,6 +296,7 @@ export const getCategoryCourses = async (categoryId) => {
     }catch(error){
         if(error.response.data.success === false){
             toast.error("Please login again");
+            
         }
         else{
             toast.error(error.response.data.message);
@@ -303,4 +304,21 @@ export const getCategoryCourses = async (categoryId) => {
         console.log('Error in getting courses based on category', error.response.data.message);
         
     }
+}
+
+export const getAllYtCourses = async () => {
+
+
+    try{
+
+        const response = await apiConnecter("GET", courseEndpoints.GET_YT_COURSES);
+        return response.data.data;
+
+
+    }
+    catch(error){
+        console.log('Error in getting youtube courses: ', error);
+    }
+
+
 }

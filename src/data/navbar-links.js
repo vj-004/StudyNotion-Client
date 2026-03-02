@@ -1,11 +1,26 @@
-export const NavbarLinks = [
+export const StudentNavbarLinks = [
   {
     title: "Home",
     path: "/",
   },
   {
-    title: "Catalog",
-    // path: '/catalog',
+    title: "Explore",
+    path: '/explore',
+  },
+  {
+    title: "About Us",
+    path: "/about",
+  },
+  {
+    title: "Contact Us",
+    path: "/contact",
+  },
+];
+
+export const InstructorNavbarLinks = [
+  {
+    title: "Home",
+    path: "/",
   },
   {
     title: "About Us",

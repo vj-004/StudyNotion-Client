@@ -1,5 +1,5 @@
 import React from 'react'
-import lightLogo from '../../assets/Logo/Logo-Full-Light.png'; 
+import Logo from '../../assets/Logo/courseX_logo.png'; 
 import ListHeading from './ListHeading';
 import ListItem from './ListItem';
 import {FooterLinks} from '../../data/footer-links';
@@ -13,7 +13,7 @@ const Footer = () => {
           {/* Section left */}
           <div className='flex flex-row w-[45%] justify-between'>
             <div className='flex flex-col gap-3'>
-              <img src={lightLogo} alt='Logo' loading='lazy' width={"160"}/>
+              <img src={Logo} alt='Logo' loading='lazy' width={"160"}/>
               <ListHeading text={"Company"} />
               <ListItem text={"About"} />
               <ListItem text={"Affiliates"} />
@@ -87,7 +87,7 @@ const Footer = () => {
             <div className='h-[70%] w-[2px] bg-richblack-700'></div>
             <p className='text-sm font-inter text-richblack-300'>Terms</p>
           </div>
-          <p className='text-sm font-inter text-richblack-300 '>Made by Vayun Jain @ 2025 StudyNotion</p>
+          <p className='text-sm font-inter text-richblack-300 '>Made by Vayun Jain @ 2026 CourseX</p>
         </div>
 
     </div>
