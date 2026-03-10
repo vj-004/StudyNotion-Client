@@ -58,9 +58,7 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch)
                 sendPaymentSuccessEmail(response, orderResponse.data.data.amount, token);
                 //verify payment
                 verifyPayment({...response, courses}, token, navigate, dispatch);
-                alert(response.razorpay_payment_id);
-                alert(response.razorpay_order_id);
-                alert(response.razorpay_signature)
+                // toast.loading("Verifying Payment");
             },
             "prefill": {
                 // here we need the name of the user who is making the payment either as an input parameter or something else
