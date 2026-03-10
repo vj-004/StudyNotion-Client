@@ -41,7 +41,7 @@ const Settings = () => {
   return (
     <div className='p-6 w-full'>
         <div className='flex flex-col gap-4'>
-            <p className='text-sm font-inter text-richblack-300'>{"< " + "Back"}</p>
+            <p className='text-sm font-inter text-richblack-300'>{"Settings"}</p>
             <h1 className='font-medium text-3xl font-inter text-richblack-5'>Edit Profile</h1>
             <div className='flex justify-between px-12 py-12 pb-4 w-10/12 flex-col gap-4'>
                     {/* Change Profile */}

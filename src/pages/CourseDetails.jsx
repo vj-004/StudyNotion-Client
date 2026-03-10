@@ -1,15 +1,21 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { buyCourse } from '../services/operations/studentFeaturesAPI';
 // import { buyCourse } from '../services/operations/studentFeaturesAPI';
 
 const CourseDetails = () => {
 
     const {token} = useSelector((state) => state.auth);
-
+    const {user} = useSelector((state) => state.profile);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const {courseId} = useParams();
+    // console.log('user: ',user);
     const handleBuyCourse = async () => {
-
+        console.log('courseid: ', courseId);
         if(token){
-            // buyCourse();
+            buyCourse(token, [courseId], user, navigate, dispatch);
             return;
         }
 

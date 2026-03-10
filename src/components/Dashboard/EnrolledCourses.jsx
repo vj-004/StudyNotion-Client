@@ -5,8 +5,9 @@ const tabs = ["All", "Pending", "Completed"];
 const EnrolledCourses = () => {
 
   const [coursesType, setCoursesType] = useState("All");
-  const [enrolledCourses, setenrolledCourses] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
+  
 
   return (
     <div className='p-6 w-full'>

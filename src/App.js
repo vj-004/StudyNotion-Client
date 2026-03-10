@@ -66,7 +66,6 @@ function App() {
                 <>
                   <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
                   <Route path="/dashboard/cart" element={<Cart/>}/>
-                  <Route path="/explore/:catalogName" element={<Catalog/>} />
                   <Route path="/explore" element={<Catalog/>} />
                 </>
               )

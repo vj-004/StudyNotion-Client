@@ -25,7 +25,7 @@ const Home = () => {
                 transition-all duration-200 hover:scale-95 w-fit shadow-md shadow-richblack-200'>
                     <div className='flex items-center gap-2 rounded-full px-10 py-[5px] transition-all duration-200
                     group-hover:bg-richblack-900 '>
-                        <p className=''>Become an Instructor</p>
+                        <p className=''>Become an Instructor / Student</p>
                         <FaArrowRight/>
                     </div>
                 </div>
