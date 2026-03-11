@@ -52,6 +52,7 @@ export default function Upload({
 
   useEffect(() => {
     setValue(name, selectedFile)
+    console.log('selectedFile');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile, setValue])
 

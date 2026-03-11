@@ -110,6 +110,7 @@ const CourseInfo = () => {
     }
 
     const onSubmit = async (data) => {
+
         if(editCourse && isFormUpdated()){
             console.log('something to edit');
             const currentValues = getValues();
@@ -171,7 +172,7 @@ const CourseInfo = () => {
             formData.append("whatYouWillLearn", data.courseBenefits);
             formData.append("category", data.courseCategory);
             formData.append("instructions", JSON.stringify(data.courseRequirements));
-            formData.append("thumbnail", data.courseImage[0]);
+            formData.append("thumbnail", data.courseImage);
             formData.append("status", "Draft");
 
             setLoading(true);
@@ -182,7 +183,7 @@ const CourseInfo = () => {
                     dispatch(setCourse(result));
                     dispatch(setStep(2));
                 }
-                console.log('Course added successfully');
+                console.log('Draft course created successfully');
             }catch(error){
                 console.log('Error in creating new course..', error);
             }

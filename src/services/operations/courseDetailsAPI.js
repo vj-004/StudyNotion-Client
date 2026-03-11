@@ -71,6 +71,7 @@ export const editCourseDetails = async (data) => {
 export const addCourseDetails = async (data,token) => {
     let result = null;
     const toastId = toast.loading("Loading...");
+    console.log('data in addCourseDetails function: ', data);
     try{   
 
         const response = await apiConnecter("POST", courseEndpoints.CREATE_COURSE_API,data,{

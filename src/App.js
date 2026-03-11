@@ -53,6 +53,7 @@ function App() {
           <Route path="/about" element={<AboutUs/>} />
           <Route path="/contact" element={<ContactUs/>}/>
           <Route path="/courses/:courseId" element={<CourseDetails/>} />
+          <Route path="/explore" element={<Catalog/>} />
           <Route element={<PrivateRoute>
               <Dashboard/>
             </PrivateRoute>}
@@ -66,7 +67,7 @@ function App() {
                 <>
                   <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
                   <Route path="/dashboard/cart" element={<Cart/>}/>
-                  <Route path="/explore" element={<Catalog/>} />
+                  
                 </>
               )
             }

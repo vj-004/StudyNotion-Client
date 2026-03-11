@@ -4,6 +4,7 @@ import { apiConnecter } from "../apiConnector";
 import RazorPayLogo from '../../assets/Logo/razorpaylogo.png'
 import { setPaymentLoading } from "../../reducers/slices/courseSlice";
 import { resetCart } from "../../reducers/slices/cartSlice";
+import { addCoursesToUser } from "../../reducers/slices/profileSlice";
 
 const {COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API} = studentEndpoints;
 
@@ -40,12 +41,19 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch)
             Authorization: `Bearer ${token}`,
         });
 
+        if(orderResponse.data.message === "Student already enrolled in a course"){
+            throw new Error("You have already enrolled in the course");
+        }
+
         if(!orderResponse.data.success){
             throw new Error(orderResponse.data.message);
         }
         // console.log(orderResponse);
         // console.log('Razorpay key is: ', process.env.REACT_APP_RAZORPAY_KEY);
         // options creater
+        const boughtCourses = orderResponse.data.courses;
+        // console.log('orderResponse: ', orderResponse);
+        // console.log('bought courses: ', boughtCourses);
         const options = {
             key: process.env.REACT_APP_RAZORPAY_KEY, // Replace with your Razorpay key_id
             amount: `${orderResponse.data.data.amount}`, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -57,7 +65,7 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch)
             "handler": function (response){
                 sendPaymentSuccessEmail(response, orderResponse.data.data.amount, token);
                 //verify payment
-                verifyPayment({...response, courses}, token, navigate, dispatch);
+                verifyPayment({...response, courses}, boughtCourses, token, navigate, dispatch);
                 // toast.loading("Verifying Payment");
             },
             "prefill": {
@@ -79,12 +87,15 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch)
         paymentObject.on("payment.failed", function(response){
             toast.error("Oops! Payment Failed");
         })
+        paymentObject.on("payment.success", function(response){
+            dispatch(addCoursesToUser(orderResponse.courses));
+        })
 
-        // toast.success("Payment Successfull");
+        toast.success("Payment Successfull");
 
     }catch(error){
-        console.log("Payment api error: ", error);
-        toast.error("Could not make payment");
+        console.log("Error in making buyCourse function",error);
+        toast.error(error.message);
     }
 
     toast.dismiss(toastId);
@@ -108,11 +119,11 @@ async function sendPaymentSuccessEmail(response, amount, token) {
     }
 }
 
-async function verifyPayment(bodyData, token, navigate, dispatch){
+async function verifyPayment(bodyData, boughtCourses, token, navigate, dispatch){
 
     const toastId = toast.loading("Verifying payment");
     dispatch(setPaymentLoading(true));
-    console.log('bodyData: ', bodyData);
+    // console.log('bodyData: ', bodyData);
     try{
 
         const response = await apiConnecter("POST", COURSE_VERIFY_API, bodyData, {
@@ -123,8 +134,10 @@ async function verifyPayment(bodyData, token, navigate, dispatch){
             throw new Error(response.data.message);
         }
         toast.success("Payment successful, you are now added to the course");
+        dispatch(addCoursesToUser(boughtCourses));
         navigate('/dashboard/enrolled-courses');
         dispatch(resetCart());
+        
 
     }catch(error){
         console.log('Error in verifying payment', error);
