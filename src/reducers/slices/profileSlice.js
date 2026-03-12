@@ -17,13 +17,18 @@ const profileSlice = createSlice({
             state.loading = value.payload;
         },
         addCoursesToUser: (state, action) => {
-        if (state.user) {
-            // action.payload should be the new array of courses
-            state.user.courses = [...state.user.courses, ...action.payload];
-        }
+            if (state.user) {
+                // action.payload should be the new array of courses
+                state.user.courses = [...state.user.courses, ...action.payload];
+            }
         },
+        addYtCoursesToUser: (state, action) => {
+            if(state.user){
+                state.user.ytCourses = [...state.user.ytCourses, ...action.payload]
+            }
+        }
     },
 });
 
-export const {setUser,setLoading,addCoursesToUser} = profileSlice.actions;
+export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser} = profileSlice.actions;
 export default profileSlice.reducer;

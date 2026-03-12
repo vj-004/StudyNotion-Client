@@ -4,6 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { buyCourse } from '../services/operations/studentFeaturesAPI';
 import { GrMoney } from "react-icons/gr";
 import { IoCartSharp } from "react-icons/io5";
+import { getAllCourseDetails } from '../services/operations/courseDetailsAPI';
+import { MdOutlineArrowForward } from "react-icons/md";
+import toast from 'react-hot-toast';
+import { addToCart } from '../reducers/slices/cartSlice';
 // import { buyCourse } from '../services/operations/studentFeaturesAPI';
 
 const CourseDetails = () => {
@@ -14,6 +18,10 @@ const CourseDetails = () => {
     const dispatch = useDispatch();
     const {courseId} = useParams();
     const [course, setCourse] = useState(null);
+    const [isCourseBought, setIsCourseBought] = useState(false);
+    const [confirmationModal, setConfirmationModal] = useState(null);
+
+    // console.log('user: ', user);
 
     useEffect(() => {
 
@@ -21,21 +29,68 @@ const CourseDetails = () => {
             for(const  crs of user.courses) {
                 if(crs._id === courseId){
                     setCourse(crs);
+                    setIsCourseBought(true);
                     return;
                 }
             }
 
+            const course = await getAllCourseDetails(courseId);
+            // console.log('course: ', course);
+            if(course){
+                setCourse(course);
+            }
         }
+
+
 
         getCourseDetail();
 
     }, [courseId, user.courses]);
-    // console.log('user: ',user);
+
+    const handleAddtoCart = async () => {
+
+        if(user && user.accountType === 'instructor'){
+            toast.error("You are not allowed to buy a course");
+            return;
+        }
+
+        if(token && course){
+            dispatch(addToCart(course));
+            return;
+        }
+
+        setConfirmationModal({
+            text1:"You are not Logged in",
+            text2:"Please login as a Student to purchase the course",
+            btn1Text:"Login",
+            btn2Text:"Cancel",
+            btn1Handler:() => navigate("/login"),
+            btn2Handler:()=> setConfirmationModal(null),
+        })
+
+
+    }
+
     const handleBuyCourse = async () => {
+        
+        if(user && user.accountType === 'instructor'){
+            toast.error("You are not allowed to buy a course");
+            return;
+        }
+        
         if(token){
             buyCourse(token, [courseId], user, navigate, dispatch);
             return;
         }
+
+        setConfirmationModal({
+            text1:"You are not Logged in",
+            text2:"Please login as a Student to purchase the course",
+            btn1Text:"Login",
+            btn2Text:"Cancel",
+            btn1Handler:() => navigate("/login"),
+            btn2Handler:()=>setConfirmationModal(null),
+        })
 
     }
 
@@ -49,50 +104,14 @@ const CourseDetails = () => {
 
     return (
         <div className="flex flex-col md:flex-row gap-12 max-w-7xl mx-auto py-12 px-6 w-full">
-            {/* Left: Thumbnail & Actions */}
-            <div className="w-[30%] flex flex-col items-center gap-6 bg-richblack-800 p-6 h-fit rounded-md">
-                <img
-                    src={course.thumbnail || "/default-course.png"}
-                    alt={course.courseName}
-                    className="rounded-xl shadow-lg w-full max-w-xs object-cover border border-richblack-700"
-                />
-                <div className="flex flex-col gap-4 w-full max-w-xs">
-                    <span className='font-bold text-richblack-5 mb-2 px-1 text-3xl font-inter'>Rs. {course.price}</span>
+            
 
-                    <button
-                    type="button"
-                    class="bg-richblack-700 text-center w-full rounded-2xl h-14 relative text-richblack-5 text-xl font-semibold border-4 border-richblack-700 group"
-                    onClick={() => handleBuyCourse}
-                    >
-                    <div
-                        class="bg-yellow-50 rounded-xl h-12 w-1/4 grid place-items-center absolute left-0 top-0 group-hover:w-full z-10 duration-500"
-                    >
-                    <span className='text-richblack-800'><GrMoney /></span>    
-                    </div>
-                    <p class="translate-x-4">Buy Now</p>
-                    </button>
-
-
-                    <button
-                    type="button"
-                    class="bg-richblack-700 text-center w-full rounded-2xl h-14 relative text-richblack-5 text-xl font-semibold border-4 border-richblack-700 group"
-                    >
-                    <div
-                        class="bg-yellow-50 rounded-xl h-12 w-1/4 grid place-items-center absolute right-0 top-0 group-hover:w-full z-10 duration-500"
-                    >
-                    <span className='text-richblack-800'><IoCartSharp /></span>    
-                    </div>
-                    <p class="-translate-x-4">Add to Cart</p>
-                    </button>
-                </div>
-            </div>
-
-            {/* Right: Details */}
+            {/* Left: Details */}
             <div className="flex-1 min-w-0 flex flex-col gap-8">
                 {/* Title & Instructor */}
                 <div>
                     <h1 className="text-3xl font-bold text-richblack-5 mb-2">{course.courseName}</h1>
-                    <p className="text-base text-richblack-300 mb-1">by <span className="font-semibold text-yellow-50">{course.instructor || "Unknown Instructor"}</span></p>
+                    <p className="text-base text-richblack-300 mb-1">by <span className="font-semibold text-yellow-50">{`${course?.instructor?.firstName} ${course?.instructor?.lastName}` || "Unknown Instructor"}</span></p>
                     {/* Reviews & Students Enrolled */}
                     <div className="flex gap-6 mt-2 mb-2">
                         <div className="flex items-center gap-1">
@@ -129,7 +148,15 @@ const CourseDetails = () => {
                 {/* Instructions */}
                 <div className="mb-2">
                     <h2 className="text-lg font-semibold text-richblack-5 mb-1">Instructions</h2>
-                    <p className="text-richblack-200 text-md">{course.instructions || "No instructions provided."}</p>
+                    {Array.isArray(course.instructions) && course.instructions.length > 0 ? (
+                        <ul className="list-disc list-inside text-richblack-200 text-md pl-4">
+                            {course.instructions.map((instruction, idx) => (
+                                <li key={idx} className='text-md'>{instruction}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-richblack-200 text-md">No instructions provided.</p>
+                    )}
                 </div>
 
                 {/* Course Content */}
@@ -139,6 +166,66 @@ const CourseDetails = () => {
                 </div>
 
             </div>
+            
+            {/* Right: Thumbnail & Actions */}
+            <div className="w-[30%] flex flex-col items-center gap-6 bg-richblack-800 p-6 h-fit rounded-md">
+                <img
+                    src={course.thumbnail || "/default-course.png"}
+                    alt={course.courseName}
+                    className="rounded-xl shadow-lg w-full max-w-xs object-cover border border-richblack-700"
+                />
+                <div className="flex flex-col gap-4 w-full max-w-xs">
+                    {
+                        !isCourseBought ? (
+                            <>
+                                <span className='font-bold text-richblack-5 mb-2 px-1 text-3xl font-inter'>Rs. {course.price}</span>
+
+                                <button
+                                className="bg-richblack-700 text-center w-full rounded-2xl h-14 relative text-richblack-5 text-xl font-semibold border-4 border-richblack-700 group"
+                                onClick={() => handleBuyCourse()}
+                                >
+                                <div
+                                    className="bg-yellow-50 rounded-xl h-12 w-1/4 grid place-items-center absolute left-0 top-0 group-hover:w-full z-10 duration-500"
+                                >
+                                <span className='text-richblack-800'><GrMoney /></span>    
+                                </div>
+                                <p className="translate-x-4">Buy Now</p>
+                                </button>
+
+
+                                <button
+                                type="button"
+                                className="bg-richblack-700 text-center w-full rounded-2xl h-14 relative text-richblack-5 text-xl font-semibold border-4 border-richblack-700 group"
+                                >
+                                <div
+                                    className="bg-yellow-50 rounded-xl h-12 w-1/4 grid place-items-center absolute right-0 top-0 group-hover:w-full z-10 duration-500"
+                                    onClick={() => handleAddtoCart()}
+                                >
+                                <span className='text-richblack-800'><IoCartSharp /></span>    
+                                </div>
+                                <p className="-translate-x-4">Add to Cart</p>
+                                </button>
+                            </>
+                        ) :
+                        (
+                            <>
+                                <button
+                                type="button"
+                                className="bg-richblack-700 text-center w-full rounded-2xl h-14 relative text-richblack-5 text-xl font-semibold border-4 border-richblack-700 group"
+                                >
+                                <div
+                                    className="bg-yellow-50 rounded-xl h-12 w-1/4 grid place-items-center absolute right-0 top-0 group-hover:w-full z-10 duration-500"
+                                >
+                                <span className='text-richblack-800'><MdOutlineArrowForward /></span>    
+                                </div>
+                                <p className="-translate-x-4">Go To Course</p>
+                                </button>
+                            </>
+                        )
+                    }
+                </div>
+            </div>
+
         </div>
     );
 }

@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getAllYtCourses, getCategoryCourses, fetchAllCategories } from '../../services/operations/courseDetailsAPI';
 import CourseCard from './CourseCard';
 import Logo from '../../assets/Logo/courseX_logo.png';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
@@ -15,10 +15,10 @@ const Catalog = () => {
   const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
   const [category, setCategory] = useState({});
-  const [ytCourses, setYtCourses] = useState([]);
+  const {user} = useSelector((state) => state.profile);
   const [allCategories, setAllCategories] = useState([]);
   const {token} = useSelector((state) => state.auth);
-
+  const navigate = useNavigate();
   // Fetch all categories for chips
   useEffect(() => {
     const fetchCategories = async () => {
@@ -49,22 +49,24 @@ const Catalog = () => {
     if (catalogName) getCoursesByCategory();
   }, [catalogName, allCategories]);
 
-  // Fetch YouTube courses
-  useEffect(() => {
-    const getYtCourses = async () => {
-      setLoading(true);
-      try {
-        const result = await getAllYtCourses();
-        setYtCourses(result || []);
-      } catch (error) {
-        setYtCourses([]);
-      }
-      setLoading(false);
-    };
-    getYtCourses();
-  }, []);
+  // // Fetch YouTube courses
+  // useEffect(() => {
+  //   const getYtCourses = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const result = await getAllYtCourses();
+  //       setYtCourses(result || []);
+  //     } catch (error) {
+  //       setYtCourses([]);
+  //     }
+  //     setLoading(false);
+  //   };
+  //   getYtCourses();
+  // }, []);
 
   // Handle chip click
+  
+  
   const handleCategoryClick = (cat) => {
     setCatalogName(cat.name.split(" ").join("-"));
   };
@@ -154,12 +156,13 @@ const Catalog = () => {
                 <div className="flex justify-center items-center h-32">
                   <AiOutlineLoading3Quarters className="animate-spin text-3xl text-yellow-25" />
                 </div>
-              ) : ytCourses.length > 0 ? (
+              ) : user.ytCourses.length > 0 ? (
                 <div className="flex flex-col gap-8 w-full">
-                  {ytCourses.map((course, index) => (
+                  {user.ytCourses.map((course, index) => (
                     <div
                       key={index}
                       className="w-full bg-richblack-700 px-3 py-2 rounded-lg flex flex-col shadow-md hover:shadow-yellow-25 transition-shadow duration-200 cursor-pointer"
+                      onClick={() => navigate(`/ytcourse/${course._id}`)}
                     >
                       <img src={Logo} alt="thumbnail" className="w-[60%] self-center mb-2" />
                       <p className="text-richblack-5 text-base font-semibold truncate">{course.title.length > 35 ? course.title.substring(0, 35).trim() + '...' : course.title}</p>

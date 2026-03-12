@@ -271,7 +271,7 @@ export const getAllCourseDetails = async (courseId) => {
 
         const response = await apiConnecter("POST", courseEndpoints.GET_FULL_COURSE_DETAILS_AUTHENTICATED,{courseId});
 
-        console.log('course details repsonse...', response);
+        // console.log('course details repsonse...', response);
         return response.data.data;
 
     }catch(error){

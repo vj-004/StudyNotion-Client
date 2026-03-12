@@ -79,8 +79,9 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch)
             },
             "theme": {
                 "color": "#3399cc"
-            }
+            },
         };
+
 
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
@@ -91,7 +92,7 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch)
             dispatch(addCoursesToUser(orderResponse.courses));
         })
 
-        toast.success("Payment Successfull");
+ 
 
     }catch(error){
         console.log("Error in making buyCourse function",error);
