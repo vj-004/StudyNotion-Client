@@ -24,6 +24,7 @@ import EditCourse from "./components/Dashboard/EditCourse/EditCourse";
 import Catalog from "./components/Explore/Catalog";
 import CourseDetails from "./pages/CourseDetails";
 import YtCourse from "./pages/YtCourse";
+import YtCourses from "./pages/YtCourses";
 
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
                   <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
                   <Route path="/dashboard/cart" element={<Cart/>}/>
                   <Route path="/ytcourse/:ytCourseId" element={<YtCourse/>} />
+                  <Route path="/dashboard/ytcourses" element={<YtCourses />} />
                   
                 </>
               )

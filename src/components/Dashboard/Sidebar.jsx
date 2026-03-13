@@ -7,6 +7,7 @@ import SidebarLink from './SidebarLink';
 import { useNavigate } from 'react-router-dom';
 import { VscSignOut } from 'react-icons/vsc';
 import ConfirmationModal from '../Common/ConfirmationModal';
+import { VscSettingsGear } from "react-icons/vsc";
 
 const Sidebar = () => {
 
@@ -46,7 +47,7 @@ const Sidebar = () => {
         </div>
 
         <div className='flex flex-col gap-1'>
-            <SidebarLink link={{name: "Settings", path: "/dashboard/settings", id: 7, icon: "VscSettingsGear"}}/>
+            <SidebarLink link={{name: "Settings", path: "/dashboard/settings", id: 7, icon: VscSettingsGear}}/>
             
             <button onClick={() => {
                 setConfirmationModal({

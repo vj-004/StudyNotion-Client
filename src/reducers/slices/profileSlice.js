@@ -26,9 +26,14 @@ const profileSlice = createSlice({
             if(state.user){
                 state.user.ytCourses = [...state.user.ytCourses, ...action.payload]
             }
+        },
+        addYtCourseProgreesToUser: (state, action) => {
+            if(state.user){
+                state.user.ytCourseProgress = [...state.user.ytCourseProgress, ...action.payload]
+            }
         }
     },
 });
 
-export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser} = profileSlice.actions;
+export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser,addYtCourseProgreesToUser} = profileSlice.actions;
 export default profileSlice.reducer;

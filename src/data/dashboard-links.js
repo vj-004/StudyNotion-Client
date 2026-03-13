@@ -1,44 +1,59 @@
+import { VscAccount } from "react-icons/vsc";
+import { VscDashboard } from "react-icons/vsc";
+import { VscVm } from "react-icons/vsc";
+import { VscAdd } from "react-icons/vsc";
+import { VscMortarBoard } from "react-icons/vsc";
+import { VscArchive } from "react-icons/vsc";
+import { VscCircuitBoard } from "react-icons/vsc";
+import { PiYoutubeLogo } from "react-icons/pi";
 
 export const sidebarLinks = [
   {
     id: 1,
     name: "My Profile",
     path: "/dashboard/my-profile",
-    icon: "VscAccount",
+    icon: VscAccount,
   },
   {
     id: 2,
     name: "Dashboard",
     path: "/dashboard/instructor",
     type: "instructor",
-    icon: "VscDashboard",
+    icon: VscDashboard,
   },
   {
     id: 3,
     name: "My Courses",
     path: "/dashboard/my-courses",
     type: "instructor",
-    icon: "VscVm",
+    icon: VscVm,
   },
   {
     id: 4,
     name: "Add Course",
     path: "/dashboard/add-course",
     type: "instructor",
-    icon: "VscAdd",
+    icon: VscAdd,
   },
   {
     id: 5,
     name: "Enrolled Courses",
     path: "/dashboard/enrolled-courses",
     type: "student",
-    icon: "VscMortarBoard",
+    icon: VscMortarBoard,
   },
   {
     id: 6,
     name: "Cart",
     path: "/dashboard/cart",
     type: "student",
-    icon: "VscArchive",
+    icon: VscArchive,
   },
+  {
+    id:7,
+    name: "YouTube Courses",
+    path: "/dashboard/ytcourses",
+    type: "student",
+    icon: PiYoutubeLogo
+  }
 ];

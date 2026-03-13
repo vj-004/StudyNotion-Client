@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { apiConnecter } from "../apiConnector";
 import { categories, courseEndpoints } from "../apis";
 import { setToken } from "../../reducers/slices/authSlice";
+import { addYtCourseProgreesToUser, addYtCoursesToUser } from "../../reducers/slices/profileSlice";
 
 
 export const fetchAllCategories = async () => {
@@ -71,14 +72,14 @@ export const editCourseDetails = async (data) => {
 export const addCourseDetails = async (data,token) => {
     let result = null;
     const toastId = toast.loading("Loading...");
-    console.log('data in addCourseDetails function: ', data);
+    // console.log('data in addCourseDetails function: ', data);
     try{   
 
         const response = await apiConnecter("POST", courseEndpoints.CREATE_COURSE_API,data,{
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
         });
-        console.log('CREATE COURSE API RESPONSE.....', response);
+        // console.log('CREATE COURSE API RESPONSE.....', response);
         if(!response?.data?.success){
             throw new Error("Could not add course details");
         }
@@ -92,6 +93,41 @@ export const addCourseDetails = async (data,token) => {
     }
     toast.dismiss(toastId);
     return result;
+}
+
+export const createYtCourse = async (data,token,dispatch) => {
+
+    const toastId = toast.loading("Loading...");
+    try{
+
+        if(!data){
+            toast.error("Please provide the data");
+            toast.dismiss(toastId);
+            return null;
+        }
+
+        const response = await apiConnecter("POST", courseEndpoints.CREATE_YT_COURSE, data, {
+            Authorization: `Bearer ${token}`,
+        });
+
+        // console.log('YtCouseCreated Response: ', response);
+        if(!response?.data?.success){
+            throw new Error("Create YtCourse response failed");
+        }
+        const result = response.data.data;
+        toast.success("Course Added Successfully");
+        dispatch(addYtCoursesToUser(result.ytCourses));
+        dispatch(addYtCourseProgreesToUser(result.ytCourseProgress));
+        return result;
+
+    }catch(error){
+        console.log('Error in createYtCourse', error);
+        toast.error("Error in Creating Youtube Course");
+    }
+
+    toast.dismiss(toastId);
+    return null;
+
 }
 
 export const createSection = async (data,token) => {

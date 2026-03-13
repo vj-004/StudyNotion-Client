@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -9,6 +10,11 @@ const YtCourse = () => {
     const [ytCourse, setYtCourse] = useState(null);
     const [selectedIdx, setSelectedIdx] = useState(0);
     const navigate = useNavigate();
+
+    if(!ytCourseId){
+        toast.error("There is not course with this id");
+        navigate('/dashboard');
+    }
 
     console.log('courseid: ', ytCourseId);
 
@@ -44,9 +50,10 @@ const YtCourse = () => {
         <div className="flex flex-col overflow-y-hidden w-full h-full bg-richblack-900">
             
             {/* <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 mb-4 text-center">{ytCourse.title}</h1> */}
-            <div className="flex justify-between h-[calc(100vh_-_56px)]">
+            <div className="flex flex-row justify-between h-[calc(100vh_-_56px)]">
                 {/* Main: Video Player */}
                 <div className="flex flex-col justify-center items-center  w-full h-full">
+                    <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 text-center mt-4">{ytCourse.title}</h1>
                     <main className="flex flex-col items-center p-8 animate-slidein-up w-[100%] h-full">
                     
                         <div className="w-full min-h-[420px] aspect-[16/8] rounded-xl overflow-hidden shadow-2xl border border-yellow-50 animate-fadein">
@@ -67,7 +74,7 @@ const YtCourse = () => {
                                 </div>
                             )}
                         </div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 mb-4 text-center mt-4">{ytCourse.title}</h1>
+                        
 
                     </main>
                 </div>
