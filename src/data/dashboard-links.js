@@ -43,17 +43,18 @@ export const sidebarLinks = [
     icon: VscMortarBoard,
   },
   {
-    id: 6,
-    name: "Cart",
-    path: "/dashboard/cart",
-    type: "student",
-    icon: VscArchive,
-  },
-  {
-    id:7,
+    id:6,
     name: "YouTube Courses",
     path: "/dashboard/ytcourses",
     type: "student",
     icon: PiYoutubeLogo
+  },
+  {
+    id: 7,
+    name: "Cart",
+    path: "/dashboard/cart",
+    type: "student",
+    icon: VscArchive,
   }
+  
 ];

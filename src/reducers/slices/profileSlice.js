@@ -24,12 +24,12 @@ const profileSlice = createSlice({
         },
         addYtCoursesToUser: (state, action) => {
             if(state.user){
-                state.user.ytCourses = [...state.user.ytCourses, ...action.payload]
+                state.user.ytCourses = [...state.user.ytCourses, action.payload]
             }
         },
         addYtCourseProgreesToUser: (state, action) => {
             if(state.user){
-                state.user.ytCourseProgress = [...state.user.ytCourseProgress, ...action.payload]
+                state.user.ytCourseProgress = [...state.user.ytCourseProgress, action.payload]
             }
         }
     },

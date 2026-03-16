@@ -69,7 +69,7 @@ function App() {
                 <>
                   <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
                   <Route path="/dashboard/cart" element={<Cart/>}/>
-                  <Route path="/ytcourse/:ytCourseId" element={<YtCourse/>} />
+                  <Route path="/ytcourse/:ytPlaylistId" element={<YtCourse/>} />
                   <Route path="/dashboard/ytcourses" element={<YtCourses />} />
                   
                 </>

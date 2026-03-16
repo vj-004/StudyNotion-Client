@@ -115,9 +115,11 @@ export const createYtCourse = async (data,token,dispatch) => {
             throw new Error("Create YtCourse response failed");
         }
         const result = response.data.data;
+        console.log('result: ', result);    
         toast.success("Course Added Successfully");
         dispatch(addYtCoursesToUser(result.ytCourses));
         dispatch(addYtCourseProgreesToUser(result.ytCourseProgress));
+        toast.dismiss(toastId)
         return result;
 
     }catch(error){

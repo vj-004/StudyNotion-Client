@@ -58,7 +58,7 @@ const CreateYtCourseModal = ({modalData}) => {
                     </div>
                 </form>
                 <div className='flex gap-6'>
-                    <button onClick={() => modalData?.btn1Handler({playlistId, playlistName, playlistDescription})} className="p-2 bg-yellow-50 text-richblack-900 rounded-md font-inter font-bold">
+                    <button onClick={() => modalData?.btn1Handler(playlistId, playlistName, playlistDescription)} className="p-2 bg-yellow-50 text-richblack-900 rounded-md font-inter font-bold">
                         {modalData?.btn1Text}
                     </button>
                     <button onClick={modalData?.btn2Handler} className="bg-richblack-500 p-2 text-richblack-900 rounded-md font-inter font-semibold">

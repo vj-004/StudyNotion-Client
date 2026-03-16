@@ -14,13 +14,18 @@ const YtCourses = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  console.log('ytCoures: ', ytCourses);
 
-  const handleCreateYtCourse = async ({data}) => {
-    console.log('data', data);
-    // const result = await createYtCourse(data,token,dispatch);
-
+  const handleCreateYtCourse = async (playlistId, playlistName, playlistDescription) => {
+    console.log(playlistId, playlistName, playlistDescription);
+    const data = {
+      playlistURL: playlistId,
+      playlistName: playlistName,
+      descp: playlistDescription
+    }
+    console.log('data: ', data);
+    const result = await createYtCourse(data,token,dispatch);
     setCreateModal(null);
-
   }
     
 
@@ -61,7 +66,7 @@ const YtCourses = () => {
               <div
                 key={index}
                 className="flex items-center justify-between w-full p-4 border-b border-richblack-700 bg-richblack-800 hover:bg-richblack-900 transition-colors duration-200"
-                onClick={() => navigate(`/ytcourse/${course._id}`)}
+                onClick={() => navigate(`/ytcourse/${course.url_id}`)}
               >
                 {/* Course Info */}
                 <div className="flex items-center gap-4 w-[35%]">

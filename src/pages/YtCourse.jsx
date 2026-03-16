@@ -1,3 +1,4 @@
+import { current } from '@reduxjs/toolkit';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -6,17 +7,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 const YtCourse = () => {
     const { user } = useSelector((state) => state.profile);
     const { token } = useSelector((state) => state.auth);
-    const { ytCourseId } = useParams();
+    const { ytPlaylistId } = useParams();
     const [ytCourse, setYtCourse] = useState(null);
     const [selectedIdx, setSelectedIdx] = useState(0);
+    const [completedLectures, setCompletedLectures] = useState([]);
+    const [ytCourseProgress, setYtCourseProgress] = useState([]);
     const navigate = useNavigate();
 
-    if(!ytCourseId){
+    if(!ytPlaylistId){
         toast.error("There is not course with this id");
         navigate('/dashboard');
     }
 
-    console.log('courseid: ', ytCourseId);
 
     useEffect(() => {
         if (!user || !token) {
@@ -25,17 +27,22 @@ const YtCourse = () => {
         }
         const getYtCourse = () => {
             for (const course of user.ytCourses) {
-                console.log('user course id: ', course._id);
-                if (course._id === ytCourseId) {
+                if (course.url_id === ytPlaylistId) {
                     setYtCourse(course);
-                    return;
+                    break;
+                }
+            }
+            for(const courseProgress of user.ytCourseProgress){
+                if(courseProgress.playlistUrl === ytPlaylistId){
+                    setYtCourseProgress(courseProgress);
+                    break;
                 }
             }
         };
         getYtCourse();
-    }, [user, token, user?.ytCourses, ytCourseId, navigate]);
+    }, [user, token, user?.ytCourses, ytPlaylistId, navigate]);
 
-    if (!ytCourse) {
+    if (!ytCourse || !ytCourseProgress) {
         return (
             <div className="flex items-center justify-center h-[80vh]">
                 <p className="text-2xl text-richblack-300 font-semibold">No such YouTube course found.</p>
@@ -45,6 +52,36 @@ const YtCourse = () => {
 
     const videoIds = ytCourse.playlist?.video_ids || [];
     const currentVideoId = videoIds[selectedIdx];
+    const isFirstLecture = selectedIdx === 0;
+    const isLastLecture = selectedIdx === videoIds.length - 1;
+    const isCurrentLectureCompleted = ytCourseProgress.isCompleted.includes(currentVideoId);
+
+    const handlePrev = () => {
+        if (!isFirstLecture) {
+            setSelectedIdx((prevIdx) => prevIdx - 1);
+        }
+    };
+
+    const handleNext = () => {
+        if (!isLastLecture) {
+            setSelectedIdx((prevIdx) => prevIdx + 1);
+        }
+    };
+
+    const handleToggleComplete = () => {
+
+        if (!currentVideoId) return;
+        if(!ytCourseProgress.isCompleted.includes(currentVideoId)){
+            setYtCourseProgress((prev) =>(
+                {
+                    ...prev,
+                    isCompleted: [...prev.isCompleted, currentVideoId]
+                }
+            ));
+            setSelectedIdx((prevIdx) => prevIdx + 1);
+        }
+        
+    };
 
     return (
         <div className="flex flex-col overflow-y-hidden w-full h-full bg-richblack-900">
@@ -52,9 +89,9 @@ const YtCourse = () => {
             {/* <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 mb-4 text-center">{ytCourse.title}</h1> */}
             <div className="flex flex-row justify-between h-[calc(100vh_-_56px)]">
                 {/* Main: Video Player */}
-                <div className="flex flex-col justify-center items-center  w-full h-full">
+                <div className="flex flex-col justify-start items-center  w-full h-full">
                     <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 text-center mt-4">{ytCourse.title}</h1>
-                    <main className="flex flex-col items-center p-8 animate-slidein-up w-[100%] h-full">
+                    <main className="flex flex-col items-center p-8 animate-slidein-up w-[100%] h-fit">
                     
                         <div className="w-full min-h-[420px] aspect-[16/8] rounded-xl overflow-hidden shadow-2xl border border-yellow-50 animate-fadein">
                             {currentVideoId ? (
@@ -74,9 +111,42 @@ const YtCourse = () => {
                                 </div>
                             )}
                         </div>
-                        
-
                     </main>
+                    <div className="w-full px-4 md:px-10 pb-6">
+                        <div className="mx-auto w-full rounded-xl border border-richblack-700 bg-richblack-800/70 px-4 py-4 md:px-6 backdrop-blur-sm shadow-lg">
+                            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                <div className="flex items-center gap-3 md:gap-4">
+                                    <button
+                                        onClick={handlePrev}
+                                        disabled={isFirstLecture}
+                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNext}
+                                        disabled={isLastLecture}
+                                        className="rounded-lg bg-yellow-50 px-5 py-2.5 text-sm font-semibold text-richblack-900 shadow-[0_6px_18px_rgba(255,214,10,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-yellow-25 hover:shadow-[0_10px_24px_rgba(255,214,10,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+
+                                <button
+                                    onClick={handleToggleComplete}
+                                    className={`rounded-lg border px-5 py-2.5 text-sm font-semibold transition-all duration-200 md:min-w-[190px]
+                                        ${isCurrentLectureCompleted
+                                            ? 'border-caribbeangreen-300 bg-caribbeangreen-800 text-caribbeangreen-25 hover:bg-caribbeangreen-700'
+                                            : 'border-pink-300 bg-pink-900 text-pink-25 hover:bg-pink-800'
+                                        }`}
+                                >
+                                    {isCurrentLectureCompleted ? 'Completed' : 'Mark as Completed'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 {/* Sidebar: Lectures List */}
