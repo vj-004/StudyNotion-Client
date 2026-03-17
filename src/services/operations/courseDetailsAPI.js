@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import { apiConnecter } from "../apiConnector";
 import { categories, courseEndpoints } from "../apis";
 import { setToken } from "../../reducers/slices/authSlice";
-import { addYtCourseProgreesToUser, addYtCoursesToUser } from "../../reducers/slices/profileSlice";
+import { addYtCourseProgreesToUser, addYtCoursesToUser, updateYtCourseProgress } from "../../reducers/slices/profileSlice";
 
 
 export const fetchAllCategories = async () => {
@@ -112,10 +112,13 @@ export const createYtCourse = async (data,token,dispatch) => {
 
         // console.log('YtCouseCreated Response: ', response);
         if(!response?.data?.success){
+            if(response?.data?.message === "Course is already present with the user"){
+                throw new Error("You already have this course");
+            }
             throw new Error("Create YtCourse response failed");
         }
         const result = response.data.data;
-        console.log('result: ', result);    
+        // console.log('result: ', result);    
         toast.success("Course Added Successfully");
         dispatch(addYtCoursesToUser(result.ytCourses));
         dispatch(addYtCourseProgreesToUser(result.ytCourseProgress));
@@ -124,11 +127,50 @@ export const createYtCourse = async (data,token,dispatch) => {
 
     }catch(error){
         console.log('Error in createYtCourse', error);
-        toast.error("Error in Creating Youtube Course");
+        toast.error(error.message);
     }
 
     toast.dismiss(toastId);
     return null;
+
+}
+
+export const markCourseAsComplete = async (data, token, dispatch) => {
+
+    const toastId = toast.loading("Loading...");
+    try{
+
+        if(!data || !data?.playlistUrl || !data?.videoId){
+            toast.error("All details not provided");
+            toast.dismiss(toastId);
+            return null;
+        }
+
+        // console.log('data: ', data);
+
+        const response = await apiConnecter("POST", courseEndpoints.MARK_LECTURE_COMPLETE, data, {
+            Authorization: `Bearer ${token}`,
+        });
+
+        // console.log('Marked as complete response', response.data.success);
+
+        if(!response?.data?.success){
+            throw new Error(response?.data?.message || "Error in Marking Course as Complete");
+        }
+        if(response?.data?.data){
+            dispatch(updateYtCourseProgress(response.data.data));
+        }
+        toast.dismiss(toastId)
+        return true;
+
+    }
+    catch(error){
+        console.log('Error in marking course as complete', error);
+        toast.error("Could not the lecture as complete");
+    }
+
+    toast.dismiss(toastId);
+    return false;
 
 }
 

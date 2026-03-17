@@ -14,7 +14,6 @@ const YtCourses = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  console.log('ytCoures: ', ytCourses);
 
   const handleCreateYtCourse = async (playlistId, playlistName, playlistDescription) => {
     console.log(playlistId, playlistName, playlistDescription);
@@ -23,7 +22,7 @@ const YtCourses = () => {
       playlistName: playlistName,
       descp: playlistDescription
     }
-    console.log('data: ', data);
+    // console.log('data: ', data);
     const result = await createYtCourse(data,token,dispatch);
     setCreateModal(null);
   }

@@ -1,8 +1,9 @@
-import { current } from '@reduxjs/toolkit';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { markCourseAsComplete } from '../services/operations/courseDetailsAPI';
+import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const YtCourse = () => {
     const { user } = useSelector((state) => state.profile);
@@ -10,14 +11,17 @@ const YtCourse = () => {
     const { ytPlaylistId } = useParams();
     const [ytCourse, setYtCourse] = useState(null);
     const [selectedIdx, setSelectedIdx] = useState(0);
-    const [completedLectures, setCompletedLectures] = useState([]);
     const [ytCourseProgress, setYtCourseProgress] = useState([]);
+    const lectureItemRefs = useRef([]);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     if(!ytPlaylistId){
         toast.error("There is not course with this id");
         navigate('/dashboard');
     }
+
+    
 
 
     useEffect(() => {
@@ -32,6 +36,7 @@ const YtCourse = () => {
                     break;
                 }
             }
+
             for(const courseProgress of user.ytCourseProgress){
                 if(courseProgress.playlistUrl === ytPlaylistId){
                     setYtCourseProgress(courseProgress);
@@ -42,6 +47,54 @@ const YtCourse = () => {
         getYtCourse();
     }, [user, token, user?.ytCourses, ytPlaylistId, navigate]);
 
+    
+    const videoIds = useMemo(() => {
+        return ytCourse?.playlist?.video_ids || [];
+    }, [ytCourse?.playlist?.video_ids]);
+    
+    const currentVideoId = videoIds[selectedIdx];
+    const isFirstLecture = selectedIdx === 0;
+    const isLastLecture = selectedIdx === videoIds.length - 1;
+    const isCurrentLectureCompleted = ytCourseProgress?.isCompleted?.includes(currentVideoId) || false;
+
+    useEffect(() => {
+
+        const firstVideoIdx = () => {
+            if (!ytCourseProgress || !videoIds) return;
+
+            let start = 0;
+            let end = videoIds.length - 1;
+            let idx = 0;
+
+            while (start <= end) {
+                const mid = Math.floor((start + end) / 2);
+
+                if (ytCourseProgress?.isCompleted?.includes(videoIds[mid])) {
+                    start = mid + 1;
+                } else {
+                    idx = mid;
+                    end = mid - 1;
+                }
+            }
+
+            setSelectedIdx(idx);
+        }
+
+        firstVideoIdx();
+        
+    }, [ytCourseProgress, videoIds]);
+
+    useEffect(() => {
+        const activeLectureBtn = lectureItemRefs.current[selectedIdx];
+        if (!activeLectureBtn) return;
+
+        activeLectureBtn.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'nearest',
+        });
+    }, [selectedIdx, videoIds.length]);
+    
     if (!ytCourse || !ytCourseProgress) {
         return (
             <div className="flex items-center justify-center h-[80vh]">
@@ -49,12 +102,9 @@ const YtCourse = () => {
             </div>
         );
     }
+    
 
-    const videoIds = ytCourse.playlist?.video_ids || [];
-    const currentVideoId = videoIds[selectedIdx];
-    const isFirstLecture = selectedIdx === 0;
-    const isLastLecture = selectedIdx === videoIds.length - 1;
-    const isCurrentLectureCompleted = ytCourseProgress.isCompleted.includes(currentVideoId);
+    // console.log(user);
 
     const handlePrev = () => {
         if (!isFirstLecture) {
@@ -68,17 +118,23 @@ const YtCourse = () => {
         }
     };
 
-    const handleToggleComplete = () => {
+    const handleToggleComplete = async () => {
 
         if (!currentVideoId) return;
         if(!ytCourseProgress.isCompleted.includes(currentVideoId)){
-            setYtCourseProgress((prev) =>(
-                {
-                    ...prev,
-                    isCompleted: [...prev.isCompleted, currentVideoId]
-                }
-            ));
+            
+            const result = await markCourseAsComplete({videoId: currentVideoId, playlistUrl: ytPlaylistId}, token, dispatch);
+
+            if(!result) return;
+
+            // setYtCourseProgress((prev) =>(
+            //     {
+            //         ...prev,
+            //         isCompleted: [...prev.isCompleted, currentVideoId]
+            //     }
+            // ));
             setSelectedIdx((prevIdx) => prevIdx + 1);
+
         }
         
     };
@@ -162,6 +218,9 @@ const YtCourse = () => {
                             videoIds.map((vid, idx) => (
                                 <button
                                     key={vid || idx}
+                                    ref={(el) => {
+                                        lectureItemRefs.current[idx] = el;
+                                    }}
                                     onClick={() => setSelectedIdx(idx)}
                                     className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 text-left font-inter text-base group
                                     ${selectedIdx === idx
@@ -174,7 +233,11 @@ const YtCourse = () => {
                                         ? 'bg-yellow-100 border-yellow-400 text-richblack-900'
                                         : 'bg-richblack-900 border-richblack-600 text-yellow-50'
                                     }`}>
-                                        
+                                        {
+                                            ytCourseProgress && ytCourseProgress.isCompleted.includes(vid) && (
+                                                <span className='text-3xl text-green-600 bg-white rounded-full'><IoIosCheckmarkCircle /></span>
+                                            )
+                                        }
                                     </span>
 
                                     <span className="truncate">Lecture {idx + 1}</span>

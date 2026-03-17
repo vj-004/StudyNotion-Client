@@ -31,9 +31,21 @@ const profileSlice = createSlice({
             if(state.user){
                 state.user.ytCourseProgress = [...state.user.ytCourseProgress, action.payload]
             }
+        },
+        updateYtCourseProgress: (state, action) => {
+            if(state.user){
+                const updatedObj = action.payload; // new object
+                const index = state.user.ytCourseProgress.findIndex(
+                    (item) => item.courseId === updatedObj.courseId
+                );
+
+                if (index !== -1) {
+                    state.user.ytCourseProgress[index] = updatedObj;
+                }
+            }
         }
     },
 });
 
-export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser,addYtCourseProgreesToUser} = profileSlice.actions;
+export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser,addYtCourseProgreesToUser,updateYtCourseProgress} = profileSlice.actions;
 export default profileSlice.reducer;
