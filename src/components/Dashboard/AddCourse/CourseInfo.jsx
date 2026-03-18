@@ -31,6 +31,7 @@ const CourseInfo = () => {
     const [tag, setTag] = useState("");
     const [requirement, setRequirement] = useState("");
     const [requirementList, setRequirementList] = useState([]);
+    const selectedCourseCategory = watch("courseCategory") || "";
 
 
     useEffect(() => {
@@ -60,31 +61,51 @@ const CourseInfo = () => {
             setValue("coursePrice", course.price);
             setValue("courseTags", course.tag);
             setValue("courseBenefits", course.whatYouWillLearn);
-            setValue("courseCategory", course.category._id);
             setValue("courseRequirements", course.instructions);
             setValue("courseImage", course.thumbnail);
             setRequirementList(course.instructions);
             setCourseTags(course.tag);
+            // console.log('draft course: ', course);
         }
-    }, [course]);
+    }, [course,editCourse,setValue]);
+
+    useEffect(() => {
+        if (!editCourse || !course) return;
+
+        const categoryId = typeof course.category === "object"
+            ? course.category?._id
+            : course.category;
+
+        if (categoryId) {
+            setValue("courseCategory", categoryId);
+        }
+    }, [editCourse, course, courseCategories, setValue]);
 
     
 
     useEffect(() => {
         setValue("courseTags", courseTags);
-    }, [courseTags]);
+    }, [courseTags,setValue]);
 
     useEffect(() => {
         setValue("courseRequirements", requirementList);
-    }, [requirementList]);
+    }, [requirementList,setValue]);
 
     const handleRemoveTag = (tag) => {
         setCourseTags(courseTags.filter(element => element!==tag));
     }
 
+    const handleAddTag = () => {
+        const normalizedTag = tag.trim();
+        if (!normalizedTag) return;
+
+        setCourseTags([...courseTags, normalizedTag]);
+        setTag("");
+    }
+
     const handleAddRequirement = () => {
         if(requirement){
-            setRequirementList([...requirementList,requirement.toLowerCase()]);
+            setRequirementList([...requirementList,requirement]);
             setRequirement("");
         }
     }
@@ -247,11 +268,12 @@ const CourseInfo = () => {
                 {/* Course Category */}
         <div className='flex flex-col gap-1 p-2'>
             <label htmlFor='courseCategory' className='text-sm font-inter text-richblack-5 mb-2'>Course Category<sup className='text-red-500'>*</sup></label>
-            <select id='courseCategory' className='bg-richblack-700 rounded-md px-4 py-2 text-richblack-5' defaultValue=''
+            <select id='courseCategory' className='bg-richblack-700 rounded-md px-4 py-2 text-richblack-5'
+                value={selectedCourseCategory}
              {...register("courseCategory",{required: true})}
             >   
                 <option value='' disabled>Select a Category</option>
-                <option value='no-category'>No Categories</option>
+                <option value='no-category'>No Category</option>
                 {
                     !loading && courseCategories.map((category,index) => (
                         <option key={index} value={category?._id}>{category.name}</option>
@@ -259,7 +281,7 @@ const CourseInfo = () => {
                 }
             </select>
             {
-                errors.coursePrice && (
+                errors.courseCategory && (
                     <span className='text-red-500 text-xs font-medium font-inter'>* Course Category is Required</span>
                 )
             }
@@ -283,13 +305,14 @@ const CourseInfo = () => {
             <input type='text' id='courseTags' className='bg-richblack-700 mt-1 rounded-md py-2 px-4 text-richblack-5 ' placeholder='Enter a Tag' 
                 value={tag}
                 onChange={(e) => setTag(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddTag();
+                    }
+                }}
             />
-            <p className='rounded-md cursor-pointer w-fit p-2 bg-yellow-50 text-richblack-900 mt-2 px-6 hover:scale-95 transition-all font-inter font-medium duration-200' onClick={() => {
-                if(tag){
-                    setCourseTags([...courseTags, tag]);
-                    setTag("");
-                }
-            }}>Add</p>
+            <p className='rounded-md cursor-pointer w-fit p-2 bg-yellow-50 text-richblack-900 mt-2 px-6 hover:scale-95 transition-all font-inter font-medium duration-200' onClick={handleAddTag}>Add</p>
 
         </div>
         
@@ -341,6 +364,12 @@ const CourseInfo = () => {
             </div>
             <input type='text' id='requirement' className='bg-richblack-700 rounded-md py-2 px-4 text-richblack-5' placeholder='Enter Course Requirement' 
                 value={requirement} onChange={(e) => setRequirement(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddRequirement();
+                    }
+                }}
             />
             {
                 errors.courseRequirements && (
@@ -348,7 +377,7 @@ const CourseInfo = () => {
                 )
             }
             <p className='rounded-md cursor-pointer w-fit p-2 bg-yellow-50 text-richblack-900 mt-2 px-6 hover:scale-95 transition-all duration-200 font-inter font-medium' 
-                onClick={() => handleAddRequirement(requirement)}
+                onClick={handleAddRequirement}
             >
                 Add
             </p>

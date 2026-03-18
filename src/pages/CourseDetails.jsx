@@ -212,6 +212,7 @@ const CourseDetails = () => {
                                 <button
                                 type="button"
                                 className="bg-richblack-700 text-center w-full rounded-2xl h-14 relative text-richblack-5 text-xl font-semibold border-4 border-richblack-700 group"
+                                onClick={() => navigate('/dashboard/enrolled-courses')}
                                 >
                                 <div
                                     className="bg-yellow-50 rounded-xl h-12 w-1/4 grid place-items-center absolute right-0 top-0 group-hover:w-full z-10 duration-500"

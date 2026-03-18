@@ -139,7 +139,7 @@ const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
                 setEditLecture(null);
                 setAddLecture(section._id);
               }}>
-                <div className='flex gap-1 items-center justify-center mt-2 text-yellow-50 font-inter font-semibold ml-2 '>
+                <div className='flex gap-1 text-sm items-center justify-center mt-2 text-yellow-50 font-inter font-semibold ml-4 '>
                   <FaPlus />
                   <p>Add Lecture</p>
                 </div>

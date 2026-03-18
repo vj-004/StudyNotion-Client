@@ -142,14 +142,13 @@ const YtCourse = () => {
     return (
         <div className="flex flex-col overflow-y-hidden w-full h-full bg-richblack-900">
             
-            {/* <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 mb-4 text-center">{ytCourse.title}</h1> */}
             <div className="flex flex-row justify-between h-[calc(100vh_-_56px)]">
                 {/* Main: Video Player */}
-                <div className="flex flex-col justify-start items-center  w-full h-full">
+                <div className="flex flex-col justify-start items-center  w-full h-full overflow-hidden">
                     <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 text-center mt-4">{ytCourse.title}</h1>
                     <main className="flex flex-col items-center p-8 animate-slidein-up w-[100%] h-fit">
                     
-                        <div className="w-full min-h-[420px] aspect-[16/8] rounded-xl overflow-hidden shadow-2xl border border-yellow-50 animate-fadein">
+                        <div className="w-full max-w-[1800px] min-h-[420px] aspect-[16/8] rounded-xl overflow-hidden shadow-2xl border border-yellow-50 animate-fadein">
                             {currentVideoId ? (
                                 <iframe
                                     key={currentVideoId}
@@ -206,8 +205,8 @@ const YtCourse = () => {
                 </div>
 
                 {/* Sidebar: Lectures List */}
-                <aside className="w-[14%] bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
-                    <h2 className="text-xl font-bold text-yellow-50 mb-4 self-center">
+                <aside className="w-[14%] min-w-64 bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
+                    <h2 className="text-xl font-bold text-yellow-50 mb-4 self-start ml-4">
                         Lectures
                     </h2>
 
