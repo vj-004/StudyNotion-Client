@@ -16,8 +16,8 @@ const YtCourses = () => {
 
   const progressMap = {};
 
-  for (const courseProgress of user.ytCourseProgress) {
-    progressMap[courseProgress.playlistUrl] = courseProgress.isCompleted.length;
+  for (const courseProgress of user?.ytCourseProgress) {
+    progressMap[courseProgress?.playlistUrl] = courseProgress?.isCompleted?.length;
   }
 
 
