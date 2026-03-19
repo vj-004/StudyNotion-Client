@@ -1,5 +1,4 @@
 import React from 'react'
-import { useDispatch } from 'react-redux';
 import { matchPath, NavLink, useLocation } from 'react-router-dom';
 
 const SidebarLink = ({link}) => {

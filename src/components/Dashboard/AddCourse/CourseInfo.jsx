@@ -51,7 +51,7 @@ const CourseInfo = () => {
             required: true
         });
         getAllCategories();
-    }, []);
+    }, [register]);
 
     useEffect(() => {
         if(editCourse && course){
