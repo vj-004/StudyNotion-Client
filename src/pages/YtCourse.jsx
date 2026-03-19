@@ -122,7 +122,7 @@ const YtCourse = () => {
     const handleToggleComplete = async () => {
 
         if (!currentVideoId) return;
-        if(!ytCourseProgress.isCompleted.includes(currentVideoId)){
+        if(!ytCourseProgress?.isCompleted?.includes(currentVideoId)){
             
             const result = await markCourseAsComplete({videoId: currentVideoId, playlistUrl: ytPlaylistId}, token, dispatch);
 

@@ -19,7 +19,7 @@ const YtCourses = () => {
   console.log('user: ', user);
 
   for (const courseProgress of user?.ytCourseProgress) {
-    progressMap[courseProgress?.playlistUrl] = courseProgress?.isCompleted?.length;
+    progressMap[courseProgress?.playlistUrl] = courseProgress?.isCompleted?.length || 0;
   }
 
 
