@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CoursePublish = () => {
 
-  const {register, handleSubmit, setValue, getValues, formState: {errors}} = useForm({
+  const {register, handleSubmit, getValues} = useForm({
     defaultValues:{
       courseStatus: "Private"
     }
@@ -16,7 +16,6 @@ const CoursePublish = () => {
   const dispatch = useDispatch();
   const {course,editCourse} = useSelector((state) => state.course);
   const [loading, setLoading] = useState(false);
-  const {token} = useSelector((state) => state.auth);
   const navigate = useNavigate();
   
   const goBack = () => {

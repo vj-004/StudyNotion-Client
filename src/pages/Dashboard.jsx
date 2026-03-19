@@ -1,11 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Dashboard/Sidebar';
 
 const Dashboard = () => {
 
-    const location = useLocation();
 
     const {loading: authLoading} = useSelector((state) => state.auth);
     const {loading: profileLoading} = useSelector((state) => state.profile);

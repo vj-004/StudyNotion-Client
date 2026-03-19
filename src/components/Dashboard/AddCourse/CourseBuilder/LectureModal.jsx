@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { IoIosClose } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
-import { FiUploadCloud } from "react-icons/fi";
-import CustomButton from '../../../Common/CustomButton';
 import Upload from '../Upload';
-import { apiConnecter } from '../../../../services/apiConnector';
 import { createSubSection, editSubSection } from '../../../../services/operations/courseDetailsAPI';
 import { setCourse } from '../../../../reducers/slices/courseSlice';
 import toast from 'react-hot-toast';
@@ -19,18 +16,15 @@ const LectureModal = ({setModalData, modalData, add=false, view=false, edit=fals
     const [loading, setLoading] = useState(false);
     const {course} = useSelector((state) => state.course);
     const {token} = useSelector((state) => state.auth);
-    const [videoUrl, setVideoUrl] = useState(null);
 
-    // console.log('modal data', modalData);
 
     useEffect(() => {
         if (view || edit) {
-        // console.log("modalData", modalData)
         setValue("lectureTitle", modalData.title)
         setValue("lectureDescription", modalData.description)
         setValue("lectureVideo", modalData.videoUrl)
         }
-    }, []);
+    }, [edit, view, modalData.title, modalData.description, modalData.videoUrl, setValue]);
 
     const isFormUpdated = () => {
 

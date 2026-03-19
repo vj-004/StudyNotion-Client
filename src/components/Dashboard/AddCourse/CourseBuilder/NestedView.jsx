@@ -15,7 +15,6 @@ const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
   const {course} = useSelector((state) => state.course);
   const {token} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const numberOfLectures = course?.courseContent?.length;
   const [confirmationModal, setConfirmationModal] = useState(null);
   const [addLecture, setAddLecture] = useState(null);
   const [viewLecture, setViewLecture] = useState(null);

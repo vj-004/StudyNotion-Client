@@ -3,8 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux';
 import { TbCoinRupeeFilled } from "react-icons/tb";
 import { RxCross1 } from "react-icons/rx";
-import { FiUploadCloud } from "react-icons/fi";
-import { addCourseDetails, editCourseDetails, fetchAllCategories, getDraftCourse } from '../../../services/operations/courseDetailsAPI';
+import { addCourseDetails, editCourseDetails, fetchAllCategories } from '../../../services/operations/courseDetailsAPI';
 import { setCourse, setEditCourse, setStep } from '../../../reducers/slices/courseSlice';
 import { FaChevronRight } from 'react-icons/fa';
 import toast from 'react-hot-toast';

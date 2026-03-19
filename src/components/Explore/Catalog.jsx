@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllYtCourses, getCategoryCourses, fetchAllCategories } from '../../services/operations/courseDetailsAPI';
+import { getCategoryCourses, fetchAllCategories } from '../../services/operations/courseDetailsAPI';
 import CourseCard from './CourseCard';
 import Logo from '../../assets/Logo/courseX_logo.png';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 
 

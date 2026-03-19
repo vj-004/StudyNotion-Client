@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import { FiEdit2 } from "react-icons/fi";
 import { MdDeleteOutline } from "react-icons/md";
@@ -11,9 +10,6 @@ import { useNavigate } from 'react-router-dom';
 
 const CourseTable = ({courses, setCourses}) => {
 
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const {token} = useSelector((state) => state.auth);
   const [confirmationModal, setConfirmationModal] = useState(null);
   const navigate = useNavigate();
 

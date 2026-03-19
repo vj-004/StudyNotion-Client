@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import CourseInfo from './CourseInfo'
-import CourseBuilder from './CourseBuilder'
-import CoursePublish from './CoursePublish'
-import { resetCourseState, setCourse, setEditCourse, setStep } from '../../../reducers/slices/courseSlice'
+import { setCourse, setEditCourse, setStep } from '../../../reducers/slices/courseSlice'
 import { getDraftCourse } from '../../../services/operations/courseDetailsAPI'
 import RenderSteps from '../renderSteps'
 
@@ -12,13 +9,11 @@ import RenderSteps from '../renderSteps'
 const AddCourse = () => {
 
     // const {step} = useSelector((state) => state.course);
-    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     
     useEffect(() => {
         const fetchDraftCourse = async () => {
-            setLoading(true);
             const courseToBeEdited = await getDraftCourse(navigate,dispatch);
             if(courseToBeEdited){
                 dispatch(setEditCourse(true));
@@ -30,11 +25,10 @@ const AddCourse = () => {
                 dispatch(setCourse(null));
                 dispatch(setStep(1));
             }
-            setLoading(false);
             
         }
         fetchDraftCourse();
-    }, []);
+    }, [dispatch, navigate]);
     
   return (
     <div className='p-6 w-full relative flex flex-col sm:justify-center sm:gap-6'>

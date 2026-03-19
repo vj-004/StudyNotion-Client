@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import RenderSteps from '../renderSteps'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom';
 import { getAllCourseDetails } from '../../../services/operations/courseDetailsAPI';
 import { setCourse, setEditCourse } from '../../../reducers/slices/courseSlice';
 
 const EditCourse = () => {
 
-    const {course} = useSelector((state) => state.course);
     const dispatch = useDispatch();
-    const {token} = useSelector((state) => state.auth);
     const {courseId} = useParams();
     const [loading, setLoading] = useState(false);
 
@@ -26,7 +24,7 @@ const EditCourse = () => {
 
         populateCourseDetails();
 
-    }, []);
+    }, [courseId, dispatch]);
     
 
   return (

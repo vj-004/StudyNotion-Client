@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import Logo from '../../assets/Logo/courseX_logo.png'
 import {InstructorNavbarLinks, StudentNavbarLinks} from '../../data/navbar-links';
@@ -6,8 +5,6 @@ import { matchPath } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import ProfileDropDown from '../Auth/ProfileDropDown';
-import { apiConnecter } from '../../services/apiConnector';
-import { categories } from '../../services/apis';
 
 
 const Navbar = () => {
@@ -16,26 +13,7 @@ const Navbar = () => {
 
   const {token} = useSelector( (state) => state.auth);
   const {user} = useSelector( (state) => state.profile);
-  const {totalItems} = useSelector( (state) => state.cart);
 
-  const [subLinks, setSubLinks] = useState([]);
-
-  const fetchSubLinks = async () => {
-    try{
-      const result = await apiConnecter("GET", categories.CATEGORIES_API);
-      //console.log('data: ', result.data.allCategories);
-      setSubLinks(result.data.allCategories);
-    }
-    catch(error){
-      console.log('could not fetch category list ', error);
-    }
-  } 
-
-  useEffect(() => {
-
-    fetchSubLinks();
-
-  }, [])
   
 
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { instructorCourses } from '../../../services/operations/courseDetailsAPI';
 import { useNavigate } from 'react-router-dom';
 import CourseTable from './CourseTable';
@@ -7,10 +6,8 @@ import { IoAddSharp } from "react-icons/io5";
 
 const MyCourses = () => {
 
-  const dispatch = useDispatch();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {token} = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {

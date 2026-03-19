@@ -11,7 +11,7 @@ export const fetchAllCategories = async () => {
 
         const response = await apiConnecter("GET", categories.CATEGORIES_API);
         console.log('All categories repsonse...', response.status);
-        if(!response.   data.success){
+        if(!response.data.success){
             throw new Error("Error in response of fecthing all categories");
         }
 
@@ -338,8 +338,8 @@ export const deleteCourse = async (courseId, token) => {
         toast.success("Course deleted successfully");
 
     }catch(error){
-        throw new Error("Please login later");
         console.log('Error in deleting the course');
+        throw new Error("Please login later");
     }
 
     return;

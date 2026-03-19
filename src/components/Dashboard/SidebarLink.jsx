@@ -6,7 +6,6 @@ const SidebarLink = ({link}) => {
 
   const Icon = link.icon;
   // console.log(Icon);
-  const dispatch = useDispatch();
   const location = useLocation();
 
   const matchRoute = (route) => {

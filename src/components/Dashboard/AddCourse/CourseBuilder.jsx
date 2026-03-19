@@ -3,20 +3,18 @@ import { setCourse, setEditCourse, setStep } from '../../../reducers/slices/cour
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form';
 import { MdAddCircleOutline } from "react-icons/md";
-import CustomButton from '../../Common/CustomButton';
 import toast from 'react-hot-toast';
 import NestedView from './CourseBuilder/NestedView';
 import { createSection, updateSection } from '../../../services/operations/courseDetailsAPI';
 
 const CourseBuilder = () => {
 
-  const {register, handleSubmit, setValue, getValues, formState: {errors}} = useForm();
+  const {register, handleSubmit, setValue, formState: {errors}} = useForm();
   const dispatch = useDispatch();
-  const {course,editCourse} = useSelector((state) => state.course);
+  const {course} = useSelector((state) => state.course);
   // editSectionName hold the id of the section name which is going to be edited
   const [editSectionName, setEditSectionName] = useState(null);
   // console.log('editCourse: ', editCourse);
-  const [loading, setLoading] = useState(false);
   const {token} = useSelector((state) => state.auth);
 
   const cancelEdit = () => {
@@ -43,7 +41,6 @@ const CourseBuilder = () => {
   }
 
   const onSubmit = async (data) => {
-    setLoading(true);
     let result;
     console.log('Creating section');
     if(!editSectionName && data.sectionName !== ""){
@@ -90,7 +87,6 @@ const CourseBuilder = () => {
       setEditSectionName(null);
     }
     setValue("sectionName", "");
-    setLoading(false); 
 
   }
 

@@ -4,7 +4,6 @@ import { VscVm } from "react-icons/vsc";
 import { VscAdd } from "react-icons/vsc";
 import { VscMortarBoard } from "react-icons/vsc";
 import { VscArchive } from "react-icons/vsc";
-import { VscCircuitBoard } from "react-icons/vsc";
 import { PiYoutubeLogo } from "react-icons/pi";
 
 export const sidebarLinks = [
