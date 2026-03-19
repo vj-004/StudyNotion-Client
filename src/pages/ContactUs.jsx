@@ -29,7 +29,7 @@ const contactUsData = [
 const ContactUs = () => {
   return (
     <div className='w-screen flex flex-col'>
-        <div className='flex w-11/12 mx-auto justify-center mt-20 gap-16'>
+        <div className='flex w-11/12 mx-auto justify-center mt-20 gap-16 mb-10'>
             <div className='w-[30%] rounded-lg bg-richblack-800 p-6 flex flex-col flex-start h-fit'>
                 {
                     contactUsData.map((element,index) => (
@@ -53,9 +53,9 @@ const ContactUs = () => {
             </div>
         </div>
 
-        <div>
+        {/* <div>
             <h1 className='text-white'>Reviews from other learners</h1>
-        </div>
+        </div> */}
 
         <Footer/>
 

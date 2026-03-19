@@ -26,28 +26,31 @@ const CourseDetails = () => {
     useEffect(() => {
 
         const getCourseDetail = async () => {
-            for(const  crs of user.courses) {
-                if(crs._id === courseId){
-                    setCourse(crs);
-                    setIsCourseBought(true);
-                    return;
+            if(user){
+                for(const  crs of user?.courses) {
+                    if(crs._id === courseId){
+                        setCourse(crs);
+                        setIsCourseBought(true);
+                        return;
+                    }
                 }
             }
 
-            const course = await getAllCourseDetails(courseId);
-            // console.log('course: ', course);
-            if(course){
-                setCourse(course);
+            const crs = await getAllCourseDetails(courseId);
+            if(crs){
+                setCourse(crs?.courseDetails);
             }
         }
-
-
-
         getCourseDetail();
 
-    }, [courseId, user.courses]);
+    }, [courseId, user?.courses, user]);
 
     const handleAddtoCart = async () => {
+
+        if(!user || !token){
+            toast.error("Please login to continue");
+            return;
+        }
 
         if(user && user.accountType === 'instructor'){
             toast.error("You are not allowed to buy a course");
@@ -72,6 +75,11 @@ const CourseDetails = () => {
     }
 
     const handleBuyCourse = async () => {
+
+        if(!user || !token){
+            toast.error("Please login to continue");
+            return;
+        }
         
         if(user && user.accountType === 'instructor'){
             toast.error("You are not allowed to buy a course");
@@ -114,9 +122,9 @@ const CourseDetails = () => {
                     <p className="text-base text-richblack-300 mb-1">by <span className="font-semibold text-yellow-50">{`${course?.instructor?.firstName} ${course?.instructor?.lastName}` || "Unknown Instructor"}</span></p>
                     {/* Reviews & Students Enrolled */}
                     <div className="flex gap-6 mt-2 mb-2">
-                        <div className="flex items-center gap-1">
+                        {/* <div className="flex items-center gap-1">
                             <span className="text-richblack-200 text-lg"><span className='text-yellow-50 font-bold'>{Array.isArray(course.ratingsAndReviews) ? course.ratingsAndReviews.length : 0}</span> Reviews</span>
-                        </div>
+                        </div> */}
                         <div className="flex items-center gap-1">
                             <span className="text-richblack-200 text-lg"><span className='text-yellow-50 font-bold'>{Array.isArray(course.studentsEnrolled) ? course.studentsEnrolled.length : 0}</span> Students Enrolled</span>
                         </div>
@@ -162,7 +170,31 @@ const CourseDetails = () => {
                 {/* Course Content */}
                 <div className="mb-4">
                     <h2 className="text-lg font-semibold text-richblack-5 mb-1">Course Content</h2>
-                    <p className="text-richblack-200 text-md">No content available for now.</p>
+                    {Array.isArray(course?.courseContent) && course.courseContent.length > 0 ? (
+                        <div className="mt-2 flex flex-col gap-3">
+                            {course.courseContent.map((section, idx) => {
+                                const lectureCount = Array.isArray(section?.subSection) ? section.subSection.length : 0;
+
+                                return (
+                                    <div
+                                        key={section?._id || idx}
+                                        className="rounded-lg border border-richblack-700 bg-richblack-800 px-4 py-3"
+                                    >
+                                        <div className="flex items-center justify-between gap-3">
+                                            <p className="text-sm font-semibold text-richblack-5">
+                                                Section {idx + 1}: {section?.sectionName || "Untitled Section"}
+                                            </p>
+                                            <p className="text-xs text-richblack-300">
+                                                {lectureCount} {lectureCount === 1 ? "Lecture" : "Lectures"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className="text-richblack-200 text-md">No content available for now.</p>
+                    )}
                 </div>
 
             </div>

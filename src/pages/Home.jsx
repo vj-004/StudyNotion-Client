@@ -174,7 +174,7 @@ const Home = () => {
                     </div>
                 </div>    
             </div>
-            <h2 className='text-center text-4xl font-semibold mt-10 text-white'>Review from other learners</h2>
+            {/* <h2 className='text-center text-4xl font-semibold mt-10 text-white'>Review from other learners</h2> */}
             {/* Review slider here */}
         </div>
 

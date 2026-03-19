@@ -143,6 +143,49 @@ const YtCourse = () => {
         <div className="flex flex-col overflow-y-hidden w-full h-full bg-richblack-900">
             
             <div className="flex flex-row justify-between h-[calc(100vh_-_56px)]">
+                
+                 {/* Sidebar: Lectures List */}
+                <aside className="w-[14%] min-w-64 max-w-72 bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
+                    <h2 className="text-xl font-bold text-yellow-50 mb-4 ml-4 self-center">
+                        Lectures
+                    </h2>
+
+                    <div className="flex flex-col gap-2 self-center w-full overflow-y-auto overflow-x-hidden pr-5">
+                        {videoIds.length === 0 ? (
+                            <p className="text-richblack-300">No lectures found.</p>
+                        ) : (
+                            videoIds.map((vid, idx) => (
+                                <button
+                                    key={vid || idx}
+                                    ref={(el) => {
+                                        lectureItemRefs.current[idx] = el;
+                                    }}
+                                    onClick={() => setSelectedIdx(idx)}
+                                    className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 text-left font-inter text-base group
+                                    ${selectedIdx === idx
+                                        ? 'bg-yellow-50 text-richblack-900 font-bold scale-105 shadow-md'
+                                        : 'bg-richblack-700 text-richblack-100 hover:bg-yellow-900 hover:text-yellow-50'
+                                    }`}
+                                >
+                                    <span className={`rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg border-2 transition-all duration-300
+                                    ${selectedIdx === idx
+                                        ? 'bg-yellow-100 border-yellow-400 text-richblack-900'
+                                        : 'bg-richblack-900 border-richblack-600 text-yellow-50'
+                                    }`}>
+                                        {
+                                            ytCourseProgress && ytCourseProgress.isCompleted.includes(vid) && (
+                                                <span className='text-3xl text-green-600 bg-white rounded-full'><IoIosCheckmarkCircle /></span>
+                                            )
+                                        }
+                                    </span>
+
+                                    <span className="truncate">Lecture {idx + 1}</span>
+                                </button>
+                            ))
+                        )}
+                    </div>
+                </aside>
+                
                 {/* Main: Video Player */}
                 <div className="flex flex-col justify-start items-center  w-full h-full overflow-hidden">
                     <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 text-center mt-4">{ytCourse.title}</h1>
@@ -204,47 +247,7 @@ const YtCourse = () => {
 
                 </div>
 
-                {/* Sidebar: Lectures List */}
-                <aside className="w-[14%] min-w-64 bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
-                    <h2 className="text-xl font-bold text-yellow-50 mb-4 self-start ml-4">
-                        Lectures
-                    </h2>
-
-                    <div className="flex flex-col gap-2 self-center w-full overflow-y-auto overflow-x-hidden pr-5">
-                        {videoIds.length === 0 ? (
-                            <p className="text-richblack-300">No lectures found.</p>
-                        ) : (
-                            videoIds.map((vid, idx) => (
-                                <button
-                                    key={vid || idx}
-                                    ref={(el) => {
-                                        lectureItemRefs.current[idx] = el;
-                                    }}
-                                    onClick={() => setSelectedIdx(idx)}
-                                    className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 text-left font-inter text-base group
-                                    ${selectedIdx === idx
-                                        ? 'bg-yellow-50 text-richblack-900 font-bold scale-105 shadow-md'
-                                        : 'bg-richblack-700 text-richblack-100 hover:bg-yellow-900 hover:text-yellow-50'
-                                    }`}
-                                >
-                                    <span className={`rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg border-2 transition-all duration-300
-                                    ${selectedIdx === idx
-                                        ? 'bg-yellow-100 border-yellow-400 text-richblack-900'
-                                        : 'bg-richblack-900 border-richblack-600 text-yellow-50'
-                                    }`}>
-                                        {
-                                            ytCourseProgress && ytCourseProgress.isCompleted.includes(vid) && (
-                                                <span className='text-3xl text-green-600 bg-white rounded-full'><IoIosCheckmarkCircle /></span>
-                                            )
-                                        }
-                                    </span>
-
-                                    <span className="truncate">Lecture {idx + 1}</span>
-                                </button>
-                            ))
-                        )}
-                    </div>
-                </aside>
+               
             </div>
         </div>
     );

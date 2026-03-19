@@ -219,7 +219,7 @@ export const deleteSection = async (data,token) => {
         toast.error(error.message);
     }
 }
-
+    
 export const updateSection = async (data,token) => {
     try{
 
@@ -371,7 +371,7 @@ export const getCategoryCourses = async (categoryId) => {
 
         const response = await apiConnecter("POST", courseEndpoints.GET_COURSES_BY_CATEGORY,{categoryId});
 
-        console.log('all courses by category repsonse...', response);
+        // console.log('all courses by category repsonse...', response);
         return response.data.data;
 
     }catch(error){

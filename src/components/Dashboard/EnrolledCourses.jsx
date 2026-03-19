@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const tabs = ["All", "Pending", "Completed"];
 
@@ -8,7 +9,7 @@ const EnrolledCourses = () => {
   const [coursesType, setCoursesType] = useState("All");
   const {user} = useSelector((state) => state.profile);
   const [enrolledCourses, setEnrolledCourses] = useState(user.courses);
-  
+  const navigate = useNavigate();
 
   return (
     <div className='p-6 w-full'>
@@ -42,6 +43,7 @@ const EnrolledCourses = () => {
                 <div
                   key={index}
                   className="flex items-center justify-between w-full p-4 border-b border-richblack-700 bg-richblack-800 hover:bg-richblack-900 transition-colors duration-200"
+                  onClick={() => navigate(`/view-course/${course._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`)}
                 >
                   {/* Course Info */}
                   <div className="flex items-center gap-4 w-[45%]">

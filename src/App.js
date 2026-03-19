@@ -25,6 +25,9 @@ import Catalog from "./components/Explore/Catalog";
 import CourseDetails from "./pages/CourseDetails";
 import YtCourse from "./pages/YtCourse";
 import YtCourses from "./pages/YtCourses";
+import ViewCourse from "./pages/ViewCourse";
+import VideoDetails from "./components/ViewCourse/VideoDetails";
+import InstructorDashboard from "./pages/InstructorDashboard";
 
 
 function App() {
@@ -69,7 +72,6 @@ function App() {
                 <>
                   <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
                   <Route path="/dashboard/cart" element={<Cart/>}/>
-                  <Route path="/ytcourse/:ytPlaylistId" element={<YtCourse/>} />
                   <Route path="/dashboard/ytcourses" element={<YtCourses />} />
                   
                 </>
@@ -82,10 +84,38 @@ function App() {
                   <Route path="/dashboard/add-course" element={<AddCourse/>}/>
                   <Route path="/dashboard/my-courses" element={<MyCourses/>} />
                   <Route path="/dashboard/edit-course/:courseId" element={<EditCourse/>}/>
+                  <Route path="/dashboard/instructor" element={<InstructorDashboard/>}/>
                 </>
               )
             }
           </Route>
+
+            <Route
+              element={
+                <PrivateRoute>
+                  <ViewCourse/>
+                </PrivateRoute>
+              }
+            >
+              {
+                user?.accountType === 'student' && (
+                  <>
+                    <Route path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId" element={<VideoDetails />} />
+                  </>
+                )
+              }
+
+            </Route>
+
+            {
+              user?.accountType === 'student' && (
+                <>
+                  <Route path="/ytcourse/:ytPlaylistId" element={<YtCourse/>} />
+                </>
+              )
+            }
+
+
           <Route path="*" element={<Error/>}/>
         </Routes>
         

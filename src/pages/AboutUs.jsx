@@ -29,7 +29,7 @@ const AboutUs = () => {
     <div className='flex justify-center items-center mx-auto flex-col gap-5 w-screen'>
         <div className='bg-richblack-800 flex flex-col w-full'>
             <div className='w-11/12 mx-auto flex justify-center items-center flex-col mt-20 gap-10'>
-                <p className='text-base font-inter text-richblack-200'>About Us</p>
+                {/* <p className='text-base font-inter text-richblack-200'>About Us</p> */}
                 <p className='text-4xl font-inter font-semibold text-richblack-5 text-center'>Driving Innovation in Online Education for a<br/><HighlightText text={"Brighter Future"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/></p>
                 <p className='text-base font-medium font-inter text-richblack-300 text-center'>
                     CourseX is at the forefront of driving innovation in online education. We're passionate about creating a<br/> brighter future by offering cutting-edge courses, leveraging emerging technologies, and nurturing a<br/>vibrant learning community.
@@ -118,15 +118,15 @@ const AboutUs = () => {
             </div>
         </div>
 
-        <div className='mb-[140px]'>
+        <div className='mb-[70px]'>
             <ContactForm/>
         </div>
-
+{/* 
         <section>
             <div className='text-white'>
                 Reviews from other learners
             </div>
-        </section>
+        </section> */}
 
         <Footer/>
 

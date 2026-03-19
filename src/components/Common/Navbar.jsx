@@ -71,6 +71,17 @@ const Navbar = () => {
                 ))
               )
             }
+            {
+              token === null && (
+                StudentNavbarLinks.map((link,index) => (
+                  <li key={index} className='hover:text-richblack-5'>
+                    <Link to={link?.path} >
+                      <p className={`${matchPath({path:link?.path}, location.pathname) ? "text-yellow-25" : "text-richblack-25 hover:scale-95"} transition-all duration-200 font-semibold`}>{link.title}</p>
+                    </Link>
+                  </li>
+                ))
+              )
+            }
           </ul>
         </nav>
 
