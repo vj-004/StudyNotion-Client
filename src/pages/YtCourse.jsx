@@ -40,6 +40,7 @@ const YtCourse = () => {
             for(const courseProgress of user.ytCourseProgress){
                 if(courseProgress.playlistUrl === ytPlaylistId){
                     setYtCourseProgress(courseProgress);
+                    console.log('courseProgress', courseProgress);
                     break;
                 }
             }
@@ -173,7 +174,7 @@ const YtCourse = () => {
                                         : 'bg-richblack-900 border-richblack-600 text-yellow-50'
                                     }`}>
                                         {
-                                            ytCourseProgress && ytCourseProgress.isCompleted.includes(vid) && (
+                                            ytCourseProgress && ytCourseProgress?.isCompleted?.includes(vid) && (
                                                 <span className='text-3xl text-green-600 bg-white rounded-full'><IoIosCheckmarkCircle /></span>
                                             )
                                         }
