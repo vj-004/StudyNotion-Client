@@ -22,10 +22,10 @@ const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
 
   // console.log('course', course);
 
-  const deleteCurrentSubSection = (subSectionId, sectionId) => {
+  const deleteCurrentSubSection = async (subSectionId, sectionId) => {
 
     try{
-      const response = deleteSubSection({subSectionId, sectionId}, token);
+      await deleteSubSection({subSectionId, sectionId}, token);
       // Find the section object to update
       const sectionToUpdate = course.courseContent.find((content) => content._id === sectionId);
       if (!sectionToUpdate) {
@@ -54,9 +54,9 @@ const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
 
   }
 
-  const deleteCurrentSection = (sectionId) => {
+  const deleteCurrentSection = async (sectionId) => {
 
-    const response = deleteSection({sectionId, courseId: course._id}, token);
+    await deleteSection({sectionId, courseId: course._id}, token);
     
     const updatedCourse = {
       ...course,

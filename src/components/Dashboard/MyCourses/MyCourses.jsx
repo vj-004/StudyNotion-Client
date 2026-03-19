@@ -7,14 +7,11 @@ import { IoAddSharp } from "react-icons/io5";
 const MyCourses = () => {
 
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
 
     const getInstructorCourses = async () => {
-
-      setLoading(true);
       try{
         const result = await instructorCourses();
         setCourses(result);
@@ -22,7 +19,6 @@ const MyCourses = () => {
       catch(error){
         console.log('Error in getting all instructor courses');
       }
-      setLoading(false);
     }
     getInstructorCourses();
   }, []);

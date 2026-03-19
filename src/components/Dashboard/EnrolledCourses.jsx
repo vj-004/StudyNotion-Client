@@ -8,7 +8,7 @@ const EnrolledCourses = () => {
 
   const [coursesType, setCoursesType] = useState("All");
   const {user} = useSelector((state) => state.profile);
-  const [enrolledCourses, setEnrolledCourses] = useState(user.courses);
+  const enrolledCourses = user.courses;
   const navigate = useNavigate();
 
   return (

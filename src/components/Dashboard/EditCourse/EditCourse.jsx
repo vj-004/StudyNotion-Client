@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import RenderSteps from '../renderSteps'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom';
@@ -9,17 +9,17 @@ const EditCourse = () => {
 
     const dispatch = useDispatch();
     const {courseId} = useParams();
-    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
 
         const populateCourseDetails = async () => {
-            setLoading(true);
+
             const result = await getAllCourseDetails(courseId);
             console.log('result: ', result);
             dispatch(setEditCourse(true));
             dispatch(setCourse(result));
-            setLoading(false);
+
         }
 
         populateCourseDetails();

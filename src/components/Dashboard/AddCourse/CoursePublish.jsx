@@ -14,7 +14,7 @@ const CoursePublish = () => {
     }
   });
   const dispatch = useDispatch();
-  const {course,editCourse} = useSelector((state) => state.course);
+  const {course} = useSelector((state) => state.course);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   
@@ -40,11 +40,13 @@ const CoursePublish = () => {
     console.log('course Status1',courseStatus);
     formData.append("status", courseStatus);
     try{
-      console.log('trying to edit course');
+      setLoading(true);
+      // console.log('trying to edit course');
       const response = await editCourseDetails(formData);
-      console.log('response', response);
+      // console.log('response', response);
       if(response){
         toast.success("Course added successfully");
+        setLoading(false);
         navigate('/dashboard/my-courses');
         dispatch(setStep(1));
         dispatch(setCourse(null));
@@ -57,6 +59,7 @@ const CoursePublish = () => {
     }catch(error){
       console.log('Error in publishing course');
     }
+    setLoading(false);
 
   }
 

@@ -64,7 +64,7 @@ const CourseBuilder = () => {
         toast.error("Section Name cannot be empty");
         return;
       }
-      const response = await updateSection({
+      await updateSection({
         sectionId: editSectionName,
         sectionName: data.sectionName,
       }, token);

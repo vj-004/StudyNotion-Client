@@ -29,7 +29,7 @@ const YtCourses = () => {
       descp: playlistDescription
     }
     // console.log('data: ', data);
-    const result = await createYtCourse(data,token,dispatch);
+    await createYtCourse(data,token,dispatch);
     setCreateModal(null);
   }
     

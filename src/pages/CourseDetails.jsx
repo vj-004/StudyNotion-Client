@@ -19,7 +19,7 @@ const CourseDetails = () => {
     const {courseId} = useParams();
     const [course, setCourse] = useState(null);
     const [isCourseBought, setIsCourseBought] = useState(false);
-    const [confirmationModal, setConfirmationModal] = useState(null);
+    // const [confirmationModal, setConfirmationModal] = useState(null);
 
     // console.log('user: ', user);
 
@@ -62,14 +62,14 @@ const CourseDetails = () => {
             return;
         }
 
-        setConfirmationModal({
-            text1:"You are not Logged in",
-            text2:"Please login as a Student to purchase the course",
-            btn1Text:"Login",
-            btn2Text:"Cancel",
-            btn1Handler:() => navigate("/login"),
-            btn2Handler:()=> setConfirmationModal(null),
-        })
+        // setConfirmationModal({
+        //     text1:"You are not Logged in",
+        //     text2:"Please login as a Student to purchase the course",
+        //     btn1Text:"Login",
+        //     btn2Text:"Cancel",
+        //     btn1Handler:() => navigate("/login"),
+        //     btn2Handler:()=> setConfirmationModal(null),
+        // })
 
 
     }
@@ -91,14 +91,14 @@ const CourseDetails = () => {
             return;
         }
 
-        setConfirmationModal({
-            text1:"You are not Logged in",
-            text2:"Please login as a Student to purchase the course",
-            btn1Text:"Login",
-            btn2Text:"Cancel",
-            btn1Handler:() => navigate("/login"),
-            btn2Handler:()=>setConfirmationModal(null),
-        })
+        // setConfirmationModal({
+        //     text1:"You are not Logged in",
+        //     text2:"Please login as a Student to purchase the course",
+        //     btn1Text:"Login",
+        //     btn2Text:"Cancel",
+        //     btn1Handler:() => navigate("/login"),
+        //     btn2Handler:()=>setConfirmationModal(null),
+        // })
 
     }
 

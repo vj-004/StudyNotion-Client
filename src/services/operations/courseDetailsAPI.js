@@ -123,7 +123,7 @@ export const createYtCourse = async (data,token,dispatch) => {
         dispatch(addYtCoursesToUser(result.ytCourses));
         dispatch(addYtCourseProgreesToUser(result.ytCourseProgress));
         toast.dismiss(toastId)
-        return result;
+        return;
 
     }catch(error){
         console.log('Error in createYtCourse', error);
@@ -131,7 +131,7 @@ export const createYtCourse = async (data,token,dispatch) => {
     }
 
     toast.dismiss(toastId);
-    return null;
+    return;
 
 }
 
@@ -212,7 +212,7 @@ export const deleteSection = async (data,token) => {
 
         toast.success("Section deleted successfully");
 
-        return response.data.data;
+        return;
 
     }catch(error){
         console.log('Error in deleting a section', error);
@@ -235,7 +235,7 @@ export const updateSection = async (data,token) => {
 
         toast.success("Section updated successfully");
 
-        return response.data.data;
+        return;
 
     }catch(error){
         console.log('Error in updating a section', error);
@@ -265,7 +265,7 @@ export const createSubSection = async (data, token) => {
 }
 
 export const deleteSubSection = async (data, token) => {
-  let result = null
+//   let result = null
   const toastId = toast.loading("Loading...")
   try {
     const response = await apiConnecter("POST", courseEndpoints.DELETE_SUBSECTION_API, data, {
@@ -276,13 +276,13 @@ export const deleteSubSection = async (data, token) => {
       throw new Error("Could Not Delete Lecture")
     }
     toast.success("Lecture Deleted")
-    result = response?.data.updatedSection;
+    // result = response?.data.updatedSection;
   } catch (error) {
     console.log("DELETE SUB-SECTION API ERROR............", error)
     toast.error(error.response.data.message)
   }
   toast.dismiss(toastId)
-  return result
+  return;
 }
 
 export const editSubSection = async (data, token) => {
