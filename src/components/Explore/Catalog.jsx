@@ -162,7 +162,7 @@ const Catalog = () => {
                     <div
                       key={index}
                       className="w-full bg-richblack-700 px-3 py-2 rounded-lg flex flex-col shadow-md hover:shadow-yellow-25 transition-shadow duration-200 cursor-pointer"
-                      onClick={() => navigate(`/ytcourse/${course._id}`)}
+                      onClick={() => navigate(`/ytcourse/${course.url_id}`)}
                     >
                       <img src={Logo} alt="thumbnail" className="w-[60%] self-center mb-2" />
                       <p className="text-richblack-5 text-base font-semibold truncate">{course.title.length > 35 ? course.title.substring(0, 35).trim() + '...' : course.title}</p>

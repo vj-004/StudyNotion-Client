@@ -16,7 +16,7 @@ const YtCourses = () => {
 
   const progressMap = {};
 
-  console.log('user: ', user);
+  // console.log('user: ', user);
 
   for (const courseProgress of user?.ytCourseProgress) {
     progressMap[courseProgress?.playlistUrl] = courseProgress?.isCompleted?.length || 0;
@@ -97,10 +97,10 @@ const YtCourses = () => {
                   <div className="w-full bg-richblack-700 rounded-full h-2 mb-1">
                     <div
                       className="bg-yellow-100 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${Math.round((progressMap[course.url_id] / course.playlist.video_ids.length) * 100)}%` }}
+                      style={{ width: `${Math.round((progressMap[course.url_id] / course.playlist?.videosDetails?.length) * 100)}%` }}
                     ></div>
                   </div>
-                  <span className="text-xs text-richblack-200">{Math.round((progressMap[course.url_id] / course.playlist.video_ids.length) * 100)}% Completed</span>
+                  <span className="text-xs text-richblack-200">{Math.round((progressMap[course.url_id] / course.playlist?.videosDetails?.length) * 100)}% Completed</span>
                 </div>
               </div>
             ))

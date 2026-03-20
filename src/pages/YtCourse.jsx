@@ -11,17 +11,19 @@ const YtCourse = () => {
     const { ytPlaylistId } = useParams();
     const [ytCourse, setYtCourse] = useState(null);
     const [selectedIdx, setSelectedIdx] = useState(0);
-    const [ytCourseProgress, setYtCourseProgress] = useState([]);
+    const [ytCourseProgress, setYtCourseProgress] = useState({ isCompleted: [] });
     const lectureItemRefs = useRef([]);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    if(!ytPlaylistId){
-        toast.error("There is not course with this id");
-        navigate('/dashboard');
-    }
+    useEffect(() => {
+        if (!ytPlaylistId) {
+            toast.error("There is no course with this id");
+            navigate('/dashboard');
+        }
+    }, [ytPlaylistId, navigate]);
 
-    
+    console.log('user: ', user);
 
 
     useEffect(() => {
@@ -29,60 +31,95 @@ const YtCourse = () => {
             navigate('/login');
             return;
         }
+
+        if (!ytPlaylistId) {
+            return;
+        }
+
         const getYtCourse = () => {
-            for (const course of user.ytCourses) {
+            for (const course of user?.ytCourses || []) {
                 if (course.url_id === ytPlaylistId) {
+                    console.log('course: ', course);
                     setYtCourse(course);
                     break;
                 }
             }
 
-            for(const courseProgress of user.ytCourseProgress){
-                if(courseProgress.playlistUrl === ytPlaylistId){
+            for (const courseProgress of user?.ytCourseProgress || []) {
+                if (courseProgress.playlistUrl === ytPlaylistId) {
                     setYtCourseProgress(courseProgress);
-                    console.log('courseProgress', courseProgress);
                     break;
                 }
             }
         };
+
         getYtCourse();
     }, [user, token, user?.ytCourses, ytPlaylistId, navigate]);
 
-    
+    const sidebarSections = useMemo(() => {
+        const playlistData = ytCourse?.playlist || ytCourse || {};
+        const courseSections = playlistData?.section || [];
+        const detailsByVideoId = new Map(
+            (playlistData?.videosDetails || []).map((video) => [video.videoId, video])
+        );
+
+        let globalIdx = 0;
+
+        return courseSections.map((section, sectionIdx) => {
+            const lectures = (section?.videoIds || []).map((videoId, idxInSection) => {
+                const details = detailsByVideoId.get(videoId) || {};
+                const lecture = {
+                    globalIdx,
+                    videoId,
+                    sectionIdx,
+                    sectionTitle: section?.title || `Section ${sectionIdx + 1}`,
+                    idxInSection,
+                    title: details?.title || `Lecture ${globalIdx + 1}`,
+                    description: details?.description || details?.descripiton || '',
+                };
+
+                globalIdx += 1;
+                return lecture;
+            });
+
+            return {
+                sectionIdx,
+                title: section?.title || `Section ${sectionIdx + 1}`,
+                lectures,
+            };
+        });
+    }, [ytCourse]);
+
+    const lectureList = useMemo(() => {
+        return sidebarSections.flatMap((section) => section.lectures);
+    }, [sidebarSections]);
+
     const videoIds = useMemo(() => {
-        return ytCourse?.playlist?.video_ids || [];
-    }, [ytCourse?.playlist?.video_ids]);
-    
-    const currentVideoId = videoIds[selectedIdx];
+        return lectureList.map((lecture) => lecture.videoId);
+    }, [lectureList]);
+
+    const currentLecture = lectureList[selectedIdx] || null;
+    const currentVideoId = currentLecture?.videoId;
     const isFirstLecture = selectedIdx === 0;
     const isLastLecture = selectedIdx === videoIds.length - 1;
     const isCurrentLectureCompleted = ytCourseProgress?.isCompleted?.includes(currentVideoId) || false;
 
     useEffect(() => {
-
         const firstVideoIdx = () => {
-            if (!ytCourseProgress || !videoIds) return;
+            if (!videoIds.length) return;
 
-            let start = 0;
-            let end = videoIds.length - 1;
-            let idx = 0;
+            const idx = videoIds.findIndex((videoId) => !ytCourseProgress?.isCompleted?.includes(videoId));
 
-            while (start <= end) {
-                const mid = Math.floor((start + end) / 2);
-
-                if (ytCourseProgress?.isCompleted?.includes(videoIds[mid])) {
-                    start = mid + 1;
-                } else {
-                    idx = mid;
-                    end = mid - 1;
-                }
+            if (idx === -1) {
+                setSelectedIdx(0);
+                return;
             }
 
             setSelectedIdx(idx);
-        }
+        };
 
         firstVideoIdx();
-        
+
     }, [ytCourseProgress, videoIds]);
 
     useEffect(() => {
@@ -95,7 +132,7 @@ const YtCourse = () => {
             inline: 'nearest',
         });
     }, [selectedIdx, videoIds.length]);
-    
+
     if (!ytCourse || !ytCourseProgress) {
         return (
             <div className="flex items-center justify-center h-[80vh]">
@@ -122,11 +159,10 @@ const YtCourse = () => {
     const handleToggleComplete = async () => {
 
         if (!currentVideoId) return;
-        if(!ytCourseProgress?.isCompleted?.includes(currentVideoId)){
-            
-            const result = await markCourseAsComplete({videoId: currentVideoId, playlistUrl: ytPlaylistId}, token, dispatch);
+        if (!ytCourseProgress?.isCompleted?.includes(currentVideoId)) {
+            const result = await markCourseAsComplete({ videoId: currentVideoId, playlistUrl: ytPlaylistId }, token, dispatch);
 
-            if(!result) return;
+            if (!result) return;
 
             // setYtCourseProgress((prev) =>(
             //     {
@@ -134,10 +170,12 @@ const YtCourse = () => {
             //         isCompleted: [...prev.isCompleted, currentVideoId]
             //     }
             // ));
-            setSelectedIdx((prevIdx) => prevIdx + 1);
+            if (!isLastLecture) {
+                setSelectedIdx((prevIdx) => prevIdx + 1);
+            }
 
         }
-        
+
     };
 
     return (
@@ -146,42 +184,52 @@ const YtCourse = () => {
             <div className="flex flex-row justify-between h-[calc(100vh_-_56px)]">
                 
                  {/* Sidebar: Lectures List */}
-                <aside className="w-[14%] min-w-64 max-w-72 bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
+                <aside className="w-[14%] min-w-80 bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
                     <h2 className="text-xl font-bold text-yellow-50 mb-4 ml-4 self-center">
                         Lectures
                     </h2>
 
                     <div className="flex flex-col gap-2 self-center w-full overflow-y-auto overflow-x-hidden pr-5">
-                        {videoIds.length === 0 ? (
+                        {lectureList.length === 0 ? (
                             <p className="text-richblack-300">No lectures found.</p>
                         ) : (
-                            videoIds.map((vid, idx) => (
-                                <button
-                                    key={vid || idx}
-                                    ref={(el) => {
-                                        lectureItemRefs.current[idx] = el;
-                                    }}
-                                    onClick={() => setSelectedIdx(idx)}
-                                    className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 text-left font-inter text-base group
-                                    ${selectedIdx === idx
-                                        ? 'bg-yellow-50 text-richblack-900 font-bold scale-105 shadow-md'
-                                        : 'bg-richblack-700 text-richblack-100 hover:bg-yellow-900 hover:text-yellow-50'
-                                    }`}
-                                >
-                                    <span className={`rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg border-2 transition-all duration-300
-                                    ${selectedIdx === idx
-                                        ? 'bg-yellow-100 border-yellow-400 text-richblack-900'
-                                        : 'bg-richblack-900 border-richblack-600 text-yellow-50'
-                                    }`}>
-                                        {
-                                            ytCourseProgress && ytCourseProgress?.isCompleted?.includes(vid) && (
-                                                <span className='text-3xl text-green-600 bg-white rounded-full'><IoIosCheckmarkCircle /></span>
-                                            )
-                                        }
-                                    </span>
+                            sidebarSections.map((section) => (
+                                <div key={`${section.title}-${section.sectionIdx}`} className="flex flex-col gap-2">
+                                    <p className="px-2 text-xs font-semibold uppercase tracking-wider text-richblack-25">
+                                        {section.title}
+                                    </p>
 
-                                    <span className="truncate">Lecture {idx + 1}</span>
-                                </button>
+                                    {section.lectures.map((lecture) => (
+                                        <button
+                                            key={`${lecture.videoId}-${lecture.globalIdx}`}
+                                            ref={(el) => {
+                                                lectureItemRefs.current[lecture.globalIdx] = el;
+                                            }}
+                                            onClick={() => setSelectedIdx(lecture.globalIdx)}
+                                            className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 text-left font-inter text-sm group
+                                            ${selectedIdx === lecture.globalIdx
+                                                ? 'bg-yellow-50 text-richblack-900 font-bold scale-105 shadow-md'
+                                                : 'bg-richblack-700 text-richblack-100 hover:bg-yellow-900 hover:text-yellow-50'
+                                            }`}
+                                        >
+                                            <span className={`rounded-full px-2.5 w-6 h-6 flex items-center justify-center font-bold text-md border-2 transition-all duration-300
+                                            ${selectedIdx === lecture.globalIdx
+                                                ? 'bg-yellow-100 border-yellow-400 text-richblack-900'
+                                                : 'bg-richblack-900 border-richblack-600 text-yellow-50'
+                                            }`}>
+                                                {
+                                                    ytCourseProgress?.isCompleted?.includes(lecture.videoId) && (
+                                                        <span className='text-3xl text-green-600 bg-white rounded-full'><IoIosCheckmarkCircle /></span>
+                                                    )
+                                                }
+                                            </span>
+
+                                            <span className="truncate">
+                                                {lecture.title}
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
                             ))
                         )}
                     </div>
@@ -190,6 +238,9 @@ const YtCourse = () => {
                 {/* Main: Video Player */}
                 <div className="flex flex-col justify-start items-center  w-full h-full overflow-hidden">
                     <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 text-center mt-4">{ytCourse.title}</h1>
+                    {/* {ytCourse.description && (
+                        <p className="mt-2 px-6 text-center text-richblack-200">{ytCourse.description}</p>
+                    )} */}
                     <main className="flex flex-col items-center p-8 animate-slidein-up w-[100%] h-fit">
                     
                         <div className="w-full max-w-[1800px] min-h-[420px] aspect-[16/8] rounded-xl overflow-hidden shadow-2xl border border-yellow-50 animate-fadein">
@@ -199,7 +250,7 @@ const YtCourse = () => {
                                     width="100%"
                                     height="100%"
                                     src={`https://www.youtube.com/embed/${currentVideoId}?rel=0`}
-                                    title={`Lecture ${selectedIdx + 1}`}
+                                    title={currentLecture?.title || `Lecture ${selectedIdx + 1}`}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                     className="w-full h-full transition-all duration-500"
@@ -210,6 +261,22 @@ const YtCourse = () => {
                                 </div>
                             )}
                         </div>
+
+                        {currentLecture && (
+                            <div className="mt-5 w-full max-w-[1800px] rounded-lg border border-richblack-700 bg-richblack-800/70 px-5 py-4">
+                                <p className="text-xs font-semibold uppercase tracking-wider text-yellow-50/80">
+                                    {currentLecture.sectionTitle}
+                                </p>
+                                <h2 className="mt-2 text-xl font-semibold text-richblack-5">
+                                    {currentLecture.title}
+                                </h2>
+                                {currentLecture.description && (
+                                    <p className="mt-2 text-sm leading-6 text-richblack-200">
+                                        {currentLecture.description?.length < 50 ? currentLecture.description : `${currentLecture.description.substr(0,550)}...`}
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </main>
                     <div className="w-full px-4 md:px-10 pb-6">
                         <div className="mx-auto w-full rounded-xl border border-richblack-700 bg-richblack-800/70 px-4 py-4 md:px-6 backdrop-blur-sm shadow-lg">
