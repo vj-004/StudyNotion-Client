@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { markCourseAsComplete } from '../services/operations/courseDetailsAPI';
 import { IoIosCheckmarkCircle } from "react-icons/io";
+import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
+
 
 const YtCourse = () => {
     const { user } = useSelector((state) => state.profile);
@@ -12,6 +14,8 @@ const YtCourse = () => {
     const [ytCourse, setYtCourse] = useState(null);
     const [selectedIdx, setSelectedIdx] = useState(0);
     const [ytCourseProgress, setYtCourseProgress] = useState({ isCompleted: [] });
+    const [openSections, setOpenSections] = useState({});
+    const hasInitializedOpenSections = useRef(false);
     const lectureItemRefs = useRef([]);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -93,6 +97,32 @@ const YtCourse = () => {
     const lectureList = useMemo(() => {
         return sidebarSections.flatMap((section) => section.lectures);
     }, [sidebarSections]);
+
+    useEffect(() => {
+        hasInitializedOpenSections.current = false;
+        setOpenSections({});
+    }, [ytPlaylistId]);
+
+    useEffect(() => {
+        if (hasInitializedOpenSections.current || !sidebarSections.length) {
+            return;
+        }
+
+        const nextOpenSections = {};
+
+        sidebarSections.forEach((section) => {
+            const key = String(section.sectionIdx);
+            nextOpenSections[key] = false;
+        });
+
+        const activeSectionIdx = lectureList[selectedIdx]?.sectionIdx;
+        if (activeSectionIdx !== undefined) {
+            nextOpenSections[String(activeSectionIdx)] = true;
+        }
+
+        setOpenSections(nextOpenSections);
+        hasInitializedOpenSections.current = true;
+    }, [sidebarSections, lectureList, selectedIdx]);
 
     const videoIds = useMemo(() => {
         return lectureList.map((lecture) => lecture.videoId);
@@ -178,40 +208,84 @@ const YtCourse = () => {
 
     };
 
+    const handleToggleSection = (sectionIdx) => {
+        const key = String(sectionIdx);
+
+        setOpenSections((prevOpenSections) => ({
+            ...prevOpenSections,
+            [key]: !prevOpenSections[key],
+        }));
+    };
+
     return (
         <div className="flex flex-col overflow-y-hidden w-full h-full bg-richblack-900">
             
             <div className="flex flex-row justify-between h-[calc(100vh_-_56px)]">
                 
                  {/* Sidebar: Lectures List */}
-                <aside className="w-[14%] min-w-80 bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
+                <aside className="w-[14%] min-w-[360px] bg-richblack-800 p-3 flex flex-col gap-2 border-r border-richblack-700 shadow-lg h-full ">
+                    <button
+                        onClick={() => navigate('/dashboard/ytcourses')}
+                        className="ml-2 inline-flex w-fit items-center gap-2 rounded-lg border border-richblack-600 bg-richblack-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100/50 hover:bg-richblack-600 hover:text-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-100 focus:ring-offset-2 focus:ring-offset-richblack-800"
+                        aria-label="Back to YouTube courses"
+                        title="Back to YouTube courses"
+                    >
+                        <FaChevronLeft className="text-[11px]" />
+                        <span>Back</span>
+                    </button>
                     <h2 className="text-xl font-bold text-yellow-50 mb-4 ml-4 self-center">
                         Lectures
                     </h2>
 
-                    <div className="flex flex-col gap-2 self-center w-full overflow-y-auto overflow-x-hidden pr-5">
+                    <div className="flex flex-col gap-4 pl-4 w-full overflow-y-auto overflow-x-hidden pr-5">
                         {lectureList.length === 0 ? (
                             <p className="text-richblack-300">No lectures found.</p>
                         ) : (
                             sidebarSections.map((section) => (
                                 <div key={`${section.title}-${section.sectionIdx}`} className="flex flex-col gap-2">
-                                    <p className="px-2 text-xs font-semibold uppercase tracking-wider text-richblack-25">
-                                        {section.title}
-                                    </p>
+                                    <button
+                                        onClick={() => handleToggleSection(section.sectionIdx)}
+                                        title={section.title}
+                                        className={`flex w-full items-center justify-between rounded-lg border px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider transition-all duration-200
+                                            ${(openSections[String(section.sectionIdx)] ?? false)
+                                                ? 'border-yellow-100/40 bg-richblack-600 text-yellow-50 shadow-md'
+                                                : 'border-richblack-600 bg-richblack-700 text-richblack-25 hover:border-yellow-100/40 hover:bg-richblack-600 hover:text-yellow-50'
+                                            }`}
+                                        aria-expanded={openSections[String(section.sectionIdx)] ?? false}
+                                    >
+                                        <span className="truncate">{section.title.length > 50 ? `${section.title.substr(0,50)} ...` : section.title}</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="rounded-full bg-richblack-800 px-2 py-[2px] ml-4 text-[10px] font-bold normal-case tracking-normal text-yellow-50/90">
+                                                {section.lectures.length}
+                                            </span>
+                                            <FaChevronDown
+                                                className={`text-[11px] transition-transform duration-200 ${(openSections[String(section.sectionIdx)] ?? false) ? 'rotate-0' : '-rotate-90'}`}
+                                            />
+                                        </div>
+                                    </button>
 
-                                    {section.lectures.map((lecture) => (
+                                    {(openSections[String(section.sectionIdx)] ?? false) && section.lectures.map((lecture) => (
                                         <button
                                             key={`${lecture.videoId}-${lecture.globalIdx}`}
                                             ref={(el) => {
                                                 lectureItemRefs.current[lecture.globalIdx] = el;
                                             }}
                                             onClick={() => setSelectedIdx(lecture.globalIdx)}
-                                            className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 text-left font-inter text-sm group
+                                            title={lecture.title}
+                                            className={`ml-3 flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left font-inter text-sm transition-all duration-200
                                             ${selectedIdx === lecture.globalIdx
-                                                ? 'bg-yellow-50 text-richblack-900 font-bold scale-105 shadow-md'
-                                                : 'bg-richblack-700 text-richblack-100 hover:bg-yellow-900 hover:text-yellow-50'
+                                                ? 'border-yellow-100/60 bg-richblack-600 text-yellow-50 shadow-md'
+                                                : 'border-richblack-600 bg-richblack-800 text-richblack-100 hover:border-yellow-100/40 hover:bg-richblack-700 hover:text-yellow-50'
                                             }`}
                                         >
+
+                                            <div className="flex min-w-0 items-center gap-2.5">
+                                                <span className={`h-2 w-3 rounded-full transition-colors duration-200 ${selectedIdx === lecture.globalIdx ? 'bg-yellow-50' : 'bg-richblack-400'}`} />
+                                                <span className="truncate font-medium">
+                                                    {lecture.title.length > 55 ? `${lecture.title.substr(0,55)} ...` : lecture.title}
+                                                </span>
+                                            </div>
+
                                             <span className={`rounded-full px-2.5 w-6 h-6 flex items-center justify-center font-bold text-md border-2 transition-all duration-300
                                             ${selectedIdx === lecture.globalIdx
                                                 ? 'bg-yellow-100 border-yellow-400 text-richblack-900'
@@ -224,9 +298,7 @@ const YtCourse = () => {
                                                 }
                                             </span>
 
-                                            <span className="truncate">
-                                                {lecture.title}
-                                            </span>
+
                                         </button>
                                     ))}
                                 </div>
@@ -272,7 +344,7 @@ const YtCourse = () => {
                                 </h2>
                                 {currentLecture.description && (
                                     <p className="mt-2 text-sm leading-6 text-richblack-200">
-                                        {currentLecture.description?.length < 50 ? currentLecture.description : `${currentLecture.description.substr(0,550)}...`}
+                                        {currentLecture.description?.length < 50 ? currentLecture.description : `${currentLecture.description.substr(0,500)}...`}
                                     </p>
                                 )}
                             </div>
