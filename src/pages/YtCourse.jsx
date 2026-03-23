@@ -15,7 +15,6 @@ const YtCourse = () => {
     const [selectedIdx, setSelectedIdx] = useState(0);
     const [ytCourseProgress, setYtCourseProgress] = useState({ isCompleted: [] });
     const [openSections, setOpenSections] = useState({});
-    const hasInitializedOpenSections = useRef(false);
     const lectureItemRefs = useRef([]);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -27,7 +26,6 @@ const YtCourse = () => {
         }
     }, [ytPlaylistId, navigate]);
 
-    console.log('user: ', user);
 
 
     useEffect(() => {
@@ -43,7 +41,6 @@ const YtCourse = () => {
         const getYtCourse = () => {
             for (const course of user?.ytCourses || []) {
                 if (course.url_id === ytPlaylistId) {
-                    console.log('course: ', course);
                     setYtCourse(course);
                     break;
                 }
@@ -99,30 +96,41 @@ const YtCourse = () => {
     }, [sidebarSections]);
 
     useEffect(() => {
-        hasInitializedOpenSections.current = false;
-        setOpenSections({});
-    }, [ytPlaylistId]);
-
-    useEffect(() => {
-        if (hasInitializedOpenSections.current || !sidebarSections.length) {
-            return;
-        }
-
         const nextOpenSections = {};
 
         sidebarSections.forEach((section) => {
             const key = String(section.sectionIdx);
             nextOpenSections[key] = false;
         });
-
-        const activeSectionIdx = lectureList[selectedIdx]?.sectionIdx;
-        if (activeSectionIdx !== undefined) {
-            nextOpenSections[String(activeSectionIdx)] = true;
-        }
-
         setOpenSections(nextOpenSections);
-        hasInitializedOpenSections.current = true;
-    }, [sidebarSections, lectureList, selectedIdx]);
+    }, [sidebarSections]);
+
+    useEffect(() => {
+        const activeSectionIdx = lectureList[selectedIdx]?.sectionIdx;
+        if (activeSectionIdx === undefined) return;
+
+        const activeKey = String(activeSectionIdx);
+
+        setOpenSections((prevOpenSections) => {
+            const nextOpenSections = {};
+            let didChange = !(activeKey in prevOpenSections) || prevOpenSections[activeKey] !== true;
+
+            Object.keys(prevOpenSections).forEach((key) => {
+                const shouldBeOpen = key === activeKey;
+                nextOpenSections[key] = shouldBeOpen;
+                if (prevOpenSections[key] !== shouldBeOpen) {
+                    didChange = true;
+                }
+            });
+
+            if (!(activeKey in nextOpenSections)) {
+                nextOpenSections[activeKey] = true;
+                didChange = true;
+            }
+
+            return didChange ? nextOpenSections : prevOpenSections;
+        });
+    }, [lectureList, selectedIdx]);
 
     const videoIds = useMemo(() => {
         return lectureList.map((lecture) => lecture.videoId);
@@ -144,7 +152,6 @@ const YtCourse = () => {
                 setSelectedIdx(0);
                 return;
             }
-
             setSelectedIdx(idx);
         };
 
@@ -170,19 +177,35 @@ const YtCourse = () => {
             </div>
         );
     }
+
+    const checkChangeSection = (change) => {
+
+        const currentSection = lectureList[selectedIdx]?.sectionIdx;
+        const newSection = lectureList[selectedIdx+change]?.sectionIdx;
+        if(newSection !== currentSection){
+            setOpenSections((prev) => ({
+                ...prev,
+                [String(newSection)]: true,
+                [String(currentSection)]: false,
+            }));
+        }
+    }
     
 
     // console.log(user);
 
     const handlePrev = () => {
         if (!isFirstLecture) {
+            checkChangeSection(-1);
             setSelectedIdx((prevIdx) => prevIdx - 1);
         }
     };
 
     const handleNext = () => {
         if (!isLastLecture) {
+            checkChangeSection(1);
             setSelectedIdx((prevIdx) => prevIdx + 1);
+
         }
     };
 
@@ -201,7 +224,9 @@ const YtCourse = () => {
             //     }
             // ));
             if (!isLastLecture) {
+                checkChangeSection(1);
                 setSelectedIdx((prevIdx) => prevIdx + 1);
+                
             }
 
         }
@@ -218,7 +243,7 @@ const YtCourse = () => {
     };
 
     return (
-        <div className="flex flex-col overflow-y-hidden w-full h-full bg-richblack-900">
+        <div className="relative flex w-full flex-col overflow-y-hidden bg-richblack-900">
             
             <div className="flex flex-row justify-between h-[calc(100vh_-_56px)]">
                 
@@ -233,9 +258,12 @@ const YtCourse = () => {
                         <FaChevronLeft className="text-[11px]" />
                         <span>Back</span>
                     </button>
-                    <h2 className="text-xl font-bold text-yellow-50 mb-4 ml-4 self-center">
+                    <h1 className="mx-auto mt-8 text-xl text-wrap font-bold text-yellow-50 mb-10" title={ytCourse.title}>
+                        {ytCourse.title}
+                    </h1>
+                    {/* <h2 className="text-lg font-semibold text-richblack-5 mb-4 ml-4 self-center">
                         Lectures
-                    </h2>
+                    </h2> */}
 
                     <div className="flex flex-col gap-4 pl-4 w-full overflow-y-auto overflow-x-hidden pr-5">
                         {lectureList.length === 0 ? (
@@ -253,7 +281,7 @@ const YtCourse = () => {
                                             }`}
                                         aria-expanded={openSections[String(section.sectionIdx)] ?? false}
                                     >
-                                        <span className="truncate">{section.title.length > 50 ? `${section.title.substr(0,50)} ...` : section.title}</span>
+                                        <span className="truncate text-[14px]">{section.title.length > 50 ? `${section.title.substr(0,50)} ...` : section.title}</span>
                                         <div className="flex items-center gap-2">
                                             <span className="rounded-full bg-richblack-800 px-2 py-[2px] ml-4 text-[10px] font-bold normal-case tracking-normal text-yellow-50/90">
                                                 {section.lectures.length}
@@ -280,8 +308,8 @@ const YtCourse = () => {
                                         >
 
                                             <div className="flex min-w-0 items-center gap-2.5">
-                                                <span className={`h-2 w-3 rounded-full transition-colors duration-200 ${selectedIdx === lecture.globalIdx ? 'bg-yellow-50' : 'bg-richblack-400'}`} />
-                                                <span className="truncate font-medium">
+                                                <span className={` p-0.5 rounded-full transition-colors duration-200 ${selectedIdx === lecture.globalIdx ? 'bg-yellow-50' : 'bg-richblack-400'}`} />
+                                                <span className="truncate text-sm">
                                                     {lecture.title.length > 55 ? `${lecture.title.substr(0,55)} ...` : lecture.title}
                                                 </span>
                                             </div>
@@ -308,8 +336,7 @@ const YtCourse = () => {
                 </aside>
                 
                 {/* Main: Video Player */}
-                <div className="flex flex-col justify-start items-center  w-full h-full overflow-hidden">
-                    <h1 className="text-2xl md:text-3xl font-bold text-yellow-50 text-center mt-4">{ytCourse.title}</h1>
+                <div className="relative flex flex-col justify-start items-center w-full h-full overflow-hidden pb-[92px]">
                     {/* {ytCourse.description && (
                         <p className="mt-2 px-6 text-center text-richblack-200">{ytCourse.description}</p>
                     )} */}
@@ -339,7 +366,7 @@ const YtCourse = () => {
                                 <p className="text-xs font-semibold uppercase tracking-wider text-yellow-50/80">
                                     {currentLecture.sectionTitle}
                                 </p>
-                                <h2 className="mt-2 text-xl font-semibold text-richblack-5">
+                                <h2 className="mt-2 text-center text-xl font-semibold text-richblack-5">
                                     {currentLecture.title}
                                 </h2>
                                 {currentLecture.description && (
@@ -350,8 +377,8 @@ const YtCourse = () => {
                             </div>
                         )}
                     </main>
-                    <div className="w-full px-4 md:px-10 pb-6">
-                        <div className="mx-auto w-full rounded-xl border border-richblack-700 bg-richblack-800/70 px-4 py-4 md:px-6 backdrop-blur-sm shadow-lg">
+                    <div className="absolute bottom-0 left-0 right-0 z-40 w-full">
+                        <div className="mx-auto w-full rounded-t-2xl border-t border-richblack-600 bg-richblack-800/95 px-4 py-4 md:px-6 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.45)]">
                             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                                 <div className="flex items-center gap-3 md:gap-4">
                                     <button

@@ -146,12 +146,11 @@ export const markCourseAsComplete = async (data, token, dispatch) => {
             return null;
         }
 
-        // console.log('data: ', data);
+        console.log('data: ', data);
 
         const response = await apiConnecter("POST", courseEndpoints.MARK_LECTURE_COMPLETE, data, {
             Authorization: `Bearer ${token}`,
         });
-
         // console.log('Marked as complete response', response.data.success);
 
         if(!response?.data?.success){

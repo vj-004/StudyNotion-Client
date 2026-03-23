@@ -36,7 +36,7 @@ const profileSlice = createSlice({
             if(state.user){
                 const updatedObj = action.payload; // new object
                 const index = state.user.ytCourseProgress.findIndex(
-                    (item) => item.courseId === updatedObj.courseId
+                    (item) => item.playlistUrl === updatedObj.playlistUrl
                 );
 
                 if (index !== -1) {
