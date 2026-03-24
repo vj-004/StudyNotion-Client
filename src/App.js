@@ -28,6 +28,7 @@ import YtCourses from "./pages/YtCourses";
 import ViewCourse from "./pages/ViewCourse";
 import VideoDetails from "./components/ViewCourse/VideoDetails";
 import InstructorDashboard from "./pages/InstructorDashboard";
+import DefaultYtCourse from "./pages/DefaultYtCourse";
 
 
 function App() {
@@ -65,6 +66,8 @@ function App() {
           >
             <Route path="/dashboard/my-profile" element={<MyProfile/>}/>
             <Route path="/dashboard/settings" element={<Settings/>} />
+            
+
 
 
             {
@@ -112,6 +115,12 @@ function App() {
                 <>
                   <Route path="/ytcourse/:ytPlaylistId" element={<YtCourse/>} />
                 </>
+              )
+            }
+
+            {
+              !user && (
+                <Route path="/sampleytcourse/:ytPlaylistId" element={<DefaultYtCourse/>} />
               )
             }
 
