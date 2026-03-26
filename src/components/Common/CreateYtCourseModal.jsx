@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { getAllPlaylistData } from '../../services/operations/courseDetailsAPI';
 
 const CreateYtCourseModal = ({modalData}) => {
 
@@ -6,6 +7,22 @@ const CreateYtCourseModal = ({modalData}) => {
     const [playlistDescription, setPlaylistDescription] = useState("");
     const [playlistName, setPlaylistName] = useState("");
 
+    const [allPlaylistData, setAllPlaylistData] = useState([]);
+    const selectedPlaylistUrl = playlistId
+        ? `https://www.youtube.com/playlist?list=${playlistId}`
+        : "";
+
+    useEffect(() => {
+
+        const getAllPlaylistDetails = async () => {
+            const result = await getAllPlaylistData();
+            console.log('result of all playlist data: ', result);
+            setAllPlaylistData(result);
+        }
+
+        getAllPlaylistDetails();
+
+    }, []);
     // console.log('Function to run when create is clicked',modalData?.btn1Handler)
 
 
@@ -17,17 +34,32 @@ const CreateYtCourseModal = ({modalData}) => {
                 {/* Form to get data for creating course */}
                 <form className="flex flex-col gap-4 mb-4 w-full">
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="playlistId" className="text-richblack-5 font-inter font-medium">Playlist ID</label>
-                        <input
-                            type="text"
+                        <label htmlFor="playlistId" className="text-richblack-5 font-inter font-medium">Select Playlist</label>
+                        <select
                             id="playlistId"
                             name="playlistId"
                             value={playlistId || ""}
                             onChange={e => setPlaylistId(e.target.value)}
                             className="p-2 rounded-md bg-richblack-700 text-richblack-5 border border-richblack-600 focus:outline-none"
-                            placeholder="Enter YouTube Playlist ID"
                             required
-                        />
+                        >
+                            <option value="" disabled>Select a playlist</option>
+                            {allPlaylistData?.map((playlist) => (
+                                <option key={playlist.playlistId} value={playlist.playlistId}>
+                                    {playlist.title}
+                                </option>
+                            ))}
+                        </select>
+                        {selectedPlaylistUrl && (
+                            <a
+                                href={selectedPlaylistUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="w-fit text-sm font-inter font-medium text-yellow-50 hover:underline ml-2"
+                            >
+                                Visit selected playlist on YouTube
+                            </a>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1">
                         <label htmlFor="playlistName" className="text-richblack-5 font-inter font-medium">Playlist Name</label>

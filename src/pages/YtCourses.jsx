@@ -5,12 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import { GrAdd } from "react-icons/gr";
 import CreateYtCourseModal from '../components/Common/CreateYtCourseModal';
 import { createYtCourse } from '../services/operations/courseDetailsAPI';
+import toast from 'react-hot-toast';
+import ConfirmationModal from '../components/Common/ConfirmationModal';
 
 const YtCourses = () => {
   const { user } = useSelector((state) => state.profile);
   const ytCourses = user?.ytCourses || [];
-    const [createModal, setCreateModal] = useState(null);
-    const {token} = useSelector((state) => state.auth );
+  const [createModal, setCreateModal] = useState(null);
+  const {token} = useSelector((state) => state.auth );
+  const [confirmationModal, setConfirmationModal] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -47,12 +50,25 @@ const YtCourses = () => {
           <h1 className="text-3xl font-medium font-inter text-richblack-5">YouTube Courses</h1>
           <button
             className="bg-yellow-50 text-richblack-900 font-semibold px-3 py-2 flex justify-center items-center rounded-full shadow-md hover:bg-yellow-50 transition-all duration-200 text-base font-inter mr-10"
-            onClick={() => setCreateModal({
-                btn1Text: "Create",
-                btn2Text: "Close",
-                btn1Handler: handleCreateYtCourse,
-                btn2Handler: () => setCreateModal(null)
-            })} // Add handler if needed
+            onClick={() => {
+              // toast.error("Sorry creating youtube courses is disabled. Please mail us with ")
+              setConfirmationModal({
+                text1: "Notice",
+                text2: "We are in our development phase, hence we will not allow users to create new courses of their own. However we will consider requests for any public youtube playlist URL you wish us to add.",
+                btn1Text: "Continue",
+                btn2Text: "Contact Us",
+                btn1Handler: () => {
+                  setConfirmationModal(null);
+                  setCreateModal({
+                      btn1Text: "Create",
+                      btn2Text: "Close",
+                      btn1Handler: handleCreateYtCourse,
+                      btn2Handler: () => setCreateModal(null)
+                  });
+                },
+                btn2Handler: () => navigate('/contact')
+              })
+            }} // Add handler if needed
           >
             <span className='flex gap-3 justify-center items-center'><p className='text-md font-semibold font-inter'>Create</p><p className='p-1 bg-richblack-700 rounded-full text-white'><GrAdd /></p></span>
           </button>
@@ -108,6 +124,14 @@ const YtCourses = () => {
         </div>
       </div>
       {
+        confirmationModal && <>
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-slideDown shadow-lg z-40 w-[30%]">
+                <ConfirmationModal modalData={confirmationModal}/>
+            </div>
+        </>
+    }
+    {
         createModal && <>
             <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20"></div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-slideDown shadow-lg z-40 w-[30%]">

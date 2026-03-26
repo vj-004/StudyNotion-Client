@@ -386,19 +386,27 @@ export const getCategoryCourses = async (categoryId) => {
     }
 }
 
-export const getAllYtCourses = async () => {
+export const getAllYtCourses = async (limit) => {
 
-
+    // console.log('limit: ',limit);
     try{
-
-        const response = await apiConnecter("GET", courseEndpoints.GET_YT_COURSES);
+        const response = await apiConnecter("GET", courseEndpoints.GET_PLAYLIST_DATA+`?limit=${limit}`);
         return response.data.data;
-
-
     }
     catch(error){
         console.log('Error in getting youtube courses: ', error);
     }
+}
 
+export const getAllPlaylistData = async () => {
+
+    try{
+        const response = await apiConnecter("GET", courseEndpoints.GET_PLAYLIST_DATA);
+        console.log('response: ', response);
+        return response.data.data;
+    }
+    catch(error){
+        console.log('Error in getting playlist data: ', error);
+    }
 
 }
