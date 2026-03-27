@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { GrAdd } from "react-icons/gr";
 import CreateYtCourseModal from '../components/Common/CreateYtCourseModal';
 import { createYtCourse } from '../services/operations/courseDetailsAPI';
-import toast from 'react-hot-toast';
 import ConfirmationModal from '../components/Common/ConfirmationModal';
 
 const YtCourses = () => {
