@@ -219,7 +219,7 @@ const Catalog = () => {
               <div className="bg-richblack-800 rounded-xl shadow-md flex flex-col items-center md:sticky md:top-[100px] overflow-y-auto pt-8 p-4">
                 <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-4 ">Your Courses</h2>
                 <p className='text-richblack-400 text-md mb-4 text-center'>These are just sample courses <br/> Login to personalize your courses</p>
-                { ytCourses && ytCourses.length > 0 ? (
+                { ytCourses.length > 0 ? (
                   <div className="flex flex-col gap-8 w-full">
                     {ytCourses.map((course, index) => (
                       <div

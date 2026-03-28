@@ -91,19 +91,19 @@ const YtCourses = () => {
                 onClick={() => navigate(`/ytcourse/${course.url_id}`)}
               >
                 {/* Course Info */}
-                <div className="flex items-center gap-4 w-[40%]">
+                <div className="flex items-center gap-4 w-[35%]">
                   <img
                     src={Logo}
                     alt="thumbnail"
-                    className="w-[45%] h-40 p-8 object-cover rounded-lg border border-richblack-600 shadow-sm"
+                    className="w-64 h-40 p-8 object-cover rounded-lg border border-richblack-600 shadow-sm"
                   />
-                  <div className='w-[55%]'>
-                    <h2 className="text-lg font-semibold text-richblack-5 text-wrap flex">{course.title}</h2>
+                  <div>
+                    <h2 className="text-lg font-semibold text-richblack-5 line-clamp-1">{course.title}</h2>
                   </div>
                 </div>
 
                 {/* Description */}
-                <div className="w-[30%] flex items-center justify-center text-wrap">
+                <div className="w-[35%] flex items-center justify-center text-wrap">
                   <span className="text-sm text-richblack-200 line-clamp-2 text-center">{course.description ?  course.description : 'No Description'}</span>
                 </div>
 
