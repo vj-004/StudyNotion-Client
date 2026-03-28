@@ -1,26 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCategoryCourses, fetchAllCategories, getAllYtCourses } from '../../services/operations/courseDetailsAPI';
+import { getCategoryCourses, fetchAllCategories } from '../../services/operations/courseDetailsAPI';
 import CourseCard from './CourseCard';
 import Logo from '../../assets/Logo/courseX_logo.png';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 
-const defaultYtCourseData = [
-  {
-    title: "Advanced Computer Algorithms",
-    description: "A Harvard Uni Course, topic was interesting, talks special trees and hashing and a lot more"
-  },
-  {
-    title: "C++",
-    description: "Best C++ Course on Youtube. By The Cherno. MUST WATCH"
-  },
-  {
-    title: "Backend From First Principles",
-    description: "backend playlist by Sriniously. One of the best playlist for backend"
-  },
-]
+
 
 const Catalog = () => {
   const { catalogName: urlCatalogName } = useParams();
@@ -32,7 +19,6 @@ const Catalog = () => {
   const [allCategories, setAllCategories] = useState([]);
   const {token} = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const [ytCourses, setYtCourses] = useState([]);
   // Fetch all categories for chips
   useEffect(() => {
     const fetchCategories = async () => {
@@ -62,25 +48,6 @@ const Catalog = () => {
     };
     if (catalogName) getCoursesByCategory();
   }, [catalogName, allCategories]);
-
-  useEffect(() => {
-    const populateYtCourseData = async () => {
-      if(!token || !user){
-        let ytCourseData;
-        if(!localStorage.getItem("defaultYtCourseData")){
-          console.log('fetching data again');
-          ytCourseData = await getAllYtCourses(1);
-          localStorage.setItem("defaultYtCourseData", JSON.stringify(ytCourseData));
-          localStorage.setItem("defaultYtCourseMetaData", JSON.stringify(defaultYtCourseData));
-        }
-        else{
-          ytCourseData = JSON.parse(localStorage.getItem("defaultYtCourseData"));
-        }
-        setYtCourses(ytCourseData);
-      }
-    }
-    populateYtCourseData();
-  }, [token, user]);
 
   // // Fetch YouTube courses
   // useEffect(() => {
@@ -174,16 +141,16 @@ const Catalog = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center w-full bg-richblack-700 rounded-lg p-10">
-              <span className="text-richblack-5 text-2xl font-bold font-inter mb-2">{Object.keys(category).length !== 0 ? "No Courses Found" : "Pick a category"}</span>
+              <span className="text-richblack-5 text-2xl font-bold font-inter mb-2">No Courses Found</span>
             </div>
           )}
         </div>
 
         {/* Your YouTube Courses Section (vertical, right, full height) */}
         {
-          user && (
+          token && (
             <div className="w-[20%]">
-            <div className="bg-richblack-800 rounded-xl shadow-md flex flex-col items-center md:sticky md:top-[100px] md:max-h-[calc(75vh)] overflow-y-auto pt-8 p-4">
+            <div className="bg-richblack-800 rounded-xl shadow-md flex flex-col items-center md:sticky md:top-[100px] overflow-y-auto pt-8 p-4">
               <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-4 ">Your Courses</h2>
               {loading ? (
                 <div className="flex justify-center items-center h-32">
@@ -212,37 +179,6 @@ const Catalog = () => {
           </div>
           )
         }
-
-        {
-          (!token || !user) && (
-             <div className="w-[20%]">
-              <div className="bg-richblack-800 rounded-xl shadow-md flex flex-col items-center md:sticky md:top-[100px] overflow-y-auto pt-8 p-4">
-                <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-4 ">Your Courses</h2>
-                <p className='text-richblack-400 text-md mb-4 text-center'>These are just sample courses <br/> Login to personalize your courses</p>
-                { ytCourses.length > 0 ? (
-                  <div className="flex flex-col gap-8 w-full">
-                    {ytCourses.map((course, index) => (
-                      <div
-                        key={index}
-                        className="w-full bg-richblack-700 px-3 py-2 rounded-lg flex flex-col shadow-md hover:shadow-yellow-25 transition-shadow duration-200 cursor-pointer"
-                        onClick={() => navigate(`/sampleytcourse/${course.playlist_id}`)}
-                      >
-                        <img src={Logo} alt="thumbnail" className="w-[60%] self-center mb-2" />
-                        <p className="text-richblack-5 text-base font-semibold truncate">{course.title ? course.title.length > 35 ? course.title.substring(0, 35).trim() + '...' : course.title : defaultYtCourseData[index].title}</p>
-                        <p className="text-richblack-300 text-xs mt-1 truncate">{course.description ? course.description.length>100 ? course.description.substring(0, 100).trim() : course.description : defaultYtCourseData[index].description}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-24 w-full bg-richblack-700 rounded-lg">
-                    <span className="text-richblack-5 text-base font-bold font-inter mb-2">No YouTube Courses Found</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )
-        }
-
       </div>
     </div>
   );
