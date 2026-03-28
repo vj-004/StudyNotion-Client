@@ -110,7 +110,7 @@ export const createYtCourse = async (data,token,dispatch) => {
             Authorization: `Bearer ${token}`,
         });
 
-        // console.log('YtCouseCreated Response: ', response);
+
         if(!response?.data?.success){
             if(response?.data?.message === "Course is already present with the user"){
                 throw new Error("You already have this course");
@@ -127,7 +127,12 @@ export const createYtCourse = async (data,token,dispatch) => {
 
     }catch(error){
         console.log('Error in createYtCourse', error);
-        toast.error(error.message);
+        if(error?.response?.data?.message === 'The given playlist URL is not valid'){
+            toast.error(error?.response?.data?.message);
+        }
+        else{
+            toast.error(error.message);
+        }
     }
 
     toast.dismiss(toastId);
