@@ -6,6 +6,8 @@ import CourseCard from './CourseCard';
 import Logo from '../../assets/Logo/courseX_logo.png';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
+import YtCourseStatusDot from '../Common/YtCourseStatusDot';
+import { ytCourseStatus } from '../../constants';
 
 
 
@@ -48,24 +50,6 @@ const Catalog = () => {
     };
     if (catalogName) getCoursesByCategory();
   }, [catalogName, allCategories]);
-
-  // // Fetch YouTube courses
-  // useEffect(() => {
-  //   const getYtCourses = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const result = await getAllYtCourses();
-  //       setYtCourses(result || []);
-  //     } catch (error) {
-  //       setYtCourses([]);
-  //     }
-  //     setLoading(false);
-  //   };
-  //   getYtCourses();
-  // }, []);
-
-  // Handle chip click
-  
   
   const handleCategoryClick = (cat) => {
     setCatalogName(cat.name.split(" ").join("-"));
@@ -119,16 +103,6 @@ const Catalog = () => {
             <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-2 md:mb-0">Courses</h2>
           </div>
 
-          {/* {
-            category.name && (
-              
-            )
-          }
-
-          <p className="text-lg md:text-xl text-richblack-200 max-w-2xl text-center mb-4 font-inter">
-          {category?.description || "Browse our categories and discover top courses!"}
-        </p> */}
-
           {loading ? (
             <div className="flex justify-center items-center h-40">
               <AiOutlineLoading3Quarters className="animate-spin text-4xl text-yellow-25" />
@@ -158,17 +132,41 @@ const Catalog = () => {
                 </div>
               ) : user.ytCourses.length > 0 ? (
                 <div className="flex flex-col gap-8 w-full">
-                  {user.ytCourses.map((course, index) => (
-                    <div
-                      key={index}
-                      className="w-full bg-richblack-700 px-3 py-2 rounded-lg flex flex-col shadow-md hover:shadow-yellow-25 transition-shadow duration-200 cursor-pointer"
-                      onClick={() => navigate(`/ytcourse/${course.url_id}`)}
-                    >
-                      <img src={Logo} alt="thumbnail" className="w-[60%] self-center mb-2" />
-                      <p className="text-richblack-5 text-base font-semibold truncate">{course.title.length > 35 ? course.title.substring(0, 35).trim() + '...' : course.title}</p>
-                      <p className="text-richblack-300 text-xs mt-1 truncate">{course.description ? course.description.length>100 ? course.description.substring(0, 100).trim() : course.description : "No Description"}</p>
-                    </div>
-                  ))}
+                  {user.ytCourses.map((course, index) => {
+                    const thumbnailUrl = course?.playlistDetails?.thumbnail?.url;
+
+                    return (
+                      <div
+                        key={index}
+                        className="w-full bg-richblack-700 p-3 rounded-lg flex flex-col border border-richblack-600 shadow-md hover:shadow-yellow-25 transition-all duration-200 cursor-pointer"
+                        onClick={() => navigate(`/ytcourse/${course.url_id}`)}
+                      >
+                        <img
+                          src={thumbnailUrl ? thumbnailUrl : Logo}
+                          alt="thumbnail"
+                          width={192}
+                          height={120}
+                          onError={(e) => {
+                            e.currentTarget.src = Logo;
+                          }}
+                          className="self-center mb-3 w-[120px] h-[90px] object-cover rounded-md border border-richblack-500"
+                        />
+                        <div className="flex items-start justify-between gap-2 w-full mb-1">
+                          <p className="text-richblack-5 text-sm font-semibold leading-5 line-clamp-2 flex-1 min-w-0">{course.title}</p>
+                          <div className="shrink-0 mt-0.5">
+                            {/* Boilerplate status mapping: set course.status as ready | processing | failed */}
+                            <YtCourseStatusDot
+                              status={course?.status || ytCourseStatus.READY}
+                              showLabel={false}
+                            />
+                          </div>
+                        </div>
+                        <p className="text-richblack-300 text-xs leading-5 line-clamp-2">
+                          {course.description || "No Description"}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-24 w-full bg-richblack-700 rounded-lg">

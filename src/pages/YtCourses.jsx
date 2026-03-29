@@ -4,7 +4,9 @@ import Logo from '../assets/Logo/courseX_logo.png';
 import { useNavigate } from 'react-router-dom';
 import { GrAdd } from "react-icons/gr";
 import CreateYtCourseModal from '../components/Common/CreateYtCourseModal';
+import YtCourseStatusDot from '../components/Common/YtCourseStatusDot';
 import { createYtCourse } from '../services/operations/courseDetailsAPI';
+import { ytCourseStatus } from '../constants';
 
 const YtCourses = () => {
   const { user } = useSelector((state) => state.profile);
@@ -19,7 +21,8 @@ const YtCourses = () => {
   // console.log('user: ', user);
 
   for (const courseProgress of user?.ytCourseProgress) {
-    progressMap[courseProgress?.playlistUrl] = courseProgress?.isCompleted?.length || 0;
+    // progressMap[courseProgress?.playlistUrl] = ((courseProgress?.isCompleted?.length || 0) / (courseProgress?.totalLectures || 1)) || 0;
+    progressMap[courseProgress?.playlistUrl] = (courseProgress?.isCompleted && courseProgress?.totalLectures) ? courseProgress?.isCompleted?.length / courseProgress?.totalLectures : 0;
   }
 
 
@@ -69,26 +72,47 @@ const YtCourses = () => {
               <p className="text-lg text-richblack-300">You have not added any YouTube courses yet.</p>
             </div>
           ) : (
-            ytCourses.map((course, index) => (
+            ytCourses.map((course, index) => {
+              const thumbnailUrl = course?.playlistDetails?.thumbnail?.url;
+              const isUnavailable =
+                course?.status === ytCourseStatus.FAILED ||
+                course?.status === ytCourseStatus.PROCESSING;
+
+              return (
               <div
                 key={index}
-                className="flex items-center justify-between w-full p-4 border-b border-richblack-700 bg-richblack-800 hover:bg-richblack-900 transition-colors duration-200"
-                onClick={() => navigate(`/ytcourse/${course.url_id}`)}
+                className={`flex items-center justify-between w-full p-4 border-b border-richblack-700 bg-richblack-800 transition-colors duration-200 ${isUnavailable ? 'cursor-not-allowed opacity-90' : 'hover:bg-richblack-900 cursor-pointer'}`}
+                onClick={() => {
+                  if (isUnavailable) return;
+                  navigate(`/ytcourse/${course.url_id}`)
+                }}
               >
                 {/* Course Info */}
                 <div className="flex items-center gap-4 w-[40%]">
                   <img
-                    src={Logo}
+                    src={thumbnailUrl ? thumbnailUrl : Logo}
                     alt="thumbnail"
-                    className="w-[45%] h-40 p-8 object-cover rounded-lg border border-richblack-600 shadow-sm"
+                    width={176}
+                    height={110}
+                    onError={(e) => {
+                      e.currentTarget.src = Logo;
+                    }}
+                    className="w-[176px] h-[110px] object-cover rounded-md border border-richblack-600 shadow-sm shrink-0"
                   />
-                  <div>
-                    <h2 className="text-lg font-semibold text-richblack-5 flex text-wrap">{course.title}</h2>
+                  <div className="min-w-0">
+                    <h2 className="text-lg font-semibold text-richblack-5 line-clamp-2">{course.title}</h2>
+
+                    {/* Best position for table view: keep status close to title for quick scanning */}
+                    <YtCourseStatusDot
+                      status={course?.status || ytCourseStatus.READY}
+                      showLabel={true}
+                      className="mt-1"
+                    />
                   </div>
                 </div>
 
                 {/* Description */}
-                <div className="w-[30%] flex items-center justify-center text-wrap">
+                <div className="w-[30%] flex items-center justify-center text-wrap px-2">
                   <span className="text-sm text-richblack-200 line-clamp-2 text-center">{course.description ?  course.description : 'No Description'}</span>
                 </div>
 
@@ -97,13 +121,15 @@ const YtCourses = () => {
                   <div className="w-full bg-richblack-700 rounded-full h-2 mb-1">
                     <div
                       className="bg-yellow-100 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${Math.round((progressMap[course.url_id] / course.playlist?.videosDetails?.length) * 100)}%` }}
+                      style={{ width: `${Math.round(progressMap[course.url_id] * 100)}%` }}
                     ></div>
                   </div>
-                  <span className="text-xs text-richblack-200">{Math.round((progressMap[course.url_id] / course.playlist?.videosDetails?.length) * 100)}% Completed</span>
+                  <span className="text-xs text-richblack-200">{Math.round(progressMap[course.url_id] * 100)}% Completed</span>
                 </div>
+
               </div>
-            ))
+              )
+            })
           )}
         </div>
       </div>
