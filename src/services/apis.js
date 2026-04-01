@@ -47,6 +47,7 @@ export const courseEndpoints = {
   GET_YT_COURSES: BASE_URL + '/course/getAllYtCourses',
   CREATE_YT_COURSE: BASE_URL + '/course/createYtCourse',
   MARK_LECTURE_COMPLETE: BASE_URL + '/course/markYtCourse',
+  GET_YT_COURSE_BY_ID: BASE_URL + '/course/ytCourseDetails',
 }
 
 // RATINGS AND REVIEWS

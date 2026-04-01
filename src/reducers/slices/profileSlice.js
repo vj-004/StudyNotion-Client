@@ -43,9 +43,21 @@ const profileSlice = createSlice({
                     state.user.ytCourseProgress[index] = updatedObj;
                 }
             }
+        },
+        updateCoursePlaylist: (state, action) => {
+
+            const { ytPlaylistId, playlist } = action.payload;
+
+            const course = state.user.ytCourses.find(
+                c => c.url_id === ytPlaylistId
+            );
+
+            if (course) {
+                course.playlist = playlist;
+            }
         }
     },
 });
 
-export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser,addYtCourseProgreesToUser,updateYtCourseProgress} = profileSlice.actions;
+export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser,addYtCourseProgreesToUser,updateYtCourseProgress, updateCoursePlaylist} = profileSlice.actions;
 export default profileSlice.reducer;

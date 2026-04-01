@@ -407,3 +407,18 @@ export const getAllYtCourses = async () => {
 
 
 }
+
+export const getYtCourseById = async (playlistId) => {
+
+    try{
+        const response = await apiConnecter("POST", courseEndpoints.GET_YT_COURSE_BY_ID, {playlistId});
+        console.log('response: ', response);
+        return response.data.data;
+    }
+    catch(error){
+        console.log('Error in getting ytCourse', error);
+        toast.error("This is an invalid youtube course");
+    }
+
+
+}

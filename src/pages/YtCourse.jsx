@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { markCourseAsComplete } from '../services/operations/courseDetailsAPI';
+import { getYtCourseById, markCourseAsComplete } from '../services/operations/courseDetailsAPI';
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
+import { updateCoursePlaylist } from '../reducers/slices/profileSlice';
 
 
 const YtCourse = () => {
@@ -17,7 +18,8 @@ const YtCourse = () => {
     const [openSections, setOpenSections] = useState({});
     const lectureItemRefs = useRef([]);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch(); 
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!ytPlaylistId) {
@@ -37,12 +39,27 @@ const YtCourse = () => {
         if (!ytPlaylistId) {
             return;
         }
+    }, [user, token, user?.ytCourses, ytPlaylistId, navigate, dispatch]);
 
-        const getYtCourse = () => {
+    useEffect(() => {
+        const getYtCourse = async () => {
+            setLoading(true);
             for (const course of user?.ytCourses || []) {
-                if (course.url_id === ytPlaylistId) {
-                    setYtCourse(course);
-                    break;
+                if (course.url_id === ytPlaylistId) {         
+                    // console.log('ytCourse: ', course);                    
+                    if(course.playlist === null){
+                        const playlist = await getYtCourseById(ytPlaylistId);
+                        const updatedCourse = {
+                            ...course,
+                            playlist
+                        };
+                        dispatch(updateCoursePlaylist({ytPlaylistId, playlist}));
+                        setYtCourse(updatedCourse);
+                        break;
+                    }
+                    else{
+                        setYtCourse(course);
+                    }
                 }
             }
 
@@ -52,10 +69,11 @@ const YtCourse = () => {
                     break;
                 }
             }
+            setLoading(false)
         };
 
         getYtCourse();
-    }, [user, token, user?.ytCourses, ytPlaylistId, navigate]);
+    }, [dispatch, user?.ytCourses, user?.ytCourseProgress, ytPlaylistId]);
 
     const sidebarSections = useMemo(() => {
         const playlistData = ytCourse?.playlist || ytCourse || {};
@@ -242,6 +260,66 @@ const YtCourse = () => {
         }));
     };
 
+    if (loading) {
+        return (
+            <div className="relative flex w-full flex-col overflow-y-hidden bg-richblack-900">
+                <div className="flex h-[calc(100vh_-_56px)] flex-row justify-between">
+                    <aside className="w-[14%] min-w-[360px] bg-richblack-800 p-3 flex flex-col gap-4 border-r border-richblack-700 shadow-lg h-full">
+                        <button
+                            onClick={() => navigate('/dashboard/ytcourses')}
+                            className="ml-2 inline-flex w-fit items-center gap-2 rounded-lg border border-richblack-600 bg-richblack-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100/50 hover:bg-richblack-600 hover:text-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-100 focus:ring-offset-2 focus:ring-offset-richblack-800"
+                            aria-label="Back to YouTube courses"
+                            title="Back to YouTube courses"
+                        >
+                            <FaChevronLeft className="text-[11px]" />
+                            <span>Back</span>
+                        </button>
+                        <div className="animate-pulse">
+                        <div className="mt-4 h-6 w-5/6 self-center rounded bg-richblack-700/90" />
+                        <div className="mt-3 flex-1 space-y-3 overflow-hidden pr-2">
+                            <div className="h-11 w-full rounded-lg bg-richblack-700/80" />
+                            <div className="h-11 w-[92%] rounded-lg bg-richblack-700/70 ml-3" />
+                            <div className="h-11 w-[92%] rounded-lg bg-richblack-700/70 ml-3" />
+                            <div className="h-11 w-full rounded-lg bg-richblack-700/80" />
+                            <div className="h-11 w-[92%] rounded-lg bg-richblack-700/70 ml-3" />
+                            <div className="h-11 w-[92%] rounded-lg bg-richblack-700/70 ml-3" />
+                        </div>
+                        </div>
+                    </aside>
+
+                    <div className="relative flex flex-col justify-start items-center w-full h-full overflow-hidden">
+                        <div className="w-full h-full overflow-y-auto pb-[92px] animate-pulse">
+                            <main className="flex flex-col items-center p-8 w-[100%] min-h-fit">
+                                <div className="w-full max-w-[1800px] min-h-[420px] aspect-[16/8] rounded-xl border border-richblack-600 bg-richblack-800/70" />
+                                <div className="mt-5 w-full max-w-[1800px] rounded-lg border border-richblack-700 bg-richblack-800/70 px-5 py-4">
+                                    <div className="h-3 w-32 rounded bg-richblack-600/90" />
+                                    <div className="mt-3 h-6 w-3/5 rounded bg-richblack-600/90" />
+                                    <div className="mt-4 space-y-2">
+                                        <div className="h-3 w-full rounded bg-richblack-600/80" />
+                                        <div className="h-3 w-[94%] rounded bg-richblack-600/80" />
+                                        <div className="h-3 w-[88%] rounded bg-richblack-600/80" />
+                                    </div>
+                                </div>
+                            </main>
+                        </div>
+
+                        <div className="absolute bottom-0 left-0 right-0 z-40 w-full">
+                            <div className="mx-auto w-full rounded-t-2xl border-t border-richblack-600 bg-richblack-800/95 px-4 py-4 md:px-6 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.45)]">
+                                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between animate-pulse">
+                                    <div className="flex items-center gap-3 md:gap-4">
+                                        <div className="h-10 w-28 rounded-lg bg-richblack-700/90" />
+                                        <div className="h-10 w-20 rounded-lg bg-yellow-100/70" />
+                                    </div>
+                                    <div className="h-10 w-full rounded-lg bg-richblack-700/90 md:w-48" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="relative flex w-full flex-col overflow-y-hidden bg-richblack-900">
             
@@ -336,13 +414,14 @@ const YtCourse = () => {
                 </aside>
                 
                 {/* Main: Video Player */}
-                <div className="relative flex flex-col justify-start items-center w-full h-full overflow-hidden pb-[92px]">
+                <div className="relative flex flex-col justify-start items-center w-full h-full overflow-hidden">
                     {/* {ytCourse.description && (
                         <p className="mt-2 px-6 text-center text-richblack-200">{ytCourse.description}</p>
                     )} */}
-                    <main className="flex flex-col items-center p-8 animate-slidein-up w-[100%] h-fit">
+                    <div className="w-full h-full overflow-y-auto pb-[92px]">
+                    <main className="flex flex-col items-center p-8 animate-slidein-up w-[100%] min-h-fit">
                     
-                        <div className="w-full max-w-[1800px] min-h-[420px] aspect-[16/8] rounded-xl overflow-hidden shadow-2xl border border-yellow-50 animate-fadein">
+                        <div className="w-full max-w-[1800px] min-h-[420px] aspect-[16/8] rounded-xl overflow-auto shadow-2xl border border-yellow-50 animate-fadein">
                             {currentVideoId ? (
                                 <iframe
                                     key={currentVideoId}
@@ -362,7 +441,7 @@ const YtCourse = () => {
                         </div>
 
                         {currentLecture && (
-                            <div className="mt-5 w-full max-w-[1800px] rounded-lg border border-richblack-700 bg-richblack-800/70 px-5 py-4">
+                            <div className="mt-5 w-full max-w-[1800px] max-h-[240px] overflow-y-auto rounded-lg border border-richblack-700 bg-richblack-800/70 px-5 py-4">
                                 <p className="text-xs font-semibold uppercase tracking-wider text-yellow-50/80">
                                     {currentLecture.sectionTitle}
                                 </p>
@@ -377,6 +456,7 @@ const YtCourse = () => {
                             </div>
                         )}
                     </main>
+                    </div>
                     <div className="absolute bottom-0 left-0 right-0 z-40 w-full">
                         <div className="mx-auto w-full rounded-t-2xl border-t border-richblack-600 bg-richblack-800/95 px-4 py-4 md:px-6 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.45)]">
                             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
