@@ -55,9 +55,20 @@ const profileSlice = createSlice({
             if (course) {
                 course.playlist = playlist;
             }
+        },
+        updateYtCourseStatus: (state, action) => {
+            if (!state.user) return;
+
+            const { url_id, status } = action.payload || {};
+            if (!url_id) return;
+
+            const course = state.user.ytCourses?.find((item) => item.url_id === url_id);
+            if (course) {
+                course.status = status;
+            }
         }
     },
 });
 
-export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser,addYtCourseProgreesToUser,updateYtCourseProgress, updateCoursePlaylist} = profileSlice.actions;
+export const {setUser,setLoading,addCoursesToUser,addYtCoursesToUser,addYtCourseProgreesToUser,updateYtCourseProgress, updateCoursePlaylist, updateYtCourseStatus} = profileSlice.actions;
 export default profileSlice.reducer;

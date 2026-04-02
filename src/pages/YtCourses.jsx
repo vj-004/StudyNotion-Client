@@ -3,20 +3,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import Logo from '../assets/Logo/courseX_logo.png';
 import { useNavigate } from 'react-router-dom';
 import { GrAdd } from "react-icons/gr";
+import toast from 'react-hot-toast';
 import CreateYtCourseModal from '../components/Common/CreateYtCourseModal';
 import YtCourseStatusDot from '../components/Common/YtCourseStatusDot';
-import { createYtCourse } from '../services/operations/courseDetailsAPI';
+import { createYtCourse, getAllYtCourses } from '../services/operations/courseDetailsAPI';
 import { ytCourseStatus } from '../constants';
+import { updateYtCourseStatus } from '../reducers/slices/profileSlice';
 
 const YtCourses = () => {
   const { user } = useSelector((state) => state.profile);
   const ytCourses = user?.ytCourses || [];
-    const [createModal, setCreateModal] = useState(null);
-    const {token} = useSelector((state) => state.auth );
+  const [createModal, setCreateModal] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const {token} = useSelector((state) => state.auth );
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
 
   const progressMap = {};
+  const hasProcessingCourse = ytCourses.some(
+    (course) => course?.status === ytCourseStatus.PROCESSING
+  );
 
   // console.log('user: ', user);
 
@@ -37,6 +44,37 @@ const YtCourses = () => {
     await createYtCourse(data,token,dispatch);
     setCreateModal(null);
   }
+
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      const updatedYtCourses = await getAllYtCourses(token);
+      if (!Array.isArray(updatedYtCourses) || !Array.isArray(user?.ytCourses)) {
+        return;
+      }
+
+      const updatedCoursesMap = new Map(
+        updatedYtCourses.map((course) => [course?.url_id, course])
+      );
+
+      for (const course of user.ytCourses) {
+        const latestCourse = updatedCoursesMap.get(course?.url_id);
+        if (!latestCourse) continue;
+
+        if (course?.status !== latestCourse?.status) {
+          dispatch(
+            updateYtCourseStatus({
+              url_id: course?.url_id,
+              status: latestCourse?.status,
+            })
+          );
+        }
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  }
     
 
   return (
@@ -48,17 +86,29 @@ const YtCourses = () => {
 
         <div className="flex items-center justify-between w-full">
           <h1 className="text-3xl font-medium font-inter text-richblack-5">YouTube Courses</h1>
-          <button
-            className="bg-yellow-50 text-richblack-900 font-semibold px-3 py-2 flex justify-center items-center rounded-full shadow-md hover:bg-yellow-50 transition-all duration-200 text-base font-inter mr-10"
-            onClick={() => setCreateModal({
-                btn1Text: "Create",
-                btn2Text: "Close",
-                btn1Handler: handleCreateYtCourse,
-                btn2Handler: () => setCreateModal(null)
-            })} // Add handler if needed
-          >
-            <span className='flex gap-3 justify-center items-center'><p className='text-md font-semibold font-inter'>Create</p><p className='p-1 bg-richblack-700 rounded-full text-white'><GrAdd /></p></span>
-          </button>
+          <div className="flex items-center gap-3 mr-10">
+            {hasProcessingCourse && (
+              <button
+                type="button"
+                onClick={() => handleRefresh()}
+                disabled={isRefreshing}
+                className="rounded-md border border-yellow-100/60 bg-richblack-700 px-3 py-2 text-sm font-semibold uppercase tracking-wide text-yellow-50 hover:bg-richblack-600 transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </button>
+            )}
+            <button
+              className="bg-yellow-50 text-richblack-900 font-semibold px-3 py-2 flex justify-center items-center rounded-full shadow-md hover:bg-yellow-50 transition-all duration-200 text-base font-inter"
+              onClick={() => setCreateModal({
+                  btn1Text: "Create",
+                  btn2Text: "Close",
+                  btn1Handler: handleCreateYtCourse,
+                  btn2Handler: () => setCreateModal(null)
+              })} // Add handler if needed
+            >
+              <span className='flex gap-3 justify-center items-center'><p className='text-md font-semibold font-inter'>Create</p><p className='p-1 bg-richblack-700 rounded-full text-white'><GrAdd /></p></span>
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col w-full rounded-lg p-1 border-1 border-richblack-700 mt-8">
@@ -83,7 +133,10 @@ const YtCourses = () => {
                 key={index}
                 className={`flex items-center justify-between w-full p-4 border-b border-richblack-700 bg-richblack-800 transition-colors duration-200 ${isUnavailable ? 'cursor-not-allowed opacity-90' : 'hover:bg-richblack-900 cursor-pointer'}`}
                 onClick={() => {
-                  if (isUnavailable) return;
+                  if (isUnavailable) {
+                    toast.error(course?.statusMessage || `Course is currently ${String(course?.status || 'unavailable').toLowerCase()}.`);
+                    return;
+                  }
                   navigate(`/ytcourse/${course.url_id}`)
                 }}
               >
@@ -103,11 +156,12 @@ const YtCourses = () => {
                     <h2 className="text-lg font-semibold text-richblack-5 line-clamp-2">{course.title}</h2>
 
                     {/* Best position for table view: keep status close to title for quick scanning */}
-                    <YtCourseStatusDot
-                      status={course?.status || ytCourseStatus.READY}
-                      showLabel={true}
-                      className="mt-1"
-                    />
+                    <div className="mt-1 flex items-center gap-2">
+                      <YtCourseStatusDot
+                        status={course?.status || ytCourseStatus.READY}
+                        showLabel={true}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -140,7 +194,15 @@ const YtCourses = () => {
                 <CreateYtCourseModal modalData={createModal}/>
             </div>
         </>
-    }
+      }
+      {isRefreshing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-richblack-900/70 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4 rounded-lg border border-richblack-600 bg-richblack-800 px-8 py-6">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-richblack-400 border-t-yellow-50"></div>
+            <p className="text-sm font-inter text-richblack-5">Refreshing courses...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

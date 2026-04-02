@@ -391,12 +391,14 @@ export const getCategoryCourses = async (categoryId) => {
     }
 }
 
-export const getAllYtCourses = async () => {
+export const getAllYtCourses = async (token) => {
 
 
     try{
 
-        const response = await apiConnecter("GET", courseEndpoints.GET_YT_COURSES);
+        const response = await apiConnecter("GET", courseEndpoints.GET_YT_COURSES, null, {
+            Authorization: `Bearer ${token}`,
+        });
         return response.data.data;
 
 
