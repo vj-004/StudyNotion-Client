@@ -46,9 +46,10 @@ const YtCourse = () => {
             setLoading(true);
             for (const course of user?.ytCourses || []) {
                 if (course.url_id === ytPlaylistId) {         
-                    // console.log('ytCourse: ', course);                    
+                    // console.log('ytCourse: ', course);     
+
                     if(course.playlist === null){
-                        const playlist = await getYtCourseById(ytPlaylistId);
+                        const playlist = await getYtCourseById(ytPlaylistId, navigate);
                         const updatedCourse = {
                             ...course,
                             playlist
@@ -73,7 +74,7 @@ const YtCourse = () => {
         };
 
         getYtCourse();
-    }, [dispatch, user?.ytCourses, user?.ytCourseProgress, ytPlaylistId]);
+    }, [dispatch, user?.ytCourses, user?.ytCourseProgress, ytPlaylistId, navigate]);
 
     const sidebarSections = useMemo(() => {
         const playlistData = ytCourse?.playlist || ytCourse || {};

@@ -410,7 +410,7 @@ export const getAllYtCourses = async (token) => {
 
 }
 
-export const getYtCourseById = async (playlistId) => {
+export const getYtCourseById = async (playlistId, navigate) => {
 
     try{
         const response = await apiConnecter("POST", courseEndpoints.GET_YT_COURSE_BY_ID, {playlistId});
@@ -419,7 +419,14 @@ export const getYtCourseById = async (playlistId) => {
     }
     catch(error){
         console.log('Error in getting ytCourse', error);
-        toast.error("This is an invalid youtube course");
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            navigate('/login');
+            return;
+        }
+        else{
+            toast.error("This is an invalid youtube course");
+        }
     }
 
 
