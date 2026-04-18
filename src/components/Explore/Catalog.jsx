@@ -123,7 +123,7 @@ const Catalog = () => {
         {/* Your YouTube Courses Section (vertical, right, full height) */}
         {
           token && (
-            <div className="w-[20%]">
+            <div className="w-fit max-h-[990px] overflow-y-scroll">
             <div className="bg-richblack-800 rounded-xl shadow-md flex flex-col items-center md:sticky md:top-[100px] overflow-y-auto pt-8 p-4">
               <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-4 ">Your Courses</h2>
               {loading ? (
@@ -138,7 +138,7 @@ const Catalog = () => {
                     return (
                       <div
                         key={index}
-                        className="w-full bg-richblack-700 p-3 rounded-lg flex flex-col border border-richblack-600 shadow-md hover:shadow-yellow-25 transition-all duration-200 cursor-pointer"
+                        className="w-[300px] h-fit bg-richblack-700 rounded-lg flex flex-col border border-richblack-600 shadow-md hover:shadow-yellow-25 transition-all duration-200 cursor-pointer"
                         onClick={() => navigate(`/ytcourse/${course.url_id}`)}
                       >
                         <img
@@ -149,9 +149,9 @@ const Catalog = () => {
                           onError={(e) => {
                             e.currentTarget.src = Logo;
                           }}
-                          className="self-center mb-3 w-[120px] h-[90px] object-cover rounded-md border border-richblack-500"
+                          className="self-center mb-3 w-full aspect-video object-cover rounded-md"
                         />
-                        <div className="flex items-start justify-between gap-2 w-full mb-1">
+                        <div className="flex items-start justify-between gap-2 w-full mb-1 p-2">
                           <p className="text-richblack-5 text-sm font-semibold leading-5 line-clamp-2 flex-1 min-w-0">{course.title}</p>
                           <div className="shrink-0 mt-0.5">
                             {/* Boilerplate status mapping: set course.status as ready | processing | failed */}
@@ -161,9 +161,6 @@ const Catalog = () => {
                             />
                           </div>
                         </div>
-                        <p className="text-richblack-300 text-xs leading-5 line-clamp-2">
-                          {course.description || "No Description"}
-                        </p>
                       </div>
                     );
                   })}

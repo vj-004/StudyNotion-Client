@@ -29,7 +29,9 @@ const YtCourses = () => {
 
   for (const courseProgress of user?.ytCourseProgress) {
     // progressMap[courseProgress?.playlistUrl] = ((courseProgress?.isCompleted?.length || 0) / (courseProgress?.totalLectures || 1)) || 0;
+    // console.log('courseProgress: ', courseProgress);
     progressMap[courseProgress?.playlistUrl] = (courseProgress?.isCompleted && courseProgress?.totalLectures) ? courseProgress?.isCompleted?.length / courseProgress?.totalLectures : 0;
+    // console.log('Percentage completed: ', progressMap[courseProgress?.playlistUrl]*100);
   }
 
 

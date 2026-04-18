@@ -6,7 +6,9 @@ import { getYtCourseById, markCourseAsComplete } from '../services/operations/co
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FaChevronDown, FaChevronLeft } from "react-icons/fa";
 import { updateCoursePlaylist } from '../reducers/slices/profileSlice';
-
+import { TbPlayerPause } from "react-icons/tb";
+import { TbPlayerPlay } from "react-icons/tb";
+import { MdForward5 } from "react-icons/md";
 
 const YtCourse = () => {
     const { user } = useSelector((state) => state.profile);
@@ -17,9 +19,13 @@ const YtCourse = () => {
     const [ytCourseProgress, setYtCourseProgress] = useState({ isCompleted: [] });
     const [openSections, setOpenSections] = useState({});
     const lectureItemRefs = useRef([]);
+    const ytPlayerRef = useRef(null);
+    const ytPlayerInstanceRef = useRef(null);
     const navigate = useNavigate();
     const dispatch = useDispatch(); 
     const [loading, setLoading] = useState(false);
+    const [isPlayerApiReady, setIsPlayerApiReady] = useState(false);
+    const [isVideoPaused, setIsVideoPaused] = useState(false);
 
     useEffect(() => {
         if (!ytPlaylistId) {
@@ -49,7 +55,7 @@ const YtCourse = () => {
                     // console.log('ytCourse: ', course);     
 
                     if(course.playlist === null){
-                        const playlist = await getYtCourseById(ytPlaylistId, navigate);
+                        const playlist = await getYtCourseById(ytPlaylistId, navigate, dispatch);
                         const updatedCourse = {
                             ...course,
                             playlist
@@ -162,6 +168,67 @@ const YtCourse = () => {
     const isCurrentLectureCompleted = ytCourseProgress?.isCompleted?.includes(currentVideoId) || false;
 
     useEffect(() => {
+        if (window.YT && window.YT.Player) {
+            setIsPlayerApiReady(true);
+            return;
+        }
+
+        const previousReadyHandler = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => {
+            if (typeof previousReadyHandler === 'function') {
+                previousReadyHandler();
+            }
+            setIsPlayerApiReady(true);
+        };
+
+        const existingScript = document.querySelector('script[src="https://www.youtube.com/iframe_api"]');
+        if (!existingScript) {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.body.appendChild(tag);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!isPlayerApiReady || !currentVideoId || !ytPlayerRef.current) {
+            return;
+        }
+
+        if (ytPlayerInstanceRef.current && typeof ytPlayerInstanceRef.current.destroy === 'function') {
+            ytPlayerInstanceRef.current.destroy();
+            ytPlayerInstanceRef.current = null;
+        }
+
+        ytPlayerInstanceRef.current = new window.YT.Player(ytPlayerRef.current, {
+            videoId: currentVideoId,
+            playerVars: {
+                rel: 0,
+            },
+            events: {
+                onReady: () => {
+                    setIsVideoPaused(false);
+                },
+                onStateChange: (event) => {
+                    const playerState = window.YT.PlayerState;
+                    if (event.data === playerState.PAUSED || event.data === playerState.ENDED) {
+                        setIsVideoPaused(true);
+                    }
+                    if (event.data === playerState.PLAYING || event.data === playerState.BUFFERING) {
+                        setIsVideoPaused(false);
+                    }
+                },
+            },
+        });
+
+        return () => {
+            if (ytPlayerInstanceRef.current && typeof ytPlayerInstanceRef.current.destroy === 'function') {
+                ytPlayerInstanceRef.current.destroy();
+                ytPlayerInstanceRef.current = null;
+            }
+        };
+    }, [isPlayerApiReady, currentVideoId]);
+
+    useEffect(() => {
         const firstVideoIdx = () => {
             if (!videoIds.length) return;
 
@@ -175,8 +242,7 @@ const YtCourse = () => {
         };
 
         firstVideoIdx();
-
-    }, [ytCourseProgress, videoIds]);
+    }, [videoIds, ytCourseProgress?.isCompleted]);
 
     useEffect(() => {
         const activeLectureBtn = lectureItemRefs.current[selectedIdx];
@@ -259,6 +325,27 @@ const YtCourse = () => {
             ...prevOpenSections,
             [key]: !prevOpenSections[key],
         }));
+    };
+
+    const handleTogglePlayback = () => {
+        if (!ytPlayerInstanceRef.current) return;
+
+        if (isVideoPaused) {
+            ytPlayerInstanceRef.current.playVideo();
+            return;
+        }
+
+        ytPlayerInstanceRef.current.pauseVideo();
+    };
+
+    const handleSeekBy = (seconds) => {
+        if (!ytPlayerInstanceRef.current) return;
+
+        const currentTime = ytPlayerInstanceRef.current.getCurrentTime();
+        const duration = ytPlayerInstanceRef.current.getDuration();
+        const nextTime = Math.min(Math.max(currentTime + seconds, 0), duration || Infinity);
+
+        ytPlayerInstanceRef.current.seekTo(nextTime, true);
     };
 
     if (loading) {
@@ -426,9 +513,10 @@ const YtCourse = () => {
                             {currentVideoId ? (
                                 <iframe
                                     key={currentVideoId}
+                                    ref={ytPlayerRef}
                                     width="100%"
                                     height="100%"
-                                    src={`https://www.youtube.com/embed/${currentVideoId}?rel=0`}
+                                    src={`https://www.youtube.com/embed/${currentVideoId}?rel=0&enablejsapi=1`}
                                     title={currentLecture?.title || `Lecture ${selectedIdx + 1}`}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
@@ -461,7 +549,7 @@ const YtCourse = () => {
                     <div className="absolute bottom-0 left-0 right-0 z-40 w-full">
                         <div className="mx-auto w-full rounded-t-2xl border-t border-richblack-600 bg-richblack-800/95 px-4 py-4 md:px-6 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.45)]">
                             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                <div className="flex items-center gap-3 md:gap-4">
+                                <div className="flex flex-wrap items-center gap-3 md:gap-4">
                                     <button
                                         onClick={handlePrev}
                                         disabled={isFirstLecture}
@@ -469,13 +557,40 @@ const YtCourse = () => {
                                     >
                                         Previous
                                     </button>
-
                                     <button
                                         onClick={handleNext}
                                         disabled={isLastLecture}
                                         className="rounded-lg bg-yellow-50 px-5 py-2.5 text-sm font-semibold text-richblack-900 shadow-[0_6px_18px_rgba(255,214,10,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-yellow-25 hover:shadow-[0_10px_24px_rgba(255,214,10,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         Next
+                                    </button>
+                                </div>
+
+                                <div className='flex gap-3'>
+                                    <button
+                                        onClick={() => handleSeekBy(-5)}
+                                        disabled={!currentVideoId || !isPlayerApiReady}
+                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        <p className='transform -scale-x-100'>
+                                            <MdForward5/>
+                                        </p>
+                                    </button>
+
+                                    <button
+                                        onClick={handleTogglePlayback}
+                                        disabled={!currentVideoId || !isPlayerApiReady}
+                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        {isVideoPaused ? <TbPlayerPlay/> : <TbPlayerPause/>}
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleSeekBy(5)}
+                                        disabled={!currentVideoId || !isPlayerApiReady}
+                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        <MdForward5/>
                                     </button>
                                 </div>
 
