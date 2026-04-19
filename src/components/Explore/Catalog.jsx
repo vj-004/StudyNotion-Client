@@ -3,11 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCategoryCourses, fetchAllCategories } from '../../services/operations/courseDetailsAPI';
 import CourseCard from './CourseCard';
-import Logo from '../../assets/Logo/courseX_logo.png';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
-import YtCourseStatusDot from '../Common/YtCourseStatusDot';
-import { ytCourseStatus } from '../../constants';
+import YtCourseCard from '../Common/YtCourseCard';
 
 
 
@@ -133,35 +131,12 @@ const Catalog = () => {
               ) : user.ytCourses.length > 0 ? (
                 <div className="flex flex-col gap-8 w-full">
                   {user.ytCourses.map((course, index) => {
-                    const thumbnailUrl = course?.playlistDetails?.thumbnail?.url;
-
                     return (
-                      <div
+                      <YtCourseCard
                         key={index}
-                        className="w-[300px] h-fit bg-richblack-700 rounded-lg flex flex-col border border-richblack-600 shadow-md hover:shadow-yellow-25 transition-all duration-200 cursor-pointer"
+                        course={course}
                         onClick={() => navigate(`/ytcourse/${course.url_id}`)}
-                      >
-                        <img
-                          src={thumbnailUrl ? thumbnailUrl : Logo}
-                          alt="thumbnail"
-                          width={192}
-                          height={120}
-                          onError={(e) => {
-                            e.currentTarget.src = Logo;
-                          }}
-                          className="self-center mb-3 w-full aspect-video object-cover rounded-md"
-                        />
-                        <div className="flex items-start justify-between gap-2 w-full mb-1 p-2">
-                          <p className="text-richblack-5 text-sm font-semibold leading-5 line-clamp-2 flex-1 min-w-0">{course.title}</p>
-                          <div className="shrink-0 mt-0.5">
-                            {/* Boilerplate status mapping: set course.status as ready | processing | failed */}
-                            <YtCourseStatusDot
-                              status={course?.status || ytCourseStatus.READY}
-                              showLabel={false}
-                            />
-                          </div>
-                        </div>
-                      </div>
+                      />
                     );
                   })}
                 </div>

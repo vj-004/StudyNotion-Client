@@ -9,6 +9,7 @@ import { updateCoursePlaylist } from '../reducers/slices/profileSlice';
 import { TbPlayerPause } from "react-icons/tb";
 import { TbPlayerPlay } from "react-icons/tb";
 import { MdForward5 } from "react-icons/md";
+import { SlSpeedometer } from "react-icons/sl";
 
 const YtCourse = () => {
     const { user } = useSelector((state) => state.profile);
@@ -25,7 +26,10 @@ const YtCourse = () => {
     const dispatch = useDispatch(); 
     const [loading, setLoading] = useState(false);
     const [isPlayerApiReady, setIsPlayerApiReady] = useState(false);
-    const [isVideoPaused, setIsVideoPaused] = useState(false);
+    const [isVideoPaused, setIsVideoPaused] = useState(true);
+    const [playbackRate, setPlaybackRate] = useState(1);
+
+    const speedOptions = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
     useEffect(() => {
         if (!ytPlaylistId) {
@@ -206,7 +210,10 @@ const YtCourse = () => {
             },
             events: {
                 onReady: () => {
-                    setIsVideoPaused(false);
+                    setIsVideoPaused(true);
+                    if (playbackRate !== 1) {
+                        ytPlayerInstanceRef.current.setPlaybackRate(playbackRate);
+                    }
                 },
                 onStateChange: (event) => {
                     const playerState = window.YT.PlayerState;
@@ -216,6 +223,9 @@ const YtCourse = () => {
                     if (event.data === playerState.PLAYING || event.data === playerState.BUFFERING) {
                         setIsVideoPaused(false);
                     }
+                },
+                onPlaybackRateChange: (event) => {
+                    setPlaybackRate(event.data);
                 },
             },
         });
@@ -242,7 +252,7 @@ const YtCourse = () => {
         };
 
         firstVideoIdx();
-    }, [videoIds, ytCourseProgress?.isCompleted]);
+    }, []);
 
     useEffect(() => {
         const activeLectureBtn = lectureItemRefs.current[selectedIdx];
@@ -346,6 +356,14 @@ const YtCourse = () => {
         const nextTime = Math.min(Math.max(currentTime + seconds, 0), duration || Infinity);
 
         ytPlayerInstanceRef.current.seekTo(nextTime, true);
+    };
+
+    const handleChangePlaybackRate = (event) => {
+        const nextRate = Number(event.target.value);
+        setPlaybackRate(nextRate);
+
+        if (!ytPlayerInstanceRef.current) return;
+        ytPlayerInstanceRef.current.setPlaybackRate(nextRate);
     };
 
     if (loading) {
@@ -570,7 +588,7 @@ const YtCourse = () => {
                                     <button
                                         onClick={() => handleSeekBy(-5)}
                                         disabled={!currentVideoId || !isPlayerApiReady}
-                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-xl font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <p className='transform -scale-x-100'>
                                             <MdForward5/>
@@ -580,7 +598,7 @@ const YtCourse = () => {
                                     <button
                                         onClick={handleTogglePlayback}
                                         disabled={!currentVideoId || !isPlayerApiReady}
-                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-xl font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         {isVideoPaused ? <TbPlayerPlay/> : <TbPlayerPause/>}
                                     </button>
@@ -588,10 +606,29 @@ const YtCourse = () => {
                                     <button
                                         onClick={() => handleSeekBy(5)}
                                         disabled={!currentVideoId || !isPlayerApiReady}
-                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="rounded-lg border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-xl font-semibold text-richblack-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-100 hover:bg-richblack-600 hover:text-yellow-50 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <MdForward5/>
                                     </button>
+
+                                    <div className="flex items-center gap-2 rounded-lg border border-richblack-600 bg-richblack-700 px-3 py-2">
+                                        <span className="text-xl font-semibold uppercase tracking-wide text-richblack-100">
+                                            <SlSpeedometer/>
+                                        </span>
+                                        <select
+                                            value={playbackRate}
+                                            onChange={handleChangePlaybackRate}
+                                            disabled={!currentVideoId || !isPlayerApiReady}
+                                            className="bg-richblack-500 text-richblack-5 rounded-md"
+                                            aria-label="Video playback speed"
+                                        >
+                                            {speedOptions.map((speed) => (
+                                                <option key={speed} value={speed}>
+                                                    {speed}x
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <button
