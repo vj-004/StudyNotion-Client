@@ -9,12 +9,14 @@ import { setCourse } from '../../../../reducers/slices/courseSlice';
 import { FaPlus } from "react-icons/fa";
 import LectureModal from './LectureModal';
 import { MdOndemandVideo } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
 
   const {course} = useSelector((state) => state.course);
   const {token} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [confirmationModal, setConfirmationModal] = useState(null);
   const [addLecture, setAddLecture] = useState(null);
   const [viewLecture, setViewLecture] = useState(null);
@@ -25,7 +27,7 @@ const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
   const deleteCurrentSubSection = async (subSectionId, sectionId) => {
 
     try{
-      await deleteSubSection({subSectionId, sectionId}, token);
+      await deleteSubSection({subSectionId, sectionId}, token, dispatch, navigate);
       // Find the section object to update
       const sectionToUpdate = course.courseContent.find((content) => content._id === sectionId);
       if (!sectionToUpdate) {
@@ -56,7 +58,7 @@ const NestedView = ( {handleEditSectionName, setConfimationModalData} ) => {
 
   const deleteCurrentSection = async (sectionId) => {
 
-    await deleteSection({sectionId, courseId: course._id}, token);
+    await deleteSection({sectionId, courseId: course._id}, token, dispatch, navigate);
     
     const updatedCourse = {
       ...course,

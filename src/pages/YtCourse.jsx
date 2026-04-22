@@ -59,7 +59,7 @@ const YtCourse = () => {
                     // console.log('ytCourse: ', course);     
 
                     if(course.playlist === null){
-                        const playlist = await getYtCourseById(ytPlaylistId, navigate, dispatch);
+                        const playlist = await getYtCourseById(ytPlaylistId, dispatch, navigate);
                         const updatedCourse = {
                             ...course,
                             playlist
@@ -308,7 +308,7 @@ const YtCourse = () => {
 
         if (!currentVideoId) return;
         if (!ytCourseProgress?.isCompleted?.includes(currentVideoId)) {
-            const result = await markCourseAsComplete({ videoId: currentVideoId, playlistUrl: ytPlaylistId }, token, dispatch);
+            const result = await markCourseAsComplete({ videoId: currentVideoId, playlistUrl: ytPlaylistId }, token, dispatch, navigate);
 
             if (!result) return;
 

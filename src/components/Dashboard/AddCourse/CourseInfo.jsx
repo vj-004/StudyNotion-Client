@@ -8,6 +8,7 @@ import { setCourse, setEditCourse, setStep } from '../../../reducers/slices/cour
 import { FaChevronRight } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import Upload from './Upload';
+import { useNavigate } from 'react-router-dom';
 
 // image not rendering when we are editing course
 
@@ -23,6 +24,7 @@ const CourseInfo = () => {
     } = useForm();
     const {course,editCourse} = useSelector((state) => state.course);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {token} = useSelector((state) => state.auth);
     const [loading, setLoading] = useState(false);
     const [courseCategories, setCourseCategories] = useState([]);
@@ -37,7 +39,7 @@ const CourseInfo = () => {
         
         const getAllCategories = async () => {
             setLoading(true);
-            const categories = await fetchAllCategories();
+            const categories = await fetchAllCategories(dispatch, navigate);
             if(categories.length > 0){
                 setCourseCategories(categories);
             }
@@ -163,7 +165,7 @@ const CourseInfo = () => {
             setLoading(true);
             try{
 
-                const result = await editCourseDetails(formData);
+                const result = await editCourseDetails(formData, dispatch, navigate);
                 if(result){
                     dispatch(setStep(2));
                     dispatch(setCourse(result));
@@ -198,7 +200,7 @@ const CourseInfo = () => {
             setLoading(true);
             
             try{
-                const result = await addCourseDetails(formData, token);
+                const result = await addCourseDetails(formData, token, dispatch, navigate);
                 if(result){
                     dispatch(setCourse(result));
                     dispatch(setStep(2));

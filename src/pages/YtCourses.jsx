@@ -46,7 +46,7 @@ const YtCourses = () => {
       descp: playlistDescription
     }
     // console.log('data: ', data);
-    await createYtCourse(data,token,dispatch);
+    await createYtCourse(data,token,dispatch,navigate);
     setCreateModal(null);
   }
 
@@ -54,7 +54,7 @@ const YtCourses = () => {
     if (isRefreshing) return;
     setIsRefreshing(true);
     try {
-      const updatedYtCourses = await getAllYtCourses(token);
+      const updatedYtCourses = await getAllYtCourses(token,dispatch, navigate);
       if (!Array.isArray(updatedYtCourses) || !Array.isArray(user?.ytCourses)) {
         return;
       }
@@ -213,7 +213,7 @@ const YtCourses = () => {
             )}
           </div>
         ) : (
-          <div className="mt-8 w-full rounded-lg border border-richblack-700 bg-richblack-800 p-5">
+          <div className="mt-8 w-full rounded-lg border border-richblack-700 bg-richblack-800 p-5 flex justify-center">
             {ytCourses.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10">
                 <p className="text-lg text-richblack-300">You have not added any YouTube courses yet.</p>

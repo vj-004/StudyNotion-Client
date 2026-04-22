@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getCategoryCourses, fetchAllCategories } from '../../services/operations/courseDetailsAPI';
 import CourseCard from './CourseCard';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import YtCourseCard from '../Common/YtCourseCard';
 
 
@@ -16,17 +16,18 @@ const Catalog = () => {
   const [courses, setCourses] = useState([]);
   const [category, setCategory] = useState({});
   const {user} = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
   const [allCategories, setAllCategories] = useState([]);
   const {token} = useSelector((state) => state.auth);
   const navigate = useNavigate();
   // Fetch all categories for chips
   useEffect(() => {
     const fetchCategories = async () => {
-      const cats = await fetchAllCategories();
+      const cats = await fetchAllCategories(dispatch, navigate);
       setAllCategories(cats);
     };
     fetchCategories();
-  }, []);
+  }, [dispatch, navigate]);
 
   // Fetch courses for selected category
   useEffect(() => {
@@ -36,7 +37,7 @@ const Catalog = () => {
         const currentCategory = allCategories.find((cat) => cat.name.split(" ").join("-") === catalogName);
         setCategory(currentCategory || {});
         if (currentCategory) {
-          const result = await getCategoryCourses(currentCategory._id);
+          const result = await getCategoryCourses(currentCategory._id, dispatch, navigate);
           setCourses(result || []);
         } else {
           setCourses([]);
@@ -47,7 +48,7 @@ const Catalog = () => {
       setLoading(false);
     };
     if (catalogName) getCoursesByCategory();
-  }, [catalogName, allCategories]);
+  }, [catalogName, allCategories, dispatch, navigate]);
   
   const handleCategoryClick = (cat) => {
     setCatalogName(cat.name.split(" ").join("-"));

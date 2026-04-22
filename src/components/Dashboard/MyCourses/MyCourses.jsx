@@ -3,17 +3,19 @@ import { instructorCourses } from '../../../services/operations/courseDetailsAPI
 import { useNavigate } from 'react-router-dom';
 import CourseTable from './CourseTable';
 import { IoAddSharp } from "react-icons/io5";
+import { useDispatch } from 'react-redux';
 
 const MyCourses = () => {
 
   const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
 
     const getInstructorCourses = async () => {
       try{
-        const result = await instructorCourses();
+        const result = await instructorCourses(dispatch, navigate);
         setCourses(result);
       }
       catch(error){
@@ -21,7 +23,7 @@ const MyCourses = () => {
       }
     }
     getInstructorCourses();
-  }, []);
+  }, [dispatch, navigate]);
 
   return (
     <div className=' p-6 w-full'>

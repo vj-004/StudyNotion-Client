@@ -7,14 +7,17 @@ import { MdOutlineTimer } from "react-icons/md";
 import ConfirmationModal from '../../Common/ConfirmationModal';
 import { deleteCourse } from '../../../services/operations/courseDetailsAPI';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CourseTable = ({courses, setCourses}) => {
 
   const [confirmationModal, setConfirmationModal] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
 
   const deleteCurrentCourse = async (courseId) => {
-    deleteCourse(courseId);
+    await deleteCourse(courseId, token, dispatch, navigate);
     setConfirmationModal(null);
     const updatedCourses = courses.filter((course) => course._id !== courseId);
     setCourses(updatedCourses);

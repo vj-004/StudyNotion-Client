@@ -14,7 +14,7 @@ const AddCourse = () => {
     
     useEffect(() => {
         const fetchDraftCourse = async () => {
-            const courseToBeEdited = await getDraftCourse(navigate,dispatch);
+            const courseToBeEdited = await getDraftCourse(dispatch, navigate);
             if(courseToBeEdited){
                 dispatch(setEditCourse(true));
                 dispatch(setCourse(courseToBeEdited));

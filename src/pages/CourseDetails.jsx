@@ -36,7 +36,7 @@ const CourseDetails = () => {
                 }
             }
 
-            const crs = await getAllCourseDetails(courseId);
+            const crs = await getAllCourseDetails(courseId, dispatch, navigate);
             if(crs){
                 setCourse(crs?.courseDetails);
             }

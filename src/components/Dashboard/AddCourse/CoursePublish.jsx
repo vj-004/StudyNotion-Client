@@ -42,7 +42,7 @@ const CoursePublish = () => {
     try{
       setLoading(true);
       // console.log('trying to edit course');
-      const response = await editCourseDetails(formData);
+      const response = await editCourseDetails(formData, dispatch, navigate);
       // console.log('response', response);
       if(response){
         toast.success("Course added successfully");

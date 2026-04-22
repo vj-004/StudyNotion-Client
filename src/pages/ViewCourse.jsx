@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useParams } from 'react-router-dom'
+import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { getAllCourseDetails } from '../services/operations/courseDetailsAPI';
 import VideoDeatilsSidebar from '../components/ViewCourse/VideoDeatilsSidebar';
 import { setCourseSectionData, setEntireCourseData } from '../reducers/slices/viewCourseSlice';
@@ -10,11 +10,12 @@ const ViewCourse = () => {
     const {courseId} = useParams();
     const {token} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
 
         const setCourseSpecificDetails = async () => {
-            const courseData = await getAllCourseDetails(courseId, token);
+            const courseData = await getAllCourseDetails(courseId, dispatch, navigate);
             // console.log('courseData: ', courseData);
             dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
             dispatch(setEntireCourseData(courseData.courseDetails)); 
@@ -22,7 +23,7 @@ const ViewCourse = () => {
 
         setCourseSpecificDetails();
 
-    }, [courseId, token, dispatch]);
+    }, [courseId, token, dispatch, navigate]);
 
   return (
     <div className='flex min-h-[calc(100vh-3.5rem)] w-full bg-richblack-900 text-richblack-5'>

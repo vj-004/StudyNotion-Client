@@ -5,7 +5,7 @@ import { setToken } from "../../reducers/slices/authSlice";
 import { addYtCourseProgreesToUser, addYtCoursesToUser, updateYtCourseProgress } from "../../reducers/slices/profileSlice";
 
 
-export const fetchAllCategories = async () => {
+export const fetchAllCategories = async (dispatch, navigate) => {
     let result = [];
     try{
 
@@ -18,14 +18,20 @@ export const fetchAllCategories = async () => {
         result = response?.data?.allCategories;
 
     }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return result;
+        }
         console.log('Error in getting all categories', error);
-        toast.error(error.message)
+        toast.error(error?.response?.data?.message || error.message)
     }
 
     return result;
 }
 
-export const getDraftCourse = async (navigate, dispatch) => {
+export const getDraftCourse = async (dispatch, navigate) => {
     try{
 
         const response = await apiConnecter("GET", courseEndpoints.GET_DRAFT_COURSE);
@@ -33,20 +39,21 @@ export const getDraftCourse = async (navigate, dispatch) => {
         return response.data.data;
 
     }catch(error){
-        if(error.response.data.success === false){
+        if(error?.response?.status === 401){
             toast.error("Please login again");
             dispatch(setToken(null));
             navigate('/login');
+            return;
         }
         else{
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || error.message);
         }
-        console.log('Error in getting draft course', error.response.data.message);
+        console.log('Error in getting draft course', error?.response?.data?.message || error?.message);
         
     }
 }
 
-export const editCourseDetails = async (data) => {
+export const editCourseDetails = async (data, dispatch, navigate) => {
     console.log('trying to editcourse');
     try{
 
@@ -64,12 +71,19 @@ export const editCourseDetails = async (data) => {
         return response.data.data;
 
     }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
         console.log('Error in creating an API request to edit the course');
+        toast.error(error?.response?.data?.message || error.message);
     }
 
 }
 
-export const addCourseDetails = async (data,token) => {
+export const addCourseDetails = async (data,token,dispatch,navigate) => {
     let result = null;
     const toastId = toast.loading("Loading...");
 
@@ -88,14 +102,21 @@ export const addCourseDetails = async (data,token) => {
         result = response?.data?.data;
 
     } catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            toast.dismiss(toastId);
+            return result;
+        }
         console.log('Create course API error....', error);
-        toast.error(error.message);
+        toast.error(error?.response?.data?.message || error.message);
     }
     toast.dismiss(toastId);
     return result;
 }
 
-export const createYtCourse = async (data,token,dispatch) => {
+export const createYtCourse = async (data,token,dispatch,navigate) => {
 
     const toastId = toast.loading("Loading...");
     try{
@@ -126,12 +147,19 @@ export const createYtCourse = async (data,token,dispatch) => {
         return;
 
     }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            toast.dismiss(toastId);
+            return;
+        }
         console.log('Error in createYtCourse', error);
         if(error?.response?.data?.message === 'The given playlist URL is not valid'){
             toast.error(error?.response?.data?.message);
         }
         else{
-            toast.error(error.message);
+            toast.error(error?.response?.data?.message || error.message);
         }
     }
 
@@ -140,7 +168,7 @@ export const createYtCourse = async (data,token,dispatch) => {
 
 }
 
-export const markCourseAsComplete = async (data, token, dispatch) => {
+export const markCourseAsComplete = async (data, token, dispatch, navigate) => {
 
     const toastId = toast.loading("Loading...");
     try{
@@ -169,8 +197,15 @@ export const markCourseAsComplete = async (data, token, dispatch) => {
 
     }
     catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            toast.dismiss(toastId);
+            return false;
+        }
         console.log('Error in marking course as complete', error);
-        toast.error("Could not the lecture as complete");
+        toast.error(error?.response?.data?.message || "Could not mark the lecture as complete");
     }
 
     toast.dismiss(toastId);
@@ -178,7 +213,7 @@ export const markCourseAsComplete = async (data, token, dispatch) => {
 
 }
 
-export const createSection = async (data,token) => {
+export const createSection = async (data,token,dispatch,navigate) => {
     try{
 
         const response = await apiConnecter("POST", courseEndpoints.CREATE_SECTION_API,data,{
@@ -196,12 +231,18 @@ export const createSection = async (data,token) => {
         return response.data.data;
 
     }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
         console.log('Error in creating a section', error);
-        toast.error(error.message);
+        toast.error(error?.response?.data?.message || error.message);
     }
 }
 
-export const deleteSection = async (data,token) => {
+export const deleteSection = async (data,token,dispatch,navigate) => {
     try{
 
         const response = await apiConnecter("POST", courseEndpoints.DELETE_SECTION_API,data,{
@@ -219,12 +260,18 @@ export const deleteSection = async (data,token) => {
         return;
 
     }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
         console.log('Error in deleting a section', error);
-        toast.error(error.message);
+        toast.error(error?.response?.data?.message || error.message);
     }
 }
     
-export const updateSection = async (data,token) => {
+export const updateSection = async (data,token,dispatch,navigate) => {
     try{
 
         const response = await apiConnecter("POST", courseEndpoints.UPDATE_SECTION_API,data,{
@@ -242,12 +289,18 @@ export const updateSection = async (data,token) => {
         return;
 
     }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
         console.log('Error in updating a section', error);
-        toast.error(error.message);
+        toast.error(error?.response?.data?.message || error.message);
     }
 }
 
-export const createSubSection = async (data, token) => {
+export const createSubSection = async (data, token, dispatch, navigate) => {
   let result = null
   const toastId = toast.loading("Loading...")
   try {
@@ -260,15 +313,22 @@ export const createSubSection = async (data, token) => {
     }
     toast.success("Lecture Added")
     result = response?.data.updatedSection;
-  } catch (error) {
-    console.log("CREATE SUB-SECTION API ERROR............", error)
-    toast.error(error.message)
+    } catch (error) {
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            toast.dismiss(toastId)
+            return result
+        }
+        console.log("CREATE SUB-SECTION API ERROR............", error)
+        toast.error(error?.response?.data?.message || error.message)
   }
   toast.dismiss(toastId)
   return result
 }
 
-export const deleteSubSection = async (data, token) => {
+export const deleteSubSection = async (data, token, dispatch, navigate) => {
 //   let result = null
   const toastId = toast.loading("Loading...")
   try {
@@ -281,15 +341,22 @@ export const deleteSubSection = async (data, token) => {
     }
     toast.success("Lecture Deleted")
     // result = response?.data.updatedSection;
-  } catch (error) {
-    console.log("DELETE SUB-SECTION API ERROR............", error)
-    toast.error(error.response.data.message)
+    } catch (error) {
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            toast.dismiss(toastId)
+            return;
+        }
+        console.log("DELETE SUB-SECTION API ERROR............", error)
+        toast.error(error?.response?.data?.message || error.message)
   }
   toast.dismiss(toastId)
   return;
 }
 
-export const editSubSection = async (data, token) => {
+export const editSubSection = async (data, token, dispatch, navigate) => {
 
     try{
 
@@ -303,15 +370,21 @@ export const editSubSection = async (data, token) => {
         toast.success("Lecture edited successfully");
         return response.data.data;
 
-    }catch(err){
+    }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
         console.log('There was an error in editting sub section');
-        toast.error(err.data.message);
+        toast.error(error?.response?.data?.message || error.message);
     }
 
 }
 
 
-export const instructorCourses = async () => {
+export const instructorCourses = async (dispatch, navigate) => {
 
     try{
 
@@ -323,14 +396,20 @@ export const instructorCourses = async () => {
         console.log('response of getting all lectures works');
         return response?.data?.data;
 
-    }catch(err){
-        toast.error("Please login again");
+    }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
+        toast.error(error?.response?.data?.message || error.message);
         console.log('Error in getting instructor courses');
     }
 
 }
 
-export const deleteCourse = async (courseId, token) => {
+export const deleteCourse = async (courseId, token, dispatch, navigate) => {
 
     try{
 
@@ -342,15 +421,21 @@ export const deleteCourse = async (courseId, token) => {
         toast.success("Course deleted successfully");
 
     }catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
         console.log('Error in deleting the course');
-        throw new Error("Please login later");
+        throw new Error(error?.response?.data?.message || "Please login later");
     }
 
     return;
 
 } 
 
-export const getAllCourseDetails = async (courseId) => {
+export const getAllCourseDetails = async (courseId, dispatch, navigate) => {
     try{
 
         const response = await apiConnecter("POST", courseEndpoints.GET_FULL_COURSE_DETAILS_AUTHENTICATED,{courseId});
@@ -359,18 +444,21 @@ export const getAllCourseDetails = async (courseId) => {
         return response.data.data;
 
     }catch(error){
-        if(error.response.data.success === false){
+        if(error?.response?.status === 401){
             toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
         }
         else{
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || error.message);
         }
-        console.log('Error in getting draft course', error.response.data.message);
+        console.log('Error in getting draft course', error?.response?.data?.message || error.message);
         
     }
 }
 
-export const getCategoryCourses = async (categoryId) => {
+export const getCategoryCourses = async (categoryId, dispatch, navigate) => {
     try{
 
         const response = await apiConnecter("POST", courseEndpoints.GET_COURSES_BY_CATEGORY,{categoryId});
@@ -379,19 +467,21 @@ export const getCategoryCourses = async (categoryId) => {
         return response.data.data;
 
     }catch(error){
-        if(error.response.data.success === false){
+        if(error?.response?.status === 401){
             toast.error("Please login again");
-            
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
         }
         else{
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || error.message);
         }
-        console.log('Error in getting courses based on category', error.response.data.message);
+        console.log('Error in getting courses based on category', error?.response?.data?.message || error.message);
         
     }
 }
 
-export const getAllYtCourses = async (token) => {
+export const getAllYtCourses = async (token, dispatch, navigate) => {
 
 
     try{
@@ -404,14 +494,20 @@ export const getAllYtCourses = async (token) => {
 
     }
     catch(error){
-        
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
+        toast.error(error?.response?.data?.message || error.message);
         console.log('Error in getting youtube courses: ', error);
     }
 
 
 }
 
-export const getYtCourseById = async (playlistId, navigate, dispatch) => {
+export const getYtCourseById = async (playlistId, dispatch, navigate) => {
 
     try{
         const response = await apiConnecter("POST", courseEndpoints.GET_YT_COURSE_BY_ID, {playlistId});

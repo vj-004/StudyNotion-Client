@@ -6,11 +6,13 @@ import { MdAddCircleOutline } from "react-icons/md";
 import toast from 'react-hot-toast';
 import NestedView from './CourseBuilder/NestedView';
 import { createSection, updateSection } from '../../../services/operations/courseDetailsAPI';
+import { useNavigate } from 'react-router-dom';
 
 const CourseBuilder = () => {
 
   const {register, handleSubmit, setValue, formState: {errors}} = useForm();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {course} = useSelector((state) => state.course);
   // editSectionName hold the id of the section name which is going to be edited
   const [editSectionName, setEditSectionName] = useState(null);
@@ -48,7 +50,7 @@ const CourseBuilder = () => {
       const response = await createSection({
         sectionName: data.sectionName,
         courseId: course._id,
-      },token);
+      },token, dispatch, navigate);
       // console.log('result', result);
       setValue("sectionName", "");
       const updatedCourse = {
@@ -67,7 +69,7 @@ const CourseBuilder = () => {
       await updateSection({
         sectionId: editSectionName,
         sectionName: data.sectionName,
-      }, token);
+      }, token, dispatch, navigate);
 
       const updatedCourse = {
         ...course,

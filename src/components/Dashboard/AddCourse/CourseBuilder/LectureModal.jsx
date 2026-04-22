@@ -6,6 +6,7 @@ import Upload from '../Upload';
 import { createSubSection, editSubSection } from '../../../../services/operations/courseDetailsAPI';
 import { setCourse } from '../../../../reducers/slices/courseSlice';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 
 const LectureModal = ({setModalData, modalData, add=false, view=false, edit=false}) => {
@@ -13,6 +14,7 @@ const LectureModal = ({setModalData, modalData, add=false, view=false, edit=fals
     const {register, handleSubmit, setValue, getValues, formState: {errors}} = useForm();
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const {course} = useSelector((state) => state.course);
     const {token} = useSelector((state) => state.auth);
@@ -51,7 +53,7 @@ const LectureModal = ({setModalData, modalData, add=false, view=false, edit=fals
             formData.append("video", currentValues.lectureVideo)
         }
 
-        const result = await editSubSection(formData, token);
+        const result = await editSubSection(formData, token, dispatch, navigate);
         // console.log(result);
         if(result){
             let updatedSection = course.courseContent.find((section) => section._id === modalData.sectionId);
@@ -94,7 +96,7 @@ const LectureModal = ({setModalData, modalData, add=false, view=false, edit=fals
         setLoading(true);
         try{
 
-            const result = await createSubSection(formData,token);
+            const result = await createSubSection(formData,token,dispatch,navigate);
             if(!result){
                 throw new Error("Result data was null");
             }

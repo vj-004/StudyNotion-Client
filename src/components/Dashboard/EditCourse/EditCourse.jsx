@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import RenderSteps from '../renderSteps'
 import { useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getAllCourseDetails } from '../../../services/operations/courseDetailsAPI';
 import { setCourse, setEditCourse } from '../../../reducers/slices/courseSlice';
 
 const EditCourse = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {courseId} = useParams();
 
 
@@ -15,7 +16,7 @@ const EditCourse = () => {
 
         const populateCourseDetails = async () => {
 
-            const result = await getAllCourseDetails(courseId);
+            const result = await getAllCourseDetails(courseId, dispatch, navigate);
             console.log('result: ', result);
             dispatch(setEditCourse(true));
             dispatch(setCourse(result));
@@ -24,7 +25,7 @@ const EditCourse = () => {
 
         populateCourseDetails();
 
-    }, [courseId, dispatch]);
+    }, [courseId, dispatch, navigate]);
     
 
   return (
