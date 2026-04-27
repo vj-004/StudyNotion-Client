@@ -7,3 +7,28 @@ html , body{
     overflow-x: hidden;
 
 }
+
+.catalog-scrollbar {
+    scrollbar-gutter: stable;
+    scrollbar-width: auto;
+    scrollbar-color: #FFD60A #2C333F;
+}
+
+.catalog-scrollbar::-webkit-scrollbar {
+    height: 12px;
+}
+
+.catalog-scrollbar::-webkit-scrollbar-track {
+    background: #2C333F;
+    border-radius: 9999px;
+}
+
+.catalog-scrollbar::-webkit-scrollbar-thumb {
+    background: #FFD60A;
+    border-radius: 9999px;
+    border: 3px solid #2C333F;
+}
+
+.catalog-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #FFE83D;
+}

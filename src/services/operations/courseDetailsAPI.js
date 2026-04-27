@@ -481,12 +481,12 @@ export const getCategoryCourses = async (categoryId, dispatch, navigate) => {
     }
 }
 
-export const getAllYtCourses = async (token, dispatch, navigate) => {
+export const getAllUserYtCourses = async (token, dispatch, navigate) => {
 
 
     try{
 
-        const response = await apiConnecter("GET", courseEndpoints.GET_YT_COURSES, null, {
+        const response = await apiConnecter("GET", courseEndpoints.GET_USER_YT_COURSES, null, {
             Authorization: `Bearer ${token}`,
         });
         return response.data.data;
@@ -504,6 +504,27 @@ export const getAllYtCourses = async (token, dispatch, navigate) => {
         console.log('Error in getting youtube courses: ', error);
     }
 
+}
+
+export const getAllYtPlaylists = async (page, dispatch, navigate) => {
+
+
+    try{
+
+        const response = await apiConnecter("GET", courseEndpoints.GET_ALL_YT_PLAYLIST+`?page=${page}`);
+        return response.data.data;
+
+    }
+    catch(error){
+        if(error?.response?.status === 401){
+            toast.error("Please login again");
+            dispatch(setToken(null));
+            navigate('/login');
+            return;
+        }
+        toast.error(error?.response?.data?.message || error.message);
+        console.log('Error in getting youtube courses: ', error);
+    }
 
 }
 

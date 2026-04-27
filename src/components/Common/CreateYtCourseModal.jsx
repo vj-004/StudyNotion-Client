@@ -1,10 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const CreateYtCourseModal = ({modalData}) => {
 
-    const [playlistId, setPlaylistId] = useState(null);
-    const [playlistDescription, setPlaylistDescription] = useState("");
-    const [playlistName, setPlaylistName] = useState("");
+    const [playlistId, setPlaylistId] = useState(modalData?.initialPlaylistId || "");
+    const [playlistDescription, setPlaylistDescription] = useState(modalData?.initialPlaylistDescription || "");
+    const [playlistName, setPlaylistName] = useState(modalData?.initialPlaylistName || "");
+
+    useEffect(() => {
+        setPlaylistId(modalData?.initialPlaylistId || "");
+        setPlaylistName(modalData?.initialPlaylistName || "");
+        setPlaylistDescription(modalData?.initialPlaylistDescription || "");
+    }, [modalData]);
+
+    const playlistUrl = playlistId
+        ? playlistId.startsWith("http")
+            ? playlistId
+            : `https://www.youtube.com/playlist?list=${playlistId}`
+        : null;
 
     // console.log('Function to run when create is clicked',modalData?.btn1Handler)
 
@@ -24,10 +36,21 @@ const CreateYtCourseModal = ({modalData}) => {
                             name="playlistId"
                             value={playlistId || ""}
                             onChange={e => setPlaylistId(e.target.value)}
-                            className="p-2 rounded-md bg-richblack-700 text-richblack-5 border border-richblack-600 focus:outline-none"
+                            className={`p-2 rounded-md text-richblack-5 border border-richblack-600 focus:outline-none ${modalData?.lockPlaylistId ? 'bg-richblack-800 cursor-not-allowed' : 'bg-richblack-700'}`}
                             placeholder="Enter YouTube Playlist ID"
+                            readOnly={Boolean(modalData?.lockPlaylistId)}
                             required
                         />
+                        {playlistUrl && (
+                            <a
+                                href={playlistUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-1 w-fit text-xs font-semibold text-yellow-50 underline underline-offset-2 hover:text-yellow-25"
+                            >
+                                View Playlist
+                            </a>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1">
                         <label htmlFor="playlistName" className="text-richblack-5 font-inter font-medium">Playlist Name</label>

@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import CreateYtCourseModal from '../components/Common/CreateYtCourseModal';
 import YtCourseStatusDot from '../components/Common/YtCourseStatusDot';
 import YtCourseCard from '../components/Common/YtCourseCard';
-import { createYtCourse, getAllYtCourses } from '../services/operations/courseDetailsAPI';
+import { createYtCourse, getAllUserYtCourses } from '../services/operations/courseDetailsAPI';
 import { ytCourseStatus } from '../constants';
 import { updateYtCourseStatus } from '../reducers/slices/profileSlice';
 
@@ -54,7 +54,7 @@ const YtCourses = () => {
     if (isRefreshing) return;
     setIsRefreshing(true);
     try {
-      const updatedYtCourses = await getAllYtCourses(token,dispatch, navigate);
+      const updatedYtCourses = await getAllUserYtCourses(token,dispatch, navigate);
       if (!Array.isArray(updatedYtCourses) || !Array.isArray(user?.ytCourses)) {
         return;
       }
