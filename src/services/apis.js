@@ -37,17 +37,18 @@ export const courseEndpoints = {
   DELETE_SECTION_API: BASE_URL + "/course/deleteSection",
   DELETE_SUBSECTION_API: BASE_URL + "/course/deleteSubSection",
   DELETE_COURSE_API: BASE_URL + "/course/deleteCourse",
-  GET_FULL_COURSE_DETAILS_AUTHENTICATED:
-    BASE_URL + "/course/getFullCourseDetails",
+  GET_FULL_COURSE_DETAILS_AUTHENTICATED: BASE_URL + "/course/getFullCourseDetails",
   LECTURE_COMPLETION_API: BASE_URL + "/course/updateCourseProgress",
   CREATE_RATING_API: BASE_URL + "/course/createRating",
   GET_DRAFT_COURSE : BASE_URL + "/course/getDraftCourse",
   EDIT_COURSE_API : BASE_URL + '/course/edit-course',
   GET_COURSES_BY_CATEGORY : BASE_URL + '/course/category-courses',
-  GET_YT_COURSES: BASE_URL + '/course/getAllYtCourses',
+  GET_USER_YT_COURSES: BASE_URL + '/course/getAllUserYtCourses',
   CREATE_YT_COURSE: BASE_URL + '/course/createYtCourse',
   MARK_LECTURE_COMPLETE: BASE_URL + '/course/markYtCourse',
   GET_YT_COURSE_BY_ID: BASE_URL + '/course/ytCourseDetails',
+  GET_ALL_YT_PLAYLIST: BASE_URL + '/course/getAllYtPlaylists',
+
 }
 
 // RATINGS AND REVIEWS

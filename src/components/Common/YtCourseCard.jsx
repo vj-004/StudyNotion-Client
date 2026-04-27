@@ -36,7 +36,7 @@ const YtCourseCard = ({
       />
       <div className="flex items-start justify-between gap-2 w-full mb-1 p-2">
         <p className="text-richblack-5 text-sm font-semibold leading-5 line-clamp-2 flex-1 min-w-0">
-          {course?.title || 'Untitled Course'}
+          { course?.title ? course?.title.length > 20 ? `${course?.title.substr(0,20)}...` : course?.title : 'Untitled Course'}
         </p>
         <div className="shrink-0 mt-0.5">
           <YtCourseStatusDot
