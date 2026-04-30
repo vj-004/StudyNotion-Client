@@ -70,8 +70,8 @@ function App() {
             {
               user?.accountType === 'student' && (
                 <>
-                  {/* <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/> */}
-                  {/* <Route path="/dashboard/cart" element={<Cart/>}/> */}
+                  <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
+                  <Route path="/dashboard/cart" element={<Cart/>}/>
                   <Route path="/dashboard/ytcourses" element={<YtCourses />} />
                   
                 </>
