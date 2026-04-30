@@ -10,14 +10,14 @@ import YtCourseStatusDot from '../components/Common/YtCourseStatusDot';
 import YtCourseCard from '../components/Common/YtCourseCard';
 import { createYtCourse, getAllUserYtCourses } from '../services/operations/courseDetailsAPI';
 import { ytCourseStatus } from '../constants';
-import { updateYtCourseStatus } from '../reducers/slices/profileSlice';
+import { syncYtCourseFromLatest } from '../reducers/slices/profileSlice';
 
 const YtCourses = () => {
   const { user } = useSelector((state) => state.profile);
   const ytCourses = user?.ytCourses || [];
   const [createModal, setCreateModal] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [viewMode, setViewMode] = useState('list');
+  const [viewMode, setViewMode] = useState('block');
   const {token} = useSelector((state) => state.auth );
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ const YtCourses = () => {
       if (!Array.isArray(updatedYtCourses) || !Array.isArray(user?.ytCourses)) {
         return;
       }
-
+      
       const updatedCoursesMap = new Map(
         updatedYtCourses.map((course) => [course?.url_id, course])
       );
@@ -67,14 +67,7 @@ const YtCourses = () => {
         const latestCourse = updatedCoursesMap.get(course?.url_id);
         if (!latestCourse) continue;
 
-        if (course?.status !== latestCourse?.status) {
-          dispatch(
-            updateYtCourseStatus({
-              url_id: course?.url_id,
-              status: latestCourse?.status,
-            })
-          );
-        }
+        dispatch(syncYtCourseFromLatest(latestCourse));
       }
     } finally {
       setIsRefreshing(false);
