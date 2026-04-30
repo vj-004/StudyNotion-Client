@@ -34,13 +34,13 @@ export const sidebarLinks = [
     type: "instructor",
     icon: VscAdd,
   },
-  {
-    id: 5,
-    name: "Enrolled Courses",
-    path: "/dashboard/enrolled-courses",
-    type: "student",
-    icon: VscMortarBoard,
-  },
+  // {
+  //   id: 5,
+  //   name: "Enrolled Courses",
+  //   path: "/dashboard/enrolled-courses",
+  //   type: "student",
+  //   icon: VscMortarBoard,
+  // },
   {
     id:6,
     name: "YouTube Courses",
@@ -48,12 +48,12 @@ export const sidebarLinks = [
     type: "student",
     icon: PiYoutubeLogo
   },
-  {
-    id: 7,
-    name: "Cart",
-    path: "/dashboard/cart",
-    type: "student",
-    icon: VscArchive,
-  }
+  // {
+  //   id: 7,
+  //   name: "Cart",
+  //   path: "/dashboard/cart",
+  //   type: "student",
+  //   icon: VscArchive,
+  // }
   
 ];

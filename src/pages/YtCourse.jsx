@@ -243,7 +243,6 @@ const YtCourse = () => {
             if (!videoIds.length) return;
 
             const idx = videoIds.findIndex((videoId) => !ytCourseProgress?.isCompleted?.includes(videoId));
-
             if (idx === -1) {
                 setSelectedIdx(0);
                 return;
