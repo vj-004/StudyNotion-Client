@@ -78,7 +78,9 @@ const Catalog = () => {
 
   const handleCatalogCourseClick = (playlist) => {
     if (playlist?.isUserCourse) {
-      navigate(`/ytcourse/${playlist?.url_id}`);
+      console.log(`course exists, navigating to /ytcourse/${playlist?.playlist_id}`);
+      // console.log('playlist: ', playlist);
+      navigate(`/ytcourse/${playlist?.playlist_id}`);
       return;
     }
 
@@ -98,7 +100,7 @@ const Catalog = () => {
   return (
     <div className="w-full h-[calc(100vh-3.5rem)] flex flex-col items-center bg-richblack-900 overflow-hidden">
       {/* Modern Banner/Header */}
-      <div className="w-full shrink-0 bg-gradient-to-r from-richblack-800 via-richblue-500 to-richblack-900 py-12 mb-6 flex flex-col items-center border-b border-richblack-700 shadow-lg">
+      <div className="w-full shrink-0 bg-gradient-to-r from-richblack-800 via-richblue-500 to-richblack-900 py-12 mb-6 flex flex-col items-center shadow-lg">
         <h1 className="text-4xl md:text-5xl font-bold text-yellow-50 mb-2 font-inter tracking-tight drop-shadow-lg">
           Explore Catalog
         </h1>
@@ -113,7 +115,7 @@ const Catalog = () => {
 
 
         {/* Courses Section */}
-        <div className="flex-1 p-8 flex flex-col rounded-xl border border-richblack-700 bg-richblack-800 shadow-md w-[50%] h-full overflow-hidden">
+        <div className="flex-1 p-8 flex flex-col rounded-xl  shadow-md w-[50%] h-full overflow-hidden">
           {token && <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
             <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-2 md:mb-0">Your Courses</h2>
           </div>}
@@ -155,7 +157,7 @@ const Catalog = () => {
           }
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-            <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-2 md:mb-0">Courses</h2>
+            <h2 className="text-2xl text-yellow-50 font-bold font-inter mb-2 md:mb-0">All Courses</h2>
           </div>
 
           {loading ? (
@@ -163,7 +165,7 @@ const Catalog = () => {
               <AiOutlineLoading3Quarters className="animate-spin text-4xl text-yellow-25" />
             </div>
           ) : mergedPlaylists.length > 0 ? (
-            <div className="flex h-full min-h-0 w-full flex-col">
+            <div className="flex h-full min-h-0 w-full flex-col  border border-richblack-700 bg-richblack-800/95 py-4 rounded-xl">
               <div className="catalog-scrollbar flex-1 min-h-0 overflow-y-auto overflow-x-hidden pr-2">
                 <div className="flex flex-wrap gap-6 justify-center">
                   {mergedPlaylists.map((playlist, index) => {

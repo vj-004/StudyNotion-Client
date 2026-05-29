@@ -91,12 +91,12 @@ const ContactUsForm = () => {
                             name='dropdown'
                             id='dropdown'
                             {...register("countrycode",{required: true})}
-                            className='w-[68px] bg-richblack-800 rounded-md py-1 px-2 text-richblack-5'
+                            className='w-[78px] bg-richblack-800 rounded-md py-1 px-2 text-richblack-5'
                         >
                             {
                                     CountryCode.map((element,index) => (
                                         <option key={index} value={element.code}>
-                                            {element.code} -{element.country}
+                                            {element.code} - {element.country}
                                         </option>
                                     ))
                             }

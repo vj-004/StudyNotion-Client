@@ -96,8 +96,12 @@ const YtCourse = () => {
         let globalIdx = 0;
 
         return courseSections.map((section, sectionIdx) => {
+            let completedLectures = 0;
             const lectures = (section?.videoIds || []).map((videoId, idxInSection) => {
                 const details = detailsByVideoId.get(videoId) || {};
+                if(ytCourseProgress?.isCompleted?.includes(videoId)){
+                    completedLectures++;
+                }
                 const lecture = {
                     globalIdx,
                     videoId,
@@ -116,9 +120,10 @@ const YtCourse = () => {
                 sectionIdx,
                 title: section?.title || `Section ${sectionIdx + 1}`,
                 lectures,
+                completedLectures
             };
         });
-    }, [ytCourse]);
+    }, [ytCourse, ytCourseProgress]);
 
     const lectureList = useMemo(() => {
         return sidebarSections.flatMap((section) => section.lectures);
@@ -238,20 +243,20 @@ const YtCourse = () => {
         };
     }, [isPlayerApiReady, currentVideoId]);
 
-    useEffect(() => {
-        const firstVideoIdx = () => {
-            if (!videoIds.length) return;
+    // useEffect(() => {
+    //     const firstVideoIdx = () => {
+    //         if (!videoIds.length) return;
 
-            const idx = videoIds.findIndex((videoId) => !ytCourseProgress?.isCompleted?.includes(videoId));
-            if (idx === -1) {
-                setSelectedIdx(0);
-                return;
-            }
-            setSelectedIdx(idx);
-        };
+    //         const idx = videoIds.findIndex((videoId) => !ytCourseProgress?.isCompleted?.includes(videoId));
+    //         if (idx === -1) {
+    //             setSelectedIdx(0);
+    //             return;
+    //         }
+    //         setSelectedIdx(idx);
+    //     };
 
-        firstVideoIdx();
-    }, []);
+    //     firstVideoIdx();
+    // }, []);
 
     useEffect(() => {
         const activeLectureBtn = lectureItemRefs.current[selectedIdx];
@@ -441,7 +446,7 @@ const YtCourse = () => {
                         <FaChevronLeft className="text-[11px]" />
                         <span>Back</span>
                     </button>
-                    <h1 className="mx-auto mt-8 text-xl text-wrap font-bold text-yellow-50 mb-10" title={ytCourse.title}>
+                    <h1 className="mx-auto mt-8 text-xl text-wrap text-center font-bold text-yellow-50 mb-10" title={ytCourse.title}>
                         {ytCourse.title}
                     </h1>
                     {/* <h2 className="text-lg font-semibold text-richblack-5 mb-4 ml-4 self-center">
@@ -457,17 +462,17 @@ const YtCourse = () => {
                                     <button
                                         onClick={() => handleToggleSection(section.sectionIdx)}
                                         title={section.title}
-                                        className={`flex w-full items-center justify-between rounded-lg border px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider transition-all duration-200
+                                        className={`flex flex-col gap-4 w-full rounded-lg border px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider transition-all duration-200
                                             ${(openSections[String(section.sectionIdx)] ?? false)
                                                 ? 'border-yellow-100/40 bg-richblack-600 text-yellow-50 shadow-md'
                                                 : 'border-richblack-600 bg-richblack-700 text-richblack-25 hover:border-yellow-100/40 hover:bg-richblack-600 hover:text-yellow-50'
                                             }`}
                                         aria-expanded={openSections[String(section.sectionIdx)] ?? false}
                                     >
-                                        <span className="truncate text-[14px]">{section.title.length > 50 ? `${section.title.substr(0,50)} ...` : section.title}</span>
-                                        <div className="flex items-center gap-2">
-                                            <span className="rounded-full bg-richblack-800 px-2 py-[2px] ml-4 text-[10px] font-bold normal-case tracking-normal text-yellow-50/90">
-                                                {section.lectures.length}
+                                        <span className="truncate text-[14px]">{section.title.length > 30 ? `${section.title.substr(0,30)} ...` : section.title}</span>
+                                        <div className="flex items-center gap-2 justify-between">
+                                            <span className={`rounded-full text-[12px] font-bold normal-case tracking-normal ${section.completedLectures === section.lectures.length ? "text-yellow-50" : "text-yellow-50/50"}`}>
+                                                {section.completedLectures} / {section.lectures.length}
                                             </span>
                                             <FaChevronDown
                                                 className={`text-[11px] transition-transform duration-200 ${(openSections[String(section.sectionIdx)] ?? false) ? 'rotate-0' : '-rotate-90'}`}
@@ -547,7 +552,7 @@ const YtCourse = () => {
                         </div>
 
                         {currentLecture && (
-                            <div className="mt-5 w-full max-w-[1800px] max-h-[240px] overflow-y-auto rounded-lg border border-richblack-700 bg-richblack-800/70 px-5 py-4">
+                            <div className="mt-5 w-full max-w-[1800px] h-fit overflow-y-auto rounded-lg border border-richblack-700 bg-richblack-800/70 px-5 py-4">
                                 <p className="text-xs font-semibold uppercase tracking-wider text-yellow-50/80">
                                     {currentLecture.sectionTitle}
                                 </p>
@@ -556,7 +561,7 @@ const YtCourse = () => {
                                 </h2>
                                 {currentLecture.description && (
                                     <p className="mt-2 text-sm leading-6 text-richblack-200">
-                                        {currentLecture.description?.length < 50 ? currentLecture.description : `${currentLecture.description.substr(0,500)}...`}
+                                        {currentLecture.description}
                                     </p>
                                 )}
                             </div>

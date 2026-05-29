@@ -206,7 +206,7 @@ const YtCourses = () => {
             )}
           </div>
         ) : (
-          <div className="mt-8 w-full rounded-lg border border-richblack-700 bg-richblack-800 p-5 flex justify-center">
+          <div className="mt-8  p-5 flex justify-center">
             {ytCourses.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10">
                 <p className="text-lg text-richblack-300">You have not added any YouTube courses yet.</p>

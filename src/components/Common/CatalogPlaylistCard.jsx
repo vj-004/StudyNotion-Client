@@ -18,7 +18,7 @@ const CatalogPlaylistCard = ({
 
   return (
     <div
-      className={`w-[300px] h-fit rounded-lg flex flex-col border shadow-md transition-all duration-200 cursor-pointer ${isUserCourse ? 'border-caribbeangreen-100 bg-caribbeangreen-900/40 hover:shadow-caribbeangreen-100' : 'border-richblack-600 bg-richblack-700 hover:shadow-yellow-25'} ${className}`}
+      className={`w-[300px] h-fit rounded-lg flex flex-col border shadow-md transition-all duration-200 cursor-pointer border-richblack-600 bg-richblack-700 hover:shadow-yellow-25 ${className}`}
       onClick={onClick}
       role="button"
       tabIndex={0}
