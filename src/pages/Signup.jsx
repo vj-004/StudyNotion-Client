@@ -19,11 +19,11 @@ const Signup = () => {
                     <p className='text-richblack-100 text-lg font-inter '>Build skills for today, tomorrow, and beyond. <span className='text-base font-bold font-edu-sa text-blue-100'>Education <br/> to future-proof your career.</span></p>
                 </div>
 
-                <div className='my-6'>
+                {/* <div className='my-6'>
                     <AccTypeBox accType={accType} setAccType={setAccType}/>
-                </div>
+                </div> */}
 
-                <div className='flex flex-col'>
+                <div className='flex flex-col mt-10'>
                     <SignupForm accType={accType}/>
                 </div>
 

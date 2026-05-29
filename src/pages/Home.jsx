@@ -25,27 +25,26 @@ const Home = () => {
                 transition-all duration-200 hover:scale-95 w-fit shadow-md shadow-richblack-200'>
                     <div className='flex items-center gap-2 rounded-full px-10 py-[5px] transition-all duration-200
                     group-hover:bg-richblack-900 '>
-                        <p className=''>Become an Instructor / Student</p>
+                        <p className=''>Get Started</p>
                         <FaArrowRight/>
                     </div>
                 </div>
             </Link>
 
-            <div className='text-center text-4xl font-semibold mt-7'>
-                Empower Your Future with
-                <HighlightText text={" Coding Skills"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/>
+            <div className='text-center text-4xl font-semibold mt-7'>Organize your YouTube courses
+                Turn YouTube links into
+                <HighlightText text={" structured courses"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/>
 
             </div>
 
             <div className='w-[90%] text-center text-lg font-bold text-richblack-300 mt-4 '>
-                With our online coding courses, you can learn at your own pace, from anywhere in the world, 
-                and get access to a wealth of resources, including hands-on projects, quizzes, and personalized 
-                feedback from instructors. 
+                Paste a YouTube course link and let CourseX organize it into a clear learning path,
+                so you can study in the right order, track progress, and focus on what matters most.
             </div>
 
             <div className='flex flex-row gap-7 mt-8'>
-                <CustomButton active={true} text={"Learn More"} dest={"/signup"} arrow={false}/>
-                <CustomButton active={false} text={"Book  A Demo"} dest={"/login"} arrow={false}/>
+                <CustomButton active={true} text={"Create Course"} dest={"/signup"} arrow={false}/>
+                <CustomButton active={false} text={"See How It Works"} dest={"/login"} arrow={false}/>
             </div>
 
             <div className=' relative mx-3 mt-16 mb-12'>
@@ -67,16 +66,16 @@ const Home = () => {
                     position={"lg:flex-row"}
                     heading={
                         <div>
-                            Unlock your <HighlightText text={" coding potential"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/> with our online courses.
+                            Build a <HighlightText text={"structured study path"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/> from any YouTube course.
                         </div>
                     }
                     subheading={
-                        "Our courses are designed and taught by industry experts who have years of experience in coding and are passionate about sharing their knowledge with you."
+                        "CourseX helps learners turn long video playlists into organized courses with sections, lessons, and a clear order to follow."
                     }
 
                     btn1={
                         {
-                            text: "Try it yourself",
+                            text: "Start Organizing",
                             active: true,
                             arrow: true,
                             dest: "/signup"
@@ -84,13 +83,13 @@ const Home = () => {
                     }
                     btn2={
                         {
-                            text: "Learn More",
+                            text: "Explore Features",
                             active: false,
                             arrow: false,
                             dest: "/login"
                         }
                     }
-                    codeblock={`<!DOCTYPE html>\n<html>\nhead><>Example</\ntitle><linkrel="stylesheet"href="styles.css">\n/head>\nbody>\nh1><ahref="/">Header</a>\n/h1>\nnav><ahref="one/">One</a><ahref="two/">Two</\na><ahref="three/">Three</a>\n/nav>`}
+                    codeblock={`{\n  title: "React Crash Course",\n  source: "youtube.com/playlist?list=...",\n  sections: ["Setup", "Components", "State", "Routing"],\n  progress: "Track each lesson as you study"\n}`}
                     codeColor={"text-yellow-25"}
                     backgroundGradient={"bg-gradient-to-r from-[#8A2BE2]/30 via-[#F8F8FF]/30 to-[#FFA500]/30"}
                 />
@@ -101,16 +100,16 @@ const Home = () => {
                     position={"lg:flex-row-reverse"}
                     heading={
                         <div>
-                            Start <HighlightText text={" coding in seconds"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/>
+                            Keep every lesson <HighlightText text={"in the right order"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/>
                         </div>
                     }
                     subheading={
-                        "Go ahead, give it a try. Our hands-on learning environment means you'll be writing real code from your very first lesson."
+                        "Split one YouTube course into sections and lessons so students can follow a structured path instead of jumping between random videos."
                     }
 
                     btn1={
                         {
-                            text: "Continue Lesson",
+                            text: "Start Structuring",
                             active: true,
                             arrow: true,
                             dest: "/login"
@@ -118,13 +117,13 @@ const Home = () => {
                     }
                     btn2={
                         {
-                            text: "Learn More",
+                            text: "View Workflow",
                             active: false,
                             arrow: false,
                             dest: "/signup"
                         }
                     }
-                    codeblock={`<!DOCTYPE html>\n<html>\nhead><>Example</\ntitle><linkrel="stylesheet"href="styles.css">\n/head>\nbody>\nh1><ahref="/">Header</a>\n/h1>\nnav><ahref="one/">One</a><ahref="two/">Two</\na><ahref="three/">Three</a>\n/nav>`}
+                    codeblock={`{\n  course: "Data Structures",\n  lessons: [\n    "Intro",\n    "Arrays",\n    "Stacks",\n    "Queues"\n  ],\n  result: "A clear study plan from one video link"\n}`}
                     codeColor={"text-yellow-25"}
                     backgroundGradient={"bg-gradient-to-r from-[#1FA2FF]/30 via-[#12D8FA]/30 to-[#A6FFCB]/30"}
                 />
@@ -146,11 +145,11 @@ const Home = () => {
 
             <div className='mx-auto w-11/12 max-w-maxContent flex flex-col items-center gap-5 py-20'>
                 <div className='flex justify-between w-full'>
-                    <p className='w-[45%] font-semibold font-inter text-4xl text-richblack-900'>Get the skills you need for a <HighlightText text={" job that is in demand."} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/> </p>
+                    <p className='w-[45%] font-semibold font-inter text-4xl text-richblack-900'>Turn one video link into a <HighlightText text={" complete study path."} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/> </p>
                     <div className='flex flex-col gap-3  w-[40%] text-base font-inter text-richblack-700'>
-                        The modern CourseX is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
+                        CourseX helps students and creators break a YouTube course into sections, keep the order clear, and follow a structured learning flow.
                         <div className='w-[28%] mt-8'>
-                            <CustomButton text={"Learn More"} active={true} arrow={false} dest={"/login"}  />
+                            <CustomButton text={"Explore Flow"} active={true} arrow={false} dest={"/login"}  />
                         </div>    
                     </div>
                     
@@ -167,10 +166,10 @@ const Home = () => {
             <div className='flex p-20 gap-20'>
                 <img src={Instructor} alt='image1' loading='lazy' className='shadow-[-18px_-18px_0px_-1px_rgba(255,255,255,1)]'/>
                 <div className='flex flex-col gap-8 justify-center w-[50%]'>
-                    <p className='text-4xl font-semibold font-inter text-richblack-5'>Become an <br /><HighlightText text={" instructor"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/></p>
-                    <p className='text-base font-inter text-richblack-300 w-[70%] mb-10'>Instructors from around the world teach millions of students on CourseX. We provide the tools and skills to teach what you love.</p>
+                    <p className='text-4xl font-semibold font-inter text-richblack-5'>Build a course from a <br /><HighlightText text={" YouTube link"} gradient={"bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB]"}/></p>
+                    <p className='text-base font-inter text-richblack-300 w-[70%] mb-10'>Paste a playlist, organize the lessons, and turn scattered videos into a structured course that students can actually follow.</p>
                     <div className='w-fit'>
-                        <CustomButton text={"Start Teaching Today"} arrow={true} active={true} dest={'/login'}/>
+                        <CustomButton text={"Start Building"} arrow={true} active={true} dest={'/login'}/>
                     </div>
                 </div>    
             </div>

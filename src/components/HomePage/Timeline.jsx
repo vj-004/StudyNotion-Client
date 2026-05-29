@@ -9,23 +9,23 @@ import timelineImg from '../../assets/Images/TimelineImage.png'
 const timeline = [
     {
         Logo: Logo1,
-        heading: "Leadership",
-        description: "Fully committed to the success company"
+        heading: "Paste the link",
+        description: "Start with a YouTube course or playlist you want to structure."
     },
     {
         Logo: Logo2,
-        heading: "Responsibility",
-        description: "Students will always be our top priority"
+        heading: "Organize the lessons",
+        description: "Split the source into sections so the study flow is easier to follow."
     },
         {
         Logo: Logo3,
-        heading: "Flexibility",
-        description: "The ability to switch is an important skills"
+        heading: "Track your progress",
+        description: "See what has been completed and continue from the right place."
     },
     {
         Logo: Logo4,
-        heading: "Solve the problem",
-        description: "Code your way to a solution"
+        heading: "Study with a plan",
+        description: "Follow a course that feels organized instead of scattered."
     },
 ]
 
@@ -54,13 +54,13 @@ const Timeline = () => {
                     <img src={timelineImg} alt='timeline' loading='lazy' width={545} className='relative shadow-[18px_18px_0px_-1px_rgba(255,255,255,1)] z-10' />
                     <div className='absolute w-[511px] bg-caribbeangreen-700 flex left-[17px] -bottom-[35px] px-10 py-4 justify-center items-center z-20'>
                         <div className='flex w-[161px] gap-3'>
-                            <p className='text-4xl font-bold font-inter text-white'>10</p>
-                            <p className='text-sm font-inter text-caribbeangreen-300'>YEARS EXPERIENCES</p>
+                            <p className='text-4xl font-bold font-inter text-white'>1</p>
+                            <p className='text-sm font-inter text-caribbeangreen-300'>LINK TO IMPORT</p>
                         </div>
                         <div className=' w-[2px] mx-auto bg-caribbeangreen-500 my-2 h-[44px]'></div>
                         <div className='flex w-[161px] gap-3'>
-                            <p className='text-4xl font-bold font-inter text-white'>250</p>
-                            <p className='text-sm font-inter text-caribbeangreen-300'>TYPES OF COURSES</p>
+                            <p className='text-4xl font-bold font-inter text-white'>4</p>
+                            <p className='text-sm font-inter text-caribbeangreen-300'>STEPS TO FOLLOW</p>
                         </div>
                     </div>
                     <div className='absolute bg-gradient-to-r from-[#9CECFB] via-[#65C7F7] to-[#0052D4] w-[600px] h-[400px] blur-3xl rounded-full top-0 -left-10'></div>

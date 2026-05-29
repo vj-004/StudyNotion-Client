@@ -1,115 +1,115 @@
 export const HomePageExplore = [
     {
-        tag: 'Free',
+        tag: 'Quick Start',
         courses : [
             {
-                heading : "Learn HTML",
-                description : "This course covers the basic concepts of HTML including creating and structuring web pages, adding text, links, images, and more.",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Paste a link",
+                description : "Start by adding any YouTube course or playlist link you want to turn into a structured study plan.",
+                level : 'Start here',
+                lessionNumber : 3
             },
             {
-                heading : "Learn CSS",
-                description : "This course explores advanced topics in HTML5 and CSS3, including animations, transitions, and layout techniques",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Name the course",
+                description : "Give the course a clear, relevant name before you import it.",
+                level : 'Start here',
+                lessionNumber : 3
             },
             {
-                heading : "Responsive Web design",
-                description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Track Your Learning",
+                description : "Once the course is ready, start learning and keep track of your progress.",
+                level : 'Start here',
+                lessionNumber : 3
             },
         ]
     },
     {
-        tag: 'New to coding',
+        tag: 'Import link',
         courses : [
             {
-                heading : "HTML",
-                description : "This course covers the basic concepts of HTML including creating and structuring web pages, adding text, links, images, and more.",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Add YouTube source",
+                description : "Collect the source video or playlist in one place so the course starts from a single link.",
+                level : 'Organizer',
+                lessionNumber : 4
             },
             {
-                heading : "CSS",
-                description : "This course explores advanced topics in HTML5 and CSS3, including animations, transitions, and layout techniques",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Check the flow",
+                description : "Review the order of lessons and make sure the course moves from basics to advanced topics.",
+                level : 'Organizer',
+                lessionNumber : 4
             },
             {
-                heading : "Responsive ",
-                description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Set the pace",
+                description : "Decide how students should move through the course so the learning experience feels structured.",
+                level : 'Organizer',
+                lessionNumber : 4
             },
         ]
     },
     {
-        tag: 'Most popular',
+        tag: 'Organize lessons',
         courses : [
             {
-                heading : "Java",
-                description : "This course covers the basic concepts of HTML including creating and structuring web pages, adding text, links, images, and more.",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Group into sections",
+                description : "Split a long video course into smaller sections so the study path is easier to follow.",
+                level : 'Organize',
+                lessionNumber : 5
             },
             {
-                heading : "Python",
-                description : "This course explores advanced topics in HTML5 and CSS3, including animations, transitions, and layout techniques",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Add lesson titles",
+                description : "Label each part of the course clearly so students know what to study next.",
+                level : 'Organize',
+                lessionNumber : 5
             },
             {
-                heading : "SCSS",
-                description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Keep the flow clean",
+                description : "Use a structured order that keeps the course focused and easy to return to later.",
+                level : 'Organize',
+                lessionNumber : 5
             },
         ]
     },
     {
-        tag: 'Skills paths',
+        tag: 'Track progress',
         courses : [
             {
-                heading : "Flask",
-                description : "This course covers the basic concepts of HTML including creating and structuring web pages, adding text, links, images, and more.",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Mark completed lessons",
+                description : "Students can see what they have finished and continue from the right place.",
+                level : 'Progress',
+                lessionNumber : 4
             },
             {
-                heading : "Django",
-                description : "This course explores advanced topics in HTML5 and CSS3, including animations, transitions, and layout techniques",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Resume anytime",
+                description : "Return to a course later without losing the order or your place in the lesson list.",
+                level : 'Progress',
+                lessionNumber : 4
             },
             {
-                heading : "Fast API",
-                description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
-                level : 'Beginner',
-                lessionNumber : 6
+                heading : "Stay on schedule",
+                description : "A structured path makes it easier to keep learning consistent over time.",
+                level : 'Progress',
+                lessionNumber : 4
             },
         ]
     },
     {
-        tag: 'Career paths',
+        tag: 'Study plans',
         courses : [
             {
-                heading : "Next.js",
-                description : "This course covers the basic concepts of HTML including creating and structuring web pages, adding text, links, images, and more.",
-                level : 'Beginner',
+                heading : "Turn video into a roadmap",
+                description : "Convert a playlist into a step-by-step route that students can actually follow.",
+                level : 'Plan',
                 lessionNumber : 6
             },
             {
-                heading : "Nuxt.js",
-                description : "This course explores advanced topics in HTML5 and CSS3, including animations, transitions, and layout techniques",
-                level : 'Beginner',
+                heading : "Share with clarity",
+                description : "A structured study plan helps learners understand the full course at a glance.",
+                level : 'Plan',
                 lessionNumber : 6
             },
             {
-                heading : "Sanity",
-                description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
-                level : 'Beginner',
+                heading : "Keep everything in one place",
+                description : "One organized course is easier to manage than a long list of ungrouped links.",
+                level : 'Plan',
                 lessionNumber : 6
             },
         ]
